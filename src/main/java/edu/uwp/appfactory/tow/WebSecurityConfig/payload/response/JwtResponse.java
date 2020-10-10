@@ -3,14 +3,14 @@ package edu.uwp.appfactory.tow.WebSecurityConfig.payload.response;
 public class JwtResponse {
 	private String token;
 	private String type = "Bearer";
-	private Long id;
+	private String id;
 	private String username;
 	private String email;
 	private String firstname;
 	private String lastname;
 	private final String role;
 
-	public JwtResponse(String accessToken, Long id, String username, String email, String
+	public JwtResponse(String accessToken, String id, String username, String email, String
 			firstname, String lastname, String role) {
 		this.token = accessToken;
 		this.id = id;
@@ -37,11 +37,11 @@ public class JwtResponse {
 		this.type = tokenType;
 	}
 
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

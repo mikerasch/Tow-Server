@@ -41,6 +41,15 @@ public class AuthRoutes {
         return authController.registerUser(email, password, firstname, lastname);
     }
 
+    @PostMapping("/registertest")
+    public ResponseEntity<?> registerTest(@RequestHeader("email") final String email,
+                                          @RequestHeader("password") final String password,
+                                          @RequestHeader("firstname") final String firstname,
+                                          @RequestHeader("lastname") final String lastname,
+                                          @RequestHeader("precinct") final String precinct) {
+        return authController.registerTest(email, password, firstname, lastname, precinct);
+    }
+
     @PostMapping("/registeradmin")
     public ResponseEntity<?> registerAdmin(@RequestHeader("email") final String email,
                                            @RequestHeader("password") final String password,

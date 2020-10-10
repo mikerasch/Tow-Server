@@ -3,7 +3,7 @@ package edu.uwp.appfactory.tow.WebSecurityConfig.security.services;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import edu.uwp.appfactory.tow.WebSecurityConfig.models.ERole;
 import edu.uwp.appfactory.tow.WebSecurityConfig.models.Role;
-import edu.uwp.appfactory.tow.WebSecurityConfig.models.Users;
+import edu.uwp.appfactory.tow.testingEntities.Users;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class UserDetailsImpl implements UserDetails {
 	private static final long serialVersionUID = 1L;
 
-	private final Long id;
+	private final String id;
 
 	private final String username;
 
@@ -32,7 +32,7 @@ public class UserDetailsImpl implements UserDetails {
 
 	private final String role;
 
-	public UserDetailsImpl(Long id, String username, String email, String password, String firstname, String lastname,
+	public UserDetailsImpl(String id, String username, String email, String password, String firstname, String lastname,
 						   String role) {
 		this.id = id;
 		this.username = username;
@@ -45,8 +45,8 @@ public class UserDetailsImpl implements UserDetails {
 
 	public static UserDetailsImpl build(Users user) {
 		return new UserDetailsImpl(
-				user.getId(), 
-				user.getUsername(), 
+				user.getId(),
+				user.getUsername(),
 				user.getEmail(),
 				user.getPassword(),
 				user.getFirstname(),
@@ -58,7 +58,7 @@ public class UserDetailsImpl implements UserDetails {
 		return role;
 	}
 
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
 

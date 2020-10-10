@@ -1,5 +1,7 @@
 package edu.uwp.appfactory.tow.controllers.auth;
 
+import edu.uwp.appfactory.tow.testingEntities.DispatcherUsers;
+import edu.uwp.appfactory.tow.testingEntities.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,7 +12,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import edu.uwp.appfactory.tow.WebSecurityConfig.models.ERole;
 import edu.uwp.appfactory.tow.WebSecurityConfig.models.Role;
-import edu.uwp.appfactory.tow.WebSecurityConfig.models.Users;
 import edu.uwp.appfactory.tow.WebSecurityConfig.payload.response.JwtResponse;
 import edu.uwp.appfactory.tow.WebSecurityConfig.payload.response.MessageResponse;
 import edu.uwp.appfactory.tow.WebSecurityConfig.repository.RoleRepository;
@@ -147,6 +148,38 @@ public class AuthController {
         usersRepository.save(user);
 
         return ResponseEntity.ok(new MessageResponse("Admin registered successfully!"));
+    }
+
+    public ResponseEntity<?> registerTest(String email, String password, String firstname, String lastname, String precinct) {
+
+        if (usersRepository.existsByUsername(email)) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Username is already taken!"));
+        }
+
+        if (usersRepository.existsByEmail(email)) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Email is already in use!"));
+        }
+
+        // Create new user's account
+        DispatcherUsers user = new DispatcherUsers(
+                email,
+                email,
+                encoder.encode(password),
+                firstname,
+                lastname,
+                precinct);
+
+        Role role = roleRepository.findByName(ERole.ROLE_USER)
+                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+
+        user.setRoles(role.getName().toString());
+        usersRepository.save(user);
+
+        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
 }
 

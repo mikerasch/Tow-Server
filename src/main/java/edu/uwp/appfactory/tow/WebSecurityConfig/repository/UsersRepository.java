@@ -1,9 +1,9 @@
 package edu.uwp.appfactory.tow.WebSecurityConfig.repository;
 
+import edu.uwp.appfactory.tow.testingEntities.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import edu.uwp.appfactory.tow.WebSecurityConfig.models.Users;
 
 import java.util.Optional;
 
