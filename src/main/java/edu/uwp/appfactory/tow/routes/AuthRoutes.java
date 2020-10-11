@@ -33,21 +33,23 @@ public class AuthRoutes {
         return authController.authenticateUser(email, password);
     }
 
-    @PostMapping("/registeruser")
-    public ResponseEntity<?> registerUser(@RequestHeader("email") final String email,
+    @PostMapping("/registerdriver")
+    public ResponseEntity<?> registerDriver(@RequestHeader("email") final String email,
                                           @RequestHeader("password") final String password,
                                           @RequestHeader("firstname") final String firstname,
-                                          @RequestHeader("lastname") final String lastname) {
-        return authController.registerUser(email, password, firstname, lastname);
+                                          @RequestHeader("lastname") final String lastname,
+                                            @RequestHeader("lastname") final String business,
+                                            @RequestHeader("lastname") final String cdlLicenceNumber) {
+        return authController.registerDriver(email, password, firstname, lastname, business, cdlLicenceNumber);
     }
 
-    @PostMapping("/registertest")
-    public ResponseEntity<?> registerTest(@RequestHeader("email") final String email,
+    @PostMapping("/registerdispatcher")
+    public ResponseEntity<?> registerDispatch(@RequestHeader("email") final String email,
                                           @RequestHeader("password") final String password,
                                           @RequestHeader("firstname") final String firstname,
                                           @RequestHeader("lastname") final String lastname,
                                           @RequestHeader("precinct") final String precinct) {
-        return authController.registerTest(email, password, firstname, lastname, precinct);
+        return authController.registerDispatcher(email, password, firstname, lastname, precinct);
     }
 
     @PostMapping("/registeradmin")

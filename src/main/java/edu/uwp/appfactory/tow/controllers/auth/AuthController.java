@@ -90,7 +90,7 @@ public class AuthController {
                 userDetails.getRole()));
     }
 
-    public ResponseEntity<?> registerUser(String email, String password, String firstname, String lastname) {
+    public ResponseEntity<?> registerDriver(String email, String password, String firstname, String lastname, String business, String cdlLicenceNumber) {
 
         if (usersRepository.existsByUsername(email)) {
             return ResponseEntity
@@ -111,7 +111,7 @@ public class AuthController {
                 firstname,
                 lastname);
 
-        Role role = roleRepository.findByName(ERole.ROLE_USER)
+        Role role = roleRepository.findByName(ERole.ROLE_DRIVER)
                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
 
         user.setRoles(role.getName().toString());
@@ -150,7 +150,7 @@ public class AuthController {
         return ResponseEntity.ok(new MessageResponse("Admin registered successfully!"));
     }
 
-    public ResponseEntity<?> registerTest(String email, String password, String firstname, String lastname, String precinct) {
+    public ResponseEntity<?> registerDispatcher(String email, String password, String firstname, String lastname, String precinct) {
 
         if (usersRepository.existsByUsername(email)) {
             return ResponseEntity
@@ -173,7 +173,7 @@ public class AuthController {
                 lastname,
                 precinct);
 
-        Role role = roleRepository.findByName(ERole.ROLE_USER)
+        Role role = roleRepository.findByName(ERole.ROLE_DISPATCHER)
                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
 
         user.setRoles(role.getName().toString());
