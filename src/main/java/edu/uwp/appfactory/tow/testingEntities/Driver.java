@@ -1,5 +1,7 @@
 package edu.uwp.appfactory.tow.testingEntities;
 
+import edu.uwp.appfactory.tow.testingData.IDriver;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
@@ -8,7 +10,7 @@ import javax.persistence.Table;
 @Entity(name = "DriverUsers")
 @Table(name = "driver")
 @PrimaryKeyJoinColumn(name= "role_uuid")
-public class DriverUsers extends Users {
+public class Driver extends Users implements IDriver {
 
     @Column
     private String business;
@@ -16,13 +18,13 @@ public class DriverUsers extends Users {
     @Column
     private String cdlLicenceNumber;
 
-    public DriverUsers(String email, String username, String password, String firstname, String lastname, String business, String cdlLicenceNumber) {
+    public Driver(String email, String username, String password, String firstname, String lastname, String business, String cdlLicenceNumber) {
         super(email, username, password, firstname, lastname);
         this.business = business;
         this.cdlLicenceNumber = cdlLicenceNumber;
     }
 
-    public DriverUsers() {
+    public Driver() {
 
     }
 

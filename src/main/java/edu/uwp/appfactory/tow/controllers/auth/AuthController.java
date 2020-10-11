@@ -1,6 +1,6 @@
 package edu.uwp.appfactory.tow.controllers.auth;
 
-import edu.uwp.appfactory.tow.testingEntities.DispatcherUsers;
+import edu.uwp.appfactory.tow.testingEntities.Dispatcher;
 import edu.uwp.appfactory.tow.testingEntities.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -165,7 +165,7 @@ public class AuthController {
         }
 
         // Create new user's account
-        DispatcherUsers user = new DispatcherUsers(
+        Dispatcher user = new Dispatcher(
                 email,
                 email,
                 encoder.encode(password),
