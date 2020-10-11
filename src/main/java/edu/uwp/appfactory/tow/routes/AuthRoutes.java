@@ -38,13 +38,13 @@ public class AuthRoutes {
                                           @RequestHeader("password") final String password,
                                           @RequestHeader("firstname") final String firstname,
                                           @RequestHeader("lastname") final String lastname,
-                                            @RequestHeader("lastname") final String business,
-                                            @RequestHeader("lastname") final String cdlLicenceNumber) {
+                                            @RequestHeader("business") final String business,
+                                            @RequestHeader("cdlLicenceNumber") final String cdlLicenceNumber) {
         return authController.registerDriver(email, password, firstname, lastname, business, cdlLicenceNumber);
     }
 
     @PostMapping("/registerdispatcher")
-    public ResponseEntity<?> registerDispatch(@RequestHeader("email") final String email,
+    public ResponseEntity<?> registerDispatcher(@RequestHeader("email") final String email,
                                           @RequestHeader("password") final String password,
                                           @RequestHeader("firstname") final String firstname,
                                           @RequestHeader("lastname") final String lastname,

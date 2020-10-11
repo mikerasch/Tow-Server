@@ -1,6 +1,7 @@
 package edu.uwp.appfactory.tow.controllers.auth;
 
 import edu.uwp.appfactory.tow.testingEntities.Dispatcher;
+import edu.uwp.appfactory.tow.testingEntities.Driver;
 import edu.uwp.appfactory.tow.testingEntities.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -105,17 +106,19 @@ public class AuthController {
         }
 
         // Create new user's account
-        Users user = new Users(email,
+        Driver driver = new Driver(email,
                 email,
                 encoder.encode(password),
                 firstname,
-                lastname);
+                lastname,
+                business,
+                cdlLicenceNumber);
 
         Role role = roleRepository.findByName(ERole.ROLE_DRIVER)
                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
 
-        user.setRoles(role.getName().toString());
-        usersRepository.save(user);
+        driver.setRoles(role.getName().toString());
+        usersRepository.save(driver);
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
@@ -165,7 +168,7 @@ public class AuthController {
         }
 
         // Create new user's account
-        Dispatcher user = new Dispatcher(
+        Dispatcher dispatcher = new Dispatcher(
                 email,
                 email,
                 encoder.encode(password),
@@ -176,8 +179,8 @@ public class AuthController {
         Role role = roleRepository.findByName(ERole.ROLE_DISPATCHER)
                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
 
-        user.setRoles(role.getName().toString());
-        usersRepository.save(user);
+        dispatcher.setRoles(role.getName().toString());
+        usersRepository.save(dispatcher);
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
