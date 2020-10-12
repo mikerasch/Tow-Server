@@ -3,7 +3,7 @@ package edu.uwp.appfactory.tow.WebSecurityConfig.security.services;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import edu.uwp.appfactory.tow.WebSecurityConfig.models.ERole;
 import edu.uwp.appfactory.tow.WebSecurityConfig.models.Role;
-import edu.uwp.appfactory.tow.testingEntities.Users;
+import edu.uwp.appfactory.tow.entities.Users;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class UserDetailsImpl implements UserDetails {
 	private static final long serialVersionUID = 1L;
 
-	private final String id;
+	private final String UUID;
 
 	private final String username;
 
@@ -32,9 +32,9 @@ public class UserDetailsImpl implements UserDetails {
 
 	private final String role;
 
-	public UserDetailsImpl(String id, String username, String email, String password, String firstname, String lastname,
+	public UserDetailsImpl(String UUID, String username, String email, String password, String firstname, String lastname,
 						   String role) {
-		this.id = id;
+		this.UUID = UUID;
 		this.username = username;
 		this.email = email;
 		this.password = password;
@@ -45,7 +45,7 @@ public class UserDetailsImpl implements UserDetails {
 
 	public static UserDetailsImpl build(Users user) {
 		return new UserDetailsImpl(
-				user.getId(),
+				user.getUUID(),
 				user.getUsername(),
 				user.getEmail(),
 				user.getPassword(),
@@ -58,8 +58,8 @@ public class UserDetailsImpl implements UserDetails {
 		return role;
 	}
 
-	public String getId() {
-		return id;
+	public String getUUID() {
+		return UUID;
 	}
 
 	public String getEmail() {
@@ -71,9 +71,9 @@ public class UserDetailsImpl implements UserDetails {
 
 		ERole eRole;
 
-		if (getRole().equals("ROLE_USER"))
+		if (getRole().equals("ROLE_DRIVER"))
 		{
-			eRole = ERole.ROLE_USER;
+			eRole = ERole.ROLE_DRIVER;
 		}
 		else if (getRole().equals("ROLE_DISPATCHER"))
 		{
@@ -137,7 +137,7 @@ public class UserDetailsImpl implements UserDetails {
 		if (o == null || getClass() != o.getClass())
 			return false;
 		UserDetailsImpl user = (UserDetailsImpl) o;
-		return Objects.equals(id, user.id);
+		return Objects.equals(UUID, user.UUID);
 	}
 	public String getFirstname() {
 		return firstname;

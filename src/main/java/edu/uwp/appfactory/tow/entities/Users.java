@@ -1,6 +1,6 @@
-package edu.uwp.appfactory.tow.testingEntities;
+package edu.uwp.appfactory.tow.entities;
 
-import edu.uwp.appfactory.tow.testingData.IUser;
+import edu.uwp.appfactory.tow.data.IUser;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -11,9 +11,8 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(	name = "users", schema = "public",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = "email"),
-                @UniqueConstraint(columnNames = "username")
-        })
+        @UniqueConstraint(columnNames = {"email" , "username"})
+})
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Users implements IUser {
     @Id
@@ -66,12 +65,12 @@ public class Users implements IUser {
      */
 
     @Override
-    public String getId() {
+    public String getUUID() {
         return UUID;
     }
 
     @Override
-    public void setId(String id) {
+    public void setUUID(String UUID) {
         this.UUID = UUID;
     }
 

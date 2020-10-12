@@ -1,5 +1,10 @@
 package edu.uwp.appfactory.tow.routes;
 
+/**
+ * @author: Gianluca Eickenberg, Colin Hoffman
+ * @modifiedBy: Quincy Kayle, Matthew Rank
+ */
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +22,7 @@ public class AuthRoutes {
     }
 
     @GetMapping("/")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('DRIVER') or hasRole('DISPATCHER')")
     public ResponseEntity<?> getUserByEmail(@RequestHeader("email") final String email) {
         return authController.getUserByEmail(email);
     }
@@ -29,15 +34,21 @@ public class AuthRoutes {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> authenticateUser(@RequestHeader("email") final String email, @RequestHeader("password") final String password) {
+    public ResponseEntity<?> authenticateUser(@RequestHeader("email") final String email,
+                                              @RequestHeader("password") final String password) {
         return authController.authenticateUser(email, password);
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refreshToken(@RequestHeader("Authorization") final String jwtToken) {
+        return authController.refreshToken(jwtToken);
     }
 
     @PostMapping("/registerdriver")
     public ResponseEntity<?> registerDriver(@RequestHeader("email") final String email,
-                                          @RequestHeader("password") final String password,
-                                          @RequestHeader("firstname") final String firstname,
-                                          @RequestHeader("lastname") final String lastname,
+                                            @RequestHeader("password") final String password,
+                                            @RequestHeader("firstname") final String firstname,
+                                            @RequestHeader("lastname") final String lastname,
                                             @RequestHeader("business") final String business,
                                             @RequestHeader("cdlLicenceNumber") final String cdlLicenceNumber) {
         return authController.registerDriver(email, password, firstname, lastname, business, cdlLicenceNumber);
@@ -45,10 +56,10 @@ public class AuthRoutes {
 
     @PostMapping("/registerdispatcher")
     public ResponseEntity<?> registerDispatcher(@RequestHeader("email") final String email,
-                                          @RequestHeader("password") final String password,
-                                          @RequestHeader("firstname") final String firstname,
-                                          @RequestHeader("lastname") final String lastname,
-                                          @RequestHeader("precinct") final String precinct) {
+                                                @RequestHeader("password") final String password,
+                                                @RequestHeader("firstname") final String firstname,
+                                                @RequestHeader("lastname") final String lastname,
+                                                @RequestHeader("precinct") final String precinct) {
         return authController.registerDispatcher(email, password, firstname, lastname, precinct);
     }
 

@@ -1,4 +1,4 @@
-package edu.uwp.appfactory.tow.testingData;
+package edu.uwp.appfactory.tow.data;
 
 import java.io.Serializable;
 

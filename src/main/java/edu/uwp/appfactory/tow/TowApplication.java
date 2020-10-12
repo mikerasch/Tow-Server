@@ -1,6 +1,6 @@
 package edu.uwp.appfactory.tow;
 
-import edu.uwp.appfactory.tow.testingEntities.Dispatcher;
+import edu.uwp.appfactory.tow.entities.Dispatcher;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

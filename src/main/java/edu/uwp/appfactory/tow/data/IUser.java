@@ -1,13 +1,13 @@
-package edu.uwp.appfactory.tow.testingData;
+package edu.uwp.appfactory.tow.data;
 
 import java.io.Serializable;
 
 
 public interface IUser extends Serializable {
 
-     String getId();
+     String getUUID();
 
-     void setId(String id) ;
+     void setUUID(String UUID) ;
 
      String getEmail();
 

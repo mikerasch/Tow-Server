@@ -1,15 +1,15 @@
-package edu.uwp.appfactory.tow.testingEntities;
+package edu.uwp.appfactory.tow.entities;
 
-import edu.uwp.appfactory.tow.testingData.IDriver;
+import edu.uwp.appfactory.tow.data.IDriver;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
-@Entity(name = "DriverUsers")
+@Entity(name = "Driver")
 @Table(name = "driver")
-@PrimaryKeyJoinColumn(name= "role_uuid")
+@PrimaryKeyJoinColumn(name= "user_uuid")
 public class Driver extends Users implements IDriver {
 
     @Column

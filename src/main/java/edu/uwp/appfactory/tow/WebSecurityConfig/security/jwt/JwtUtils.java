@@ -29,23 +29,23 @@ public class JwtUtils {
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
 
         return Jwts.builder()
-                .setSubject((userPrincipal.getUsername()))
+                .setSubject((userPrincipal.getUUID()))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
     }
 
-    public String refreshJwtToken(String username) {
+    public String refreshJwtToken(String UUID) {
         return Jwts.builder()
-                .setSubject((username))
+                .setSubject((UUID))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
     }
 
-    public String getUserNameFromJwtToken(String token) {
+    public String getUUIDFromJwtToken(String token) {
         Function<Claims, String> claimsResolver = Claims::getSubject;
         Claims parsedToken = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
         return claimsResolver.apply(parsedToken);
