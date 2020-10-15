@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 @Entity(name = "Dispatcher")
 @Table(name = "dispatcher")
-@PrimaryKeyJoinColumn(name="user_uuid")
+@PrimaryKeyJoinColumn(name="uuid")
 public class Dispatcher extends Users implements IDispatcher {
 
     @Column

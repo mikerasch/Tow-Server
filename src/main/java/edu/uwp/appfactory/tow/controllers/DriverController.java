@@ -1,7 +1,7 @@
 package edu.uwp.appfactory.tow.controllers;
 
 import edu.uwp.appfactory.tow.WebSecurityConfig.repository.UsersRepository;
-import edu.uwp.appfactory.tow.data.pogoDriver;
+import edu.uwp.appfactory.tow.data.PDriver;
 import edu.uwp.appfactory.tow.repositories.DriverRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -26,7 +26,7 @@ public class DriverController {
     }
 
     public ResponseEntity<?> findAllByDistance(float latitude, float longitude, int radius) {
-        List<pogoDriver> drivers = driverRepository.findAllByDistance(latitude, longitude, radius);
+        List<PDriver> drivers = driverRepository.findAllByDistance(latitude, longitude, radius);
 
         return ResponseEntity.ok(drivers);
     }

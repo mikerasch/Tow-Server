@@ -2,14 +2,13 @@ package edu.uwp.appfactory.tow.entities;
 
 import edu.uwp.appfactory.tow.data.IDriver;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
 @Entity(name = "Driver")
 @Table(name = "driver")
-@PrimaryKeyJoinColumn(name= "user_uuid")
+@PrimaryKeyJoinColumn(name= "uuid")
 public class Driver extends Users implements IDriver {
 
     private float latitude;

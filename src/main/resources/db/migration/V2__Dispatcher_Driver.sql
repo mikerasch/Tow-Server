@@ -1,6 +1,6 @@
 create table driver
 (
-    user_uuid varchar
+    uuid character varying(36)
         constraint fkq1vwu6wnagupnprl74s7qs6gu
             references users,
     longitude float4 NOT NULL,
@@ -9,17 +9,17 @@ create table driver
 ) WITH ( OIDS = FALSE )
   TABLESPACE pg_default;
 
-create unique index driver_user_uuid_uindex
-    on driver (user_uuid);
+create unique index driver_uuid_uindex
+    on driver (uuid);
 
 create table dispatcher
 (
-    user_uuid varchar
+    uuid character varying(36)
         constraint fkq9daf4lrtvmspl72pns23qtp4
             references users,
     precinct  varchar(255)
 ) WITH ( OIDS = FALSE )
   TABLESPACE pg_default;
 
-create unique index dispatcher_user_uuid_uindex
-    on dispatcher (user_uuid);
+create unique index dispatcher_uuid_uindex
+    on dispatcher (uuid);

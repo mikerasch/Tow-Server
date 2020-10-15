@@ -1,6 +1,6 @@
 package edu.uwp.appfactory.tow.repositories;
 
-import edu.uwp.appfactory.tow.data.pogoDriver;
+import edu.uwp.appfactory.tow.data.PDriver;
 import edu.uwp.appfactory.tow.entities.Driver;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -12,11 +12,14 @@ import java.util.UUID;
 @Repository
 public interface DriverRepository extends JpaRepository<Driver, UUID> {
 
-	@Query(value = "select * from driver where (SELECT calculate_distance(?1, ?2, latitude, longitude)) <= ?3 and active = true", nativeQuery = true)
-	List<pogoDriver> findAllByDistance(float latitude, float longitude, int radius);
+	@Query(value = "with use as (select * from driver where active = true) SELECT t1.latitude, t1.longitude, t2.* from use t1 inner join users t2 on t1.uuid = t2.uuid " +
+			"where (SELECT calculate_distance(?1, ?2, t1.latitude, t1.longitude)) <= ?3", nativeQuery = true)
+	List<PDriver> findAllByDistance(float latitude, float longitude, int radius);
 
-}
 
+
+}//(select * from users where uuid = use.uuid ) as use2where (SELECT calculate_distance(?1, ?2, latitude, longitude))
+//(select * from users where uuid = use.uuid )
 //insert into public.users (email, firstname, lastname, password, reset_token, role, username, uuid) values (?, ?, ?, ?, ?, ?, ?, ?);
 //
 //insert into driver (active, latitude, longitude, user_uuid) values (?, ?, ?, ?)
