@@ -97,7 +97,7 @@ public class AuthController {
                 userDetails.getRole()));
     }
 
-    public ResponseEntity<?> registerDriver(String email, String password, String firstname, String lastname, String business, String cdlLicenceNumber) {
+    public ResponseEntity<?> registerDriver(String email, String password, String firstname, String lastname) {
         try {
             if (usersRepository.existsByEmail(email)) {
                 return ResponseEntity
@@ -111,8 +111,9 @@ public class AuthController {
                     encoder.encode(password),
                     firstname,
                     lastname,
-                    business,
-                    cdlLicenceNumber);
+                    0,
+                    0,
+                    false);
 
             Role role = roleRepository.findByName(ERole.ROLE_DRIVER)
                     .orElseThrow(() -> new RuntimeException("Error: Role is not found."));

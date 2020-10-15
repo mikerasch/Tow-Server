@@ -12,35 +12,44 @@ import javax.persistence.Table;
 @PrimaryKeyJoinColumn(name= "user_uuid")
 public class Driver extends Users implements IDriver {
 
-    @Column
-    private String business;
+    private float latitude;
 
-    @Column
-    private String cdlLicenceNumber;
+    private float longitude;
 
-    public Driver(String email, String username, String password, String firstname, String lastname, String business, String cdlLicenceNumber) {
+    private boolean active;
+
+    public Driver(String email, String username, String password, String firstname, String lastname, float latitude, float longitude, boolean active) {
         super(email, username, password, firstname, lastname);
-        this.business = business;
-        this.cdlLicenceNumber = cdlLicenceNumber;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.active = active;
     }
 
     public Driver() {
 
     }
 
-    public void setBusiness(String business) {
-        this.business = business;
+    public boolean isActive() {
+        return active;
     }
 
-    public void setCdlLicenceNumber(String cdlLicenceNumber) {
-        this.cdlLicenceNumber = cdlLicenceNumber;
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
-    public String getBusiness() {
-        return business;
+    public float getLatitude() {
+        return latitude;
     }
 
-    public String getCdlLicenceNumber() {
-        return cdlLicenceNumber;
+    public void setLatitude(float latitude) {
+        this.latitude = latitude;
+    }
+
+    public float getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(float longitude) {
+        this.longitude = longitude;
     }
 }

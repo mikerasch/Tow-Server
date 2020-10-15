@@ -48,10 +48,8 @@ public class AuthRoutes {
     public ResponseEntity<?> registerDriver(@RequestHeader("email") final String email,
                                             @RequestHeader("password") final String password,
                                             @RequestHeader("firstname") final String firstname,
-                                            @RequestHeader("lastname") final String lastname,
-                                            @RequestHeader("business") final String business,
-                                            @RequestHeader("cdlLicenceNumber") final String cdlLicenceNumber) {
-        return authController.registerDriver(email, password, firstname, lastname, business, cdlLicenceNumber);
+                                            @RequestHeader("lastname") final String lastname) {
+        return authController.registerDriver(email, password, firstname, lastname);
     }
 
     @PostMapping("/registerdispatcher")
