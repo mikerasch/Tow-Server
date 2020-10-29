@@ -153,8 +153,8 @@ public class UserDetailsImpl implements UserDetails {
     }
 
     /**
-     *
-     * @return
+     * getter for user password
+     * @return String password
      */
     @Override
     public String getPassword() {
@@ -162,8 +162,8 @@ public class UserDetailsImpl implements UserDetails {
     }
 
     /**
-     *
-     * @return
+     * getter for username
+     * @return String username
      */
     @Override
     public String getUsername() {
@@ -171,8 +171,8 @@ public class UserDetailsImpl implements UserDetails {
     }
 
     /**
-     *
-     * @return
+     * is the account nonExpired
+     * @return boolean if the account is non expired or not
      */
     @Override
     public boolean isAccountNonExpired() {
@@ -180,8 +180,8 @@ public class UserDetailsImpl implements UserDetails {
     }
 
     /**
-     *
-     * @return
+     * is the account nonLocked
+     * @return boolean if the account is non locked or not
      */
     @Override
     public boolean isAccountNonLocked() {
@@ -189,8 +189,8 @@ public class UserDetailsImpl implements UserDetails {
     }
 
     /**
-     *
-     * @return
+     * is the credentials offered non expired
+     * @return boolean if the account is non locked or not
      */
     @Override
     public boolean isCredentialsNonExpired() {
@@ -198,8 +198,8 @@ public class UserDetailsImpl implements UserDetails {
     }
 
     /**
-     *
-     * @return
+     * is enabled
+     * @return boolean
      */
     @Override
     public boolean isEnabled() {
@@ -207,9 +207,9 @@ public class UserDetailsImpl implements UserDetails {
     }
 
     /**
-     *
-     * @param o
-     * @return
+     * override menthod equals of user objects
+     * @param o object
+     * @return boolean if a uuid matches another uuid
      */
     @Override
     public boolean equals(Object o) {
@@ -222,32 +222,32 @@ public class UserDetailsImpl implements UserDetails {
     }
 
     /**
-     *
-     * @return
+     * getter for firstname of user
+     * @return String user firstname
      */
     public String getFirstname() {
         return firstname;
     }
 
     /**
-     *
-     * @param firstname
+     * setter for firstname of user
+     * @param firstname of user
      */
     public void setFirstname(String firstname) {
         this.firstname = firstname;
     }
 
     /**
-     *
-     * @return
+     * getter for lastname of user
+     * @return String user lastname
      */
     public String getLastname() {
         return lastname;
     }
 
     /**
-     *
-     * @param lastname
+     * setter for lastname of user
+     * @param lastname of user
      */
     public void setLastname(String lastname) {
         this.lastname = lastname;

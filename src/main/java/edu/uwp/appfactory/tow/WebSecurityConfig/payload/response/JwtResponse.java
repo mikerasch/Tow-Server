@@ -1,59 +1,52 @@
 package edu.uwp.appfactory.tow.WebSecurityConfig.payload.response;
 
 /**
- *
+ * JWT response class
  */
 public class JwtResponse {
 
     /**
-     *
+     * JWT Token
      */
     private String token;
 
     /**
-     *
+     * type of token
      */
     private String type = "Bearer";
 
     /**
-     *
+     * uuid of user
      */
     private String id;
 
     /**
-     *
+     * username of user
      */
     private String username;
 
     /**
-     *
+     * email of user
      */
     private String email;
 
     /**
-     *
+     * firstname of user
      */
     private String firstname;
 
     /**
-     *
+     * last name of user
      */
     private String lastname;
 
     /**
-     *
+     * role of user
      */
     private final String role;
 
     /**
-     *
-     * @param accessToken
-     * @param id
-     * @param username
-     * @param email
-     * @param firstname
-     * @param lastname
-     * @param role
+     * constructor for a JWT response, used mostly with login
      */
     public JwtResponse(String accessToken, String id, String username, String email, String
             firstname, String lastname, String role) {
@@ -67,120 +60,120 @@ public class JwtResponse {
     }
 
     /**
-     *
-     * @return
+     * getter
+     * @return String token
      */
     public String getAccessToken() {
         return token;
     }
 
     /**
-     *
-     * @param accessToken
+     * setter
+     * @param accessToken of user
      */
     public void setAccessToken(String accessToken) {
         this.token = accessToken;
     }
 
     /**
-     *
-     * @return
+     * getter
+     * @return String token type
      */
     public String getTokenType() {
         return type;
     }
 
     /**
-     *
-     * @param tokenType
+     * setter
+     * @param tokenType of user
      */
     public void setTokenType(String tokenType) {
         this.type = tokenType;
     }
 
     /**
-     *
-     * @return
+     * getter
+     * @return String id of user
      */
     public String getId() {
         return id;
     }
 
     /**
-     *
-     * @param id
+     * setter
+     * @param id of user
      */
     public void setId(String id) {
         this.id = id;
     }
 
     /**
-     *
-     * @return
+     * getter
+     * @return String of email
      */
     public String getEmail() {
         return email;
     }
 
     /**
-     *
-     * @param email
+     * setter
+     * @param email of user
      */
     public void setEmail(String email) {
         this.email = email;
     }
 
     /**
-     *
-     * @return
+     * getter
+     * @return String of username
      */
     public String getUsername() {
         return username;
     }
 
     /**
-     *
-     * @param username
+     * setter
+     * @param username of user
      */
     public void setUsername(String username) {
         this.username = username;
     }
 
     /**
-     *
-     * @return
+     * getter
+     * @return String of firstname
      */
     public String getFirstname() {
         return firstname;
     }
 
     /**
-     *
-     * @param firstname
+     * setter
+     * @param firstname of user
      */
     public void setFirstname(String firstname) {
         this.firstname = firstname;
     }
 
     /**
-     *
-     * @return
+     * getter
+     * @return String of lastname
      */
     public String getLastname() {
         return lastname;
     }
 
     /**
-     *
-     * @param lastname
+     * setter
+     * @param lastname of user
      */
     public void setLastname(String lastname) {
         this.lastname = lastname;
     }
 
     /**
-     *
-     * @return
+     * getter
+     * @return String of role
      */
     public String getRole() {
         return role;
