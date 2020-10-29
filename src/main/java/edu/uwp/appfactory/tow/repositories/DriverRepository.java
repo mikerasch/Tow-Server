@@ -17,6 +17,17 @@ public interface DriverRepository extends JpaRepository<Driver, UUID> {
             "where (SELECT calculate_distance(?1, ?2, t1.latitude, t1.longitude)) <= ?3", nativeQuery = true)
     List<PDriver> findAllByDistance(float latitude, float longitude, int radius);
 
+
+
+	static Driver findByEmailIdIgnoreCase(String emailId) {
+		return null;
+	}
+
+//	@Query(value = "UPDATE driver" +
+//	"SET active = true, t1.latitude = latitude, t1.longitude = longitude" +
+//	"WHERE uuid = this.uuid")
+//	void getLocation(float latitude, float longitude, String uuid, boolean active);
+
 }
 
 

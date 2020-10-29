@@ -1,7 +1,7 @@
 package edu.uwp.appfactory.tow.controllers;
 
-import edu.uwp.appfactory.tow.WebSecurityConfig.repository.UsersRepository;
 import edu.uwp.appfactory.tow.data.PDriver;
+
 import edu.uwp.appfactory.tow.repositories.DriverRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -15,14 +15,13 @@ import java.util.List;
 @Controller
 public class DriverController {
 
-    private final UsersRepository usersRepository;
 
     private final DriverRepository driverRepository;
 
     @Autowired
-    public DriverController(UsersRepository usersRepository, DriverRepository driverRepository) {
-        this.usersRepository = usersRepository;
+    public DriverController(DriverRepository driverRepository) {
         this.driverRepository = driverRepository;
+
     }
 
     public ResponseEntity<?> findAllByDistance(float latitude, float longitude, int radius) {
@@ -30,5 +29,7 @@ public class DriverController {
 
         return ResponseEntity.ok(drivers);
     }
+
+
 
 }

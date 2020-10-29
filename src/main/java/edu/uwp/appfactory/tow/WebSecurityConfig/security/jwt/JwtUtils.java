@@ -34,43 +34,52 @@ public class JwtUtils {
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
+
     }
 
     public String refreshJwtToken(String UUID) {
+
         return Jwts.builder()
                 .setSubject((UUID))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
+
     }
 
     public String getUUIDFromJwtToken(String token) {
+
         Function<Claims, String> claimsResolver = Claims::getSubject;
         Claims parsedToken = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
         return claimsResolver.apply(parsedToken);
-        //return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
+
     }
 
     public String generateResetJwtToken(String UUID) {
+
         return Jwts.builder()
                 .setSubject(UUID)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtResetExpirationMs))
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
+
     }
 
     public String generateResetJwtDigit(String resetDigits) { // pull digits to see if digits match provided email
+
         return Jwts.builder()
                 .setSubject(resetDigits)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtResetExpirationMs))
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
+
     }
 
     public boolean validateJwtToken(String authToken) {
+
         try {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
             return true;
@@ -86,5 +95,6 @@ public class JwtUtils {
             logger.error("JWT claims string is empty: {}", e.getMessage());
         }
         return false;
+
     }
 }
