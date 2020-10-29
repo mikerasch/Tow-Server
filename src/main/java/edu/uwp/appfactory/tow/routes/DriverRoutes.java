@@ -26,12 +26,13 @@ public class DriverRoutes {
 //    @PreAuthorize("hasRole('DISPATCHER')")
     public ResponseEntity<?> findAllByDistance(@RequestHeader("latitude") final float latitude,
                                                @RequestHeader("longitude") final float longitude,
-                                               @RequestHeader("radius") final int radius){
+                                               @RequestHeader("radius") final int radius) {
         return driverController.findAllByDistance(latitude, longitude, radius);
     }
 
     /**
      * A method that receives the drivers UTM data, name, and  via the Drivers app
+     *
      * @param latitude
      * @param longitude
      * @param active
@@ -39,16 +40,14 @@ public class DriverRoutes {
      */
     @PostMapping("/location")
     public String getLocation(@RequestHeader("latitude") final float latitude,
-                               @RequestHeader("longitude") final float longitude,
-                               @RequestHeader("active") final int active,
-                               @RequestHeader("uuid") final char uuid
-                              ) {
-
+                              @RequestHeader("longitude") final float longitude,
+                              @RequestHeader("active") final int active,
+                              @RequestHeader("uuid") final char uuid
+    ) {
 
 
         return "!!!!OK!!!";
     }
-
 
 
 }

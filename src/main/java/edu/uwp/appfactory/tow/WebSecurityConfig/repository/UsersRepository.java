@@ -2,25 +2,51 @@ package edu.uwp.appfactory.tow.WebSecurityConfig.repository;
 
 import edu.uwp.appfactory.tow.entities.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import javax.transaction.Transactional;
 import java.util.Optional;
 
+/**
+ *
+ */
 @Repository
 public interface UsersRepository extends JpaRepository<Users, Long> {
-	Optional<Users> findByUsername(String username);
+    /**
+     *
+     * @param username
+     * @return
+     */
+    Optional<Users> findByUsername(String username);
 
-	Optional<Users> findByResetToken(String token);
+    /**
+     *
+     * @param resetToken
+     * @return
+     */
+    Optional<Users> findByResetToken(int resetToken);
 
-	Boolean existsByUsername(String username);
+    /**
+     *
+     * @param username
+     * @return
+     */
+    Boolean existsByUsername(String username);
 
-	Boolean existsByEmail(String email);
+    /**
+     *
+     * @param email
+     * @return
+     */
+    Boolean existsByEmail(String email);
 
-	@Query(value = "SELECT *, 0 as clazz_ FROM users WHERE email = ?1", nativeQuery = true)
-	Users findByEmail(String emailString);
+    /**
+     *
+     * @param emailString
+     * @return
+     */
+    @Query(value = "SELECT *, 0 as clazz_ FROM users WHERE email = ?1", nativeQuery = true)
+    Users findByEmail(String emailString);
 
 //	@Transactional
 //	@Modifying

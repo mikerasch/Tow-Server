@@ -1,12 +1,17 @@
 package edu.uwp.appfactory.tow;
 
-import edu.uwp.appfactory.tow.entities.Dispatcher;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+/**
+ * main application class, contains the main method
+ */
 @SpringBootApplication
 public class TowApplication {
-
+    /**
+     * main method, starts the server
+     * @param args: arguments
+     */
     public static void main(String[] args) {
         SpringApplication.run(TowApplication.class, args);
     }
