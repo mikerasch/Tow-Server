@@ -1,3 +1,6 @@
+/**
+ * interface for the user
+ */
 package edu.uwp.appfactory.tow.data;
 
 import java.io.Serializable;

@@ -1,5 +1,5 @@
 /**
- * The route communicates between the users device and the controller.
+ * The route communicates between the Tow truck drivers device and the service.
  */
 
 package edu.uwp.appfactory.tow.routes;
@@ -23,7 +23,6 @@ public class DriverRoutes {
 
 
     @GetMapping("/accident")
-//    @PreAuthorize("hasRole('DISPATCHER')")
     public ResponseEntity<?> findAllByDistance(@RequestHeader("latitude") final float latitude,
                                                @RequestHeader("longitude") final float longitude,
                                                @RequestHeader("radius") final int radius) {
