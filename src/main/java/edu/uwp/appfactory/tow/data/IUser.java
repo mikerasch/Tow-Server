@@ -33,7 +33,7 @@ public interface IUser extends Serializable {
 
      void setRoles(String role); //
 
-     String getResetToken();
+     int getResetToken();
 
-     void setResetToken(String resetToken);
+     void setResetToken(int resetToken);
 }

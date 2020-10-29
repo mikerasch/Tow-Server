@@ -7,7 +7,7 @@ CREATE TABLE public.users
     password    character varying(120) COLLATE pg_catalog."default",
     role        character varying(255) COLLATE pg_catalog."default",
     username    character varying(100) COLLATE pg_catalog."default",
-    reset_token character varying(255) COLLATE pg_catalog."default",
+    reset_token int,
     CONSTRAINT users_pkey PRIMARY KEY (uuid),
     CONSTRAINT uk6dotkott2kjsp8vw4d0m25fb7 UNIQUE (email),
     CONSTRAINT ukr43af9ap4edm43mmtq01oddj6 UNIQUE (username)

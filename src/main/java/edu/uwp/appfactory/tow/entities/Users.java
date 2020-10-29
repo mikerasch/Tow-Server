@@ -47,7 +47,7 @@ public class Users implements IUser {
     @NotBlank
     private String role;
 
-    private String resetToken;
+    private int resetToken;
 
     public Users() {
     }
@@ -135,12 +135,12 @@ public class Users implements IUser {
     }
 
     @Override
-    public String getResetToken() {
+    public int getResetToken() {
         return resetToken;
     }
 
     @Override
-    public void setResetToken(String resetToken) {
+    public void setResetToken(int resetToken) {
         this.resetToken = resetToken;
     }
 

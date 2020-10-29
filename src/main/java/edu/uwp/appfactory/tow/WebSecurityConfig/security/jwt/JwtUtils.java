@@ -52,9 +52,18 @@ public class JwtUtils {
         //return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
     }
 
-    public String generateResetJwtToken(String email) {
+    public String generateResetJwtToken(String UUID) {
         return Jwts.builder()
-                .setSubject(email)
+                .setSubject(UUID)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date((new Date()).getTime() + jwtResetExpirationMs))
+                .signWith(SignatureAlgorithm.HS512, jwtSecret)
+                .compact();
+    }
+
+    public String generateResetJwtDigit(String resetDigits) { // pull digits to see if digits match provided email
+        return Jwts.builder()
+                .setSubject(resetDigits)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtResetExpirationMs))
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
