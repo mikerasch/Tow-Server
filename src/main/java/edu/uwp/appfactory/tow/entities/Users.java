@@ -1,12 +1,14 @@
+/**
+ * The user entity interacts with the user table.
+ */
 package edu.uwp.appfactory.tow.entities;
-
 import edu.uwp.appfactory.tow.data.IUser;
 import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+
 
 @Entity
 @Table(	name = "users", schema = "public",
@@ -21,6 +23,10 @@ public class Users implements IUser {
             name = "UUID",
             strategy = "org.hibernate.id.UUIDGenerator"
     )
+
+    /**
+     * A collection of attributes that will be the constraints of the users table
+     */
     private String UUID;
 
     @NotBlank
@@ -49,9 +55,20 @@ public class Users implements IUser {
 
     private int resetToken;
 
+    /**
+     * default constructor
+     */
     public Users() {
     }
 
+    /**
+     * constructor that takes 5 parameters
+     * @param email
+     * @param username
+     * @param password
+     * @param firstname
+     * @param lastname
+     */
     public Users(String email, String username, String password, String firstname, String lastname) {
         this.username = username;
         this.email = email;

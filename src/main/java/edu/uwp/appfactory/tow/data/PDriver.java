@@ -1,3 +1,6 @@
+/**
+ * Plain old java object for the driver
+ */
 package edu.uwp.appfactory.tow.data;
 
 public interface PDriver {
