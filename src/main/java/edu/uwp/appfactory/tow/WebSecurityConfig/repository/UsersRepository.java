@@ -40,6 +40,7 @@ public interface UsersRepository extends JpaRepository<Users, Long> {
      */
     Boolean existsByEmail(String email);
 
+
     /**
      * find a user where the email matches anything in the database
      * @param emailString of a user
@@ -47,6 +48,23 @@ public interface UsersRepository extends JpaRepository<Users, Long> {
      */
     @Query(value = "SELECT *, 0 as clazz_ FROM users WHERE email = ?1", nativeQuery = true)
     Users findByEmail(String emailString);
+
+
+    /**
+     * find a user where the email matches anything in the database
+     * @param verToken of a user
+     * @return user
+     */
+    @Query(value = "SELECT *, 0 as clazz_ FROM users WHERE verify_token = ?1", nativeQuery = true)
+    Optional<Users> findByVerToken(String verToken);
+
+    /**
+     * does this user exist by the email provided
+     * @param verToken of a user
+     * @return boolean if the user exists
+     */
+    Boolean existsByVerToken(String verToken);
+
 
 //	@Transactional
 //	@Modifying

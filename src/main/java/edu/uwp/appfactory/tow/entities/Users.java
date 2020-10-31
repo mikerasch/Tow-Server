@@ -58,6 +58,20 @@ public class Users implements IUser {
 
     private String resetDate;
 
+    private String verifyDate;
+
+    private boolean verEnabled;
+
+
+
+
+    /**
+     * A collection of attributes that will be the constraints of the users table
+     */
+    private String verifyToken;
+
+
+
     /**
      * default constructor
      */
@@ -172,6 +186,36 @@ public class Users implements IUser {
     @Override
     public void setResetDate(String resetDate) {
         this.resetDate = resetDate;
+    }
+
+    public String getVerifyToken() {
+        return verifyToken;
+    }
+
+    public void setVerifyToken(String verifyToken) {
+        this.verifyToken = verifyToken;
+    }
+
+    @Override
+    public String getVerifyDate() {
+        return verifyDate;
+    }
+
+    @Override
+    public void setVerifyDate(String verifyDate) {
+        this.verifyDate = verifyDate;
+
+    }
+
+    @Override
+    public boolean getVerEnabled() {
+        return verEnabled;
+    }
+
+    @Override
+    public void setVerEnabled(boolean verEnabled) {
+
+        this.verEnabled = verEnabled;
     }
 
 }

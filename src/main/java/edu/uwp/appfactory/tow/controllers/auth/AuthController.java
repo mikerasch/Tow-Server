@@ -30,7 +30,9 @@ import edu.uwp.appfactory.tow.WebSecurityConfig.security.services.UserDetailsImp
 import org.springframework.transaction.TransactionSystemException;
 
 import javax.validation.ConstraintViolationException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.Random;
@@ -200,6 +202,45 @@ public class AuthController {
             return ResponseEntity.status(499).body("Invalid Entries");
         } catch (Exception e) {
             return ResponseEntity.status(500).body("System Error");
+        }
+    }
+
+
+    public ResponseEntity<?> verification(String token) {
+        try {
+            Optional<Users> usersOptional = usersRepository.findByVerToken(token);
+            if (usersOptional.isEmpty()) {
+                return ResponseEntity
+                        .status(500)
+                        .body(new MessageResponse("Not successful!: token doesnt exist"));
+            }
+            Users user = usersOptional.get();
+
+            LocalDate userVerifyDate = LocalDate.parse(user.getVerifyDate());
+            Period periodBetween = Period.between(userVerifyDate, LocalDate.now());
+
+            if (periodBetween.getDays() < 8) {
+                if (user.getVerifyToken() == token && !user.getVerEnabled()) {
+                    user.setVerEnabled(true);
+                    user.setVerifyToken("");
+                    usersRepository.save(user);
+                    return ResponseEntity
+                            .status(200)
+                            .body(new MessageResponse("Successful!"));
+                } else {
+                    return ResponseEntity
+                            .status(500)
+                            .body(new MessageResponse("Not successful!"));
+                }
+            } else {
+                return ResponseEntity
+                        .status(500)
+                        .body(new MessageResponse("verification token expired, please request a new one."));
+            }
+        } catch (ConstraintViolationException e) {
+            return ResponseEntity.status(498).body("Invalid Entries: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(499).body("Error: " + e.getMessage());
         }
     }
 }

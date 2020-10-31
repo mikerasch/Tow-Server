@@ -74,4 +74,10 @@ public class AuthRoutes {
                                            @RequestHeader("lastname") final String lastname) {
         return authController.registerAdmin(email, password, firstname, lastname);
     }
+
+    @PostMapping("/verification")
+    public ResponseEntity<?> verification(@RequestParam("token") final String token){
+
+        return authController.verification(token);
+    }
 }

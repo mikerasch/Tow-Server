@@ -1,11 +1,17 @@
 
 
-create table ConfirmationToken
-(
-    confirmationToken varchar(255),
-    tokenId SERIAL NOT NULL ,
-    CreatedDate date,
-    userId  bigint NOT NULL,
-PRIMARY KEY (tokenId)
-)
-  TABLESPACE pg_default;
+alter table users
+    add reset_date varchar(10);
+
+alter table users
+    add verify_token varchar(20);
+
+create unique index users_verify_token_uindex
+    on users (verify_token);
+
+alter table users
+    add verify_date varchar(10);
+
+-- fix to be not null later
+alter table users
+    add enabled boolean;

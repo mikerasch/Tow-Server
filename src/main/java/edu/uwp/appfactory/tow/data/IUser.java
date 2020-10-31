@@ -43,4 +43,17 @@ public interface IUser extends Serializable {
      String getResetDate();
 
      void setResetDate(String date);
+
+     String getVerifyToken();
+
+     void setVerifyToken(String verifyToken);
+
+     String getVerifyDate();
+
+     void setVerifyDate(String date);
+
+     boolean getVerEnabled();
+
+     void setVerEnabled(boolean verEnabled);
+
 }
