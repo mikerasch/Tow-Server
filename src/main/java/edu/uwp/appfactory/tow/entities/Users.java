@@ -55,6 +55,9 @@ public class Users implements IUser {
 
     private int resetToken;
 
+
+    private String resetDate;
+
     /**
      * default constructor
      */
@@ -159,6 +162,16 @@ public class Users implements IUser {
     @Override
     public void setResetToken(int resetToken) {
         this.resetToken = resetToken;
+    }
+
+    @Override
+    public String getResetDate() {
+        return resetDate;
+    }
+
+    @Override
+    public void setResetDate(String resetDate) {
+        this.resetDate = resetDate;
     }
 
 }
