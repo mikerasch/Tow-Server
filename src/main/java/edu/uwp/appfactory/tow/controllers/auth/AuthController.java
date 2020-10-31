@@ -66,52 +66,6 @@ public class AuthController {
         return ResponseEntity.ok(jwtUtils.refreshJwtToken(jwtUtils.getUUIDFromJwtToken(jwtToken)));
     }
 
-    public ResponseEntity<?> resetPassword(String email) {
-        try {
-            Optional<Users> usersOptional = usersRepository.findByUsername(email);
-            if (usersOptional.isEmpty()) {
-                return ResponseEntity
-                        .status(500)
-                        .body(new MessageResponse("Not successful!"));
-            }
-            Users user = usersOptional.get();
-
-            // generate random 6 digit token
-            Random rnd = new Random();
-            int number = rnd.nextInt(999999);
-            String tokenString = String.format("%06d", number);
-            int token = Integer.parseInt(tokenString);
-
-            // get now date & time
-            LocalDateTime dtObj = LocalDateTime.now();
-            DateTimeFormatter frmObj = DateTimeFormatter.ofPattern("MM-dd-yyyy HH:mm:ss");
-            String dateTime = dtObj.format(frmObj);
-
-            // update the token value in the db for the user
-            // int count = usersRepository.updateResetToken(token, email, dateTime);
-
-            user.setResetToken(token);
-            // user.set_date
-            usersRepository.save(user);
-
-            boolean didSend = sender.sendResetMail(user, token);
-
-            if (didSend) {
-                return ResponseEntity
-                        .status(200)
-                        .body(new MessageResponse("Successful!"));
-            } else {
-                return ResponseEntity
-                        .status(500)
-                        .body(new MessageResponse("Not successful!"));
-            }
-        } catch (ConstraintViolationException e) {
-            return ResponseEntity.status(498).body("Invalid Entries: " + e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(499).body("Error: " + e.getMessage());
-        }
-    }
-
     public ResponseEntity<?> getUserByEmail(String email) {
         Users user = usersRepository.findByEmail(email);
 

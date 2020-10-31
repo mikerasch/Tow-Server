@@ -44,11 +44,6 @@ public class AuthRoutes {
         return authController.refreshToken(jwtToken);
     }
 
-    @PostMapping("/resetpassword")
-    public ResponseEntity<?> resetPassword(@RequestHeader("email") final String email) {
-        return authController.resetPassword(email);
-    }
-
     @PostMapping("/registerdriver")
     public ResponseEntity<?> registerDriver(@RequestHeader("email") final String email,
                                             @RequestHeader("password") final String password,

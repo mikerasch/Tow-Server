@@ -8,42 +8,42 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 /**
- *
+ * users repository to communicate with database
  */
 @Repository
 public interface UsersRepository extends JpaRepository<Users, Long> {
     /**
-     *
-     * @param username
-     * @return
+     * finds user by username
+     * @param username of user
+     * @return user object of
      */
     Optional<Users> findByUsername(String username);
 
     /**
-     *
-     * @param resetToken
-     * @return
+     * find by reset token
+     * @param resetToken of a user
+     * @return user
      */
     Optional<Users> findByResetToken(int resetToken);
 
     /**
-     *
-     * @param username
-     * @return
+     * does this user exist with the given username
+     * @param username of a user
+     * @return boolean if the user exists
      */
     Boolean existsByUsername(String username);
 
     /**
-     *
-     * @param email
-     * @return
+     * does this user exist by the email provided
+     * @param email of a user
+     * @return boolean if the user exists
      */
     Boolean existsByEmail(String email);
 
     /**
-     *
-     * @param emailString
-     * @return
+     * find a user where the email matches anything in the database
+     * @param emailString of a user
+     * @return user
      */
     @Query(value = "SELECT *, 0 as clazz_ FROM users WHERE email = ?1", nativeQuery = true)
     Users findByEmail(String emailString);

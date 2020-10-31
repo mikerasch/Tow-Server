@@ -11,37 +11,37 @@ import java.util.Date;
 import java.util.function.Function;
 
 /**
- *
+ * Java Web Tokens Utilities class, housing mostly all methods relating to JWT
  */
 @Component
 public class JwtUtils {
     /**
-     *
+     * logger to log items in console
      */
     private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 
     /**
-     *
+     * JWT secret used to encode/decode
      */
     @Value("${tow.app.jwtSecret}")
     private String jwtSecret;
 
     /**
-     *
+     * JWT expiration time in milliseconds
      */
     @Value("${tow.app.jwtExpirationMs}")
     private int jwtExpirationMs;
 
     /**
-     *
+     * JWT reset expiration time in milliseconds
      */
     @Value("${tow.app.jwtResetExpirationMs}")
     private int jwtResetExpirationMs;
 
     /**
-     *
-     * @param authentication
-     * @return
+     * method that generates a JWT token
+     * @param authentication authentication object
+     * @return JWT built token
      */
     public String generateJwtToken(Authentication authentication) {
 
@@ -56,9 +56,9 @@ public class JwtUtils {
     }
 
     /**
-     *
-     * @param UUID
-     * @return
+     * method to refresh a users JWT token
+     * @param UUID of user
+     * @return JWT built token
      */
     public String refreshJwtToken(String UUID) {
 
@@ -71,9 +71,9 @@ public class JwtUtils {
     }
 
     /**
-     *
-     * @param token
-     * @return
+     * method to get UUID from a JWT token
+     * @param token from JWT for a user
+     * @return UUID of the JWT token user
      */
     public String getUUIDFromJwtToken(String token) {
 
@@ -83,9 +83,7 @@ public class JwtUtils {
     }
 
     /**
-     *
-     * @param UUID
-     * @return
+     * not used, may use later
      */
     public String generateResetJwtToken(String UUID) {
 
@@ -96,12 +94,6 @@ public class JwtUtils {
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
     }
-
-    /**
-     *
-     * @param resetDigits
-     * @return
-     */
     public String generateResetJwtDigit(String resetDigits) { // pull digits to see if digits match provided email
 
         return Jwts.builder()
@@ -113,9 +105,9 @@ public class JwtUtils {
     }
 
     /**
-     *
-     * @param authToken
-     * @return
+     * method to validate a JWT token
+     * @param authToken of user
+     * @return boolean if it was valid or not
      */
     public boolean validateJwtToken(String authToken) {
         try {

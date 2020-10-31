@@ -39,4 +39,8 @@ public interface IUser extends Serializable {
      int getResetToken();
 
      void setResetToken(int resetToken);
+
+     String getResetDate();
+
+     void setResetDate(String date);
 }

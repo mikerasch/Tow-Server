@@ -18,16 +18,31 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * class that filters an auth token
+ */
 @Component
 public class AuthTokenFilter extends OncePerRequestFilter {
+    /**
+     * JWT utilities object
+     */
     @Autowired
     private JwtUtils jwtUtils;
 
+    /**
+     * implementation of user details service object
+     */
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
+    /**
+     * logger object to log in console
+     */
     private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
 
+    /**
+     * applies a filter to a request
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
@@ -46,10 +61,14 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         } catch (Exception e) {
             logger.error("Cannot set user authentication: {}", e);
         }
-
         filterChain.doFilter(request, response);
     }
 
+    /**
+     * method that parses a JWT token from a user
+     * @param request made by the user
+     * @return the auth token
+     */
     private String parseJwt(HttpServletRequest request) {
         String headerAuth = request.getHeader("Authorization");
 
@@ -58,7 +77,6 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         } else if (StringUtils.hasText(headerAuth)) {
             return headerAuth;
         }
-
         return null;
     }
 }
