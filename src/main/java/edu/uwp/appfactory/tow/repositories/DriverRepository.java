@@ -33,7 +33,7 @@ public interface DriverRepository extends JpaRepository<Driver, UUID> {
 	 * @param UUID of user
 	 * @return user object of
 	 */
-	@Query(value = "SELECT * FROM drivers WHERE uuid = ?1", nativeQuery = true)
+	@Query(value = "SELECT t1.*, t2.* from driver t1 inner join users t2 on t1.uuid = ?1 AND t2.uuid = ?1", nativeQuery = true)
 	Optional<Driver> findByUUID(String UUID);
 
 

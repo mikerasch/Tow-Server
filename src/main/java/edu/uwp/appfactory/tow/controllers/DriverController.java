@@ -11,6 +11,8 @@ import edu.uwp.appfactory.tow.data.PDriver;
 import edu.uwp.appfactory.tow.entities.Driver;
 import edu.uwp.appfactory.tow.entities.Users;
 import edu.uwp.appfactory.tow.repositories.DriverRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +23,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
-import java.util.logging.Logger;
 
 
 @EnableAutoConfiguration
@@ -34,7 +35,7 @@ public class DriverController {
      */
     private final DriverRepository driverRepository;
     private final JwtUtils jwtUtils;
-    private final Logger logger;
+    private static Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 
     /**
      * Driver controller constructor matching the local repo newly created,
@@ -43,9 +44,8 @@ public class DriverController {
      * @param jwtUtils
      */
     @Autowired
-    public DriverController(DriverRepository driverRepository, JwtUtils jwtUtils, Logger logger) {
+    public DriverController(DriverRepository driverRepository, JwtUtils jwtUtils) {
         this.driverRepository = driverRepository;
-        this.logger = logger;
         this.jwtUtils = jwtUtils;
     }
 
@@ -68,16 +68,14 @@ public class DriverController {
      */
     public ResponseEntity<?> setLocation(float latitude, float longitude, boolean active, String authorization) {
         try {
+            logger.debug(authorization);
             String UUID = jwtUtils.getUUIDFromJwtToken(authorization);
-            System.out.println(UUID);
             Optional<Driver> driverOptional = driverRepository.findByUUID(UUID);
-            logger.log("I made it past the optional");
             if (driverOptional.isEmpty()) {
                 return ResponseEntity
                         .status(500)
                         .body(new MessageResponse("Not successful!"));
             }
-            System.out.println("driver option was not empty");
 
             Driver driver = driverOptional.get();
 

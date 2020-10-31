@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/dispatchers")
+@RequestMapping("/drivers")
 public class DriverRoutes {
 
     private final DriverController driverController;
@@ -37,11 +37,11 @@ public class DriverRoutes {
      * @param active
      * @return
      */
-    @PostMapping("/set-location")
+    @PostMapping("/setlocation")
     public ResponseEntity<?> setLocation(@RequestHeader("latitude") final float latitude,
                                          @RequestHeader("longitude") final float longitude,
                                          @RequestHeader("active") final boolean active,
-                                         @RequestHeader("Authorization") final String authorization) {
+                                         @RequestHeader("Auth") final String authorization) {
 
         return driverController.setLocation(latitude, longitude, active, authorization);
     }
