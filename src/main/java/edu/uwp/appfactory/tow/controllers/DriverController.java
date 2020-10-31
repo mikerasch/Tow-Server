@@ -21,6 +21,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.logging.Logger;
 
 
 @EnableAutoConfiguration
@@ -33,6 +34,7 @@ public class DriverController {
      */
     private final DriverRepository driverRepository;
     private final JwtUtils jwtUtils;
+    private final Logger logger;
 
     /**
      * Driver controller constructor matching the local repo newly created,
@@ -41,9 +43,9 @@ public class DriverController {
      * @param jwtUtils
      */
     @Autowired
-    public DriverController(DriverRepository driverRepository, JwtUtils jwtUtils) {
+    public DriverController(DriverRepository driverRepository, JwtUtils jwtUtils, Logger logger) {
         this.driverRepository = driverRepository;
-
+        this.logger = logger;
         this.jwtUtils = jwtUtils;
     }
 
@@ -65,16 +67,17 @@ public class DriverController {
      * @param latitude
      */
     public ResponseEntity<?> setLocation(float latitude, float longitude, boolean active, String authorization) {
-
-
         try {
             String UUID = jwtUtils.getUUIDFromJwtToken(authorization);
+            System.out.println(UUID);
             Optional<Driver> driverOptional = driverRepository.findByUUID(UUID);
+            logger.log("I made it past the optional");
             if (driverOptional.isEmpty()) {
                 return ResponseEntity
                         .status(500)
                         .body(new MessageResponse("Not successful!"));
             }
+            System.out.println("driver option was not empty");
 
             Driver driver = driverOptional.get();
 

@@ -59,6 +59,10 @@ public interface UsersRepository extends JpaRepository<Users, Long> {
     Optional<Users> findByVerToken(String verToken);
 
 
+    @Query(value = "SELECT *, 0 as clazz_ FROM users WHERE uuid = ?1", nativeQuery = true)
+    Optional<Users> findByUUID(String UUID);
+
+
 
 //	@Transactional
 //	@Modifying

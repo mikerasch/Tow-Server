@@ -34,4 +34,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         return UserDetailsImpl.build(user);
     }
+
+    public UserDetails loadUserByUUID(String uuid) {
+        Users user = userRepository.findByUUID(uuid)
+                .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + uuid));
+
+        return UserDetailsImpl.build(user);
+    }
 }
