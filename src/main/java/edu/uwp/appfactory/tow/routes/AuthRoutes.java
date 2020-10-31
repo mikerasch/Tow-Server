@@ -1,3 +1,7 @@
+/**
+ * this class contains all of the routes that the drivers, dispatchers,
+ * and admins may hit in order to create thier account.
+ */
 package edu.uwp.appfactory.tow.routes;
 
 /**
@@ -15,8 +19,10 @@ import edu.uwp.appfactory.tow.controllers.auth.AuthController;
 @RequestMapping("/users")
 public class AuthRoutes {
 
+    /**
+     *
+     */
     private final AuthController authController;
-
     public AuthRoutes(AuthController authController) {
         this.authController = authController;
     }

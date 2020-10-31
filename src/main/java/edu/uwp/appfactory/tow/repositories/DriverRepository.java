@@ -1,17 +1,23 @@
+/**
+ * a repository that will communicate between the entities and the databases
+ */
+
 package edu.uwp.appfactory.tow.repositories;
 import edu.uwp.appfactory.tow.data.PDriver;
 import edu.uwp.appfactory.tow.entities.Driver;
+import edu.uwp.appfactory.tow.entities.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
 public interface DriverRepository extends JpaRepository<Driver, UUID> {
 
 	/**
-	 *
+	 * retrieves all drivers within a radius of the accident
 	 * @param latitude
 	 * @param longitude
 	 * @param radius
@@ -23,13 +29,11 @@ public interface DriverRepository extends JpaRepository<Driver, UUID> {
     List<PDriver> findAllByDistance(float latitude, float longitude, int radius);
 
 	/**
-	 *
-	 * @param emailId
-	 * @return
+	 * finds user by UUID
+	 * @param UUID of user
+	 * @return user object of
 	 */
-	static Driver findByEmailIdIgnoreCase(String emailId) {
-		return null;
-	}
+	Optional<Driver> findByUUID(String UUID);
 
 
 }

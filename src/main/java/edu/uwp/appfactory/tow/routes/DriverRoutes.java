@@ -37,15 +37,13 @@ public class DriverRoutes {
      * @param active
      * @return
      */
-    @PostMapping("/location")
-    public String getLocation(@RequestHeader("latitude") final float latitude,
-                              @RequestHeader("longitude") final float longitude,
-                              @RequestHeader("active") final int active,
-                              @RequestHeader("uuid") final char uuid
-    ) {
+    @PostMapping("/set-location")
+    public ResponseEntity<?> setLocation(@RequestHeader("latitude") final float latitude,
+                                         @RequestHeader("longitude") final float longitude,
+                                         @RequestHeader("active") final boolean active,
+                                         @RequestHeader("Authorization") final String authorization) {
 
-
-        return "!!!!OK!!!";
+        return driverController.setLocation(latitude, longitude, active, authorization);
     }
 
 

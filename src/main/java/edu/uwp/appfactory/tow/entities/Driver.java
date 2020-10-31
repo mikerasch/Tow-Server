@@ -23,14 +23,14 @@ public class Driver extends Users implements IDriver {
 
     /**
      * A constructor that takes 8 parameters
-     * @param email
-     * @param username
-     * @param password
-     * @param firstname
-     * @param lastname
-     * @param latitude
-     * @param longitude
-     * @param active
+     * @param email the new drivers email  
+     * @param username the new drivers username
+     * @param password the new drivers password
+     * @param firstname the new drivers first name
+     * @param lastname the new drivers last name
+     * @param latitude the drivers initial UTM lat ( may be null during creation)
+     * @param longitude the drivers initial UTM long ( may be null during creation)
+     * @param active the drivers availability status, will likely start at false
      */
     public Driver(String email, String username, String password, String firstname, String lastname, float latitude, float longitude, boolean active) {
         super(email, username, password, firstname, lastname);
