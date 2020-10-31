@@ -113,7 +113,7 @@ public class PasswordController {
             } else {
                 return ResponseEntity
                         .status(500)
-                        .body(new MessageResponse("Not successful!"));
+                        .body(new MessageResponse("Password reset token expired, please request a new one."));
             }
         } catch (ConstraintViolationException e) {
             return ResponseEntity.status(498).body("Invalid Entries: " + e.getMessage());
@@ -132,12 +132,26 @@ public class PasswordController {
                         .body(new MessageResponse("Not successful!"));
             }
             Users user = usersOptional.get();
-            user.setPassword(encoder.encode(password));
-//            user.setResetToken(null);
-            usersRepository.save(user);
-            return ResponseEntity
-                    .status(500)
-                    .body(new MessageResponse("Not successful!"));
+            LocalDate userResetDate = LocalDate.parse(user.getResetDate());
+            Period periodBetween = Period.between(userResetDate, LocalDate.now());
+
+            if (periodBetween.getDays() < 8) {
+                if (user.getResetToken() == token) {
+                    user.setPassword(encoder.encode(password));
+                    usersRepository.save(user);
+                    return ResponseEntity
+                            .status(200)
+                            .body(new MessageResponse("Successful!"));
+                } else {
+                    return ResponseEntity
+                            .status(500)
+                            .body(new MessageResponse("Not successful!"));
+                }
+            } else {
+                return ResponseEntity
+                        .status(500)
+                        .body(new MessageResponse("Password reset token expired, please request a new one."));
+            }
         } catch (ConstraintViolationException e) {
             return ResponseEntity.status(498).body("Invalid Entries: " + e.getMessage());
         } catch (Exception e) {
