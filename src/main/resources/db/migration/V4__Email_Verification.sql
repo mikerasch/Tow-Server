@@ -14,4 +14,4 @@ alter table users
 
 -- fix to be not null later
 alter table users
-    add enabled boolean;
+    add ver_enabled boolean;

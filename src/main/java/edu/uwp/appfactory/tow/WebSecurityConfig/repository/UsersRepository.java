@@ -58,12 +58,6 @@ public interface UsersRepository extends JpaRepository<Users, Long> {
     @Query(value = "SELECT *, 0 as clazz_ FROM users WHERE verify_token = ?1", nativeQuery = true)
     Optional<Users> findByVerToken(String verToken);
 
-    /**
-     * does this user exist by the email provided
-     * @param verToken of a user
-     * @return boolean if the user exists
-     */
-    Boolean existsByVerToken(String verToken);
 
 
 //	@Transactional
