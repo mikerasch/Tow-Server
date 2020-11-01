@@ -62,6 +62,8 @@ public class PasswordController {
             String tokenString = String.format("%06d", number);
             int token = Integer.parseInt(tokenString);
 
+            // maybe make a check to see if the number is == 6
+
             // update the token value in the db for the user
             // int count = usersRepository.updateResetToken(token, email, dateTime);
 
