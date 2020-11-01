@@ -7,7 +7,15 @@ import edu.uwp.appfactory.tow.WebSecurityConfig.models.Role;
 
 import java.util.Optional;
 
+/**
+ * role repository to communicate with database
+ */
 @Repository
 public interface RoleRepository extends JpaRepository<Role, Long> {
-	Optional<Role> findByName(ERole name);
+    /**
+     * find the role with the offered name of role
+     * @param name role
+     * @return role
+     */
+    Optional<Role> findByName(ERole name);
 }

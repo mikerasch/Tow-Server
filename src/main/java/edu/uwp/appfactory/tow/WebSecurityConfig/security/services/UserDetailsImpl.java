@@ -3,7 +3,7 @@ package edu.uwp.appfactory.tow.WebSecurityConfig.security.services;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import edu.uwp.appfactory.tow.WebSecurityConfig.models.ERole;
 import edu.uwp.appfactory.tow.WebSecurityConfig.models.Role;
-import edu.uwp.appfactory.tow.WebSecurityConfig.models.Users;
+import edu.uwp.appfactory.tow.entities.Users;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,144 +14,242 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * user details implementation, implementing userDetails
+ */
 public class UserDetailsImpl implements UserDetails {
-	private static final long serialVersionUID = 1L;
+    /**
+     * serial version UID
+     */
+    private static final long serialVersionUID = 1L;
 
-	private final Long id;
+    /**
+     * UUID of a user
+     */
+    private final String UUID;
 
-	private final String username;
+    /**
+     * username of a user
+     */
+    private final String username;
 
-	private final String email;
+    /**
+     * email of a user
+     */
+    private final String email;
 
-	@JsonIgnore
-	private final String password;
+    /**
+     * password of a user
+     */
+    @JsonIgnore
+    private final String password;
 
-	private String firstname;
+    /**
+     * firstname of a user
+     */
+    private String firstname;
 
-	private String lastname;
+    /**
+     * lastname of a user
+     */
+    private String lastname;
 
-	private final String role;
+    /**
+     * role of a user
+     */
+    private final String role;
 
-	public UserDetailsImpl(Long id, String username, String email, String password, String firstname, String lastname,
-						   String role) {
-		this.id = id;
-		this.username = username;
-		this.email = email;
-		this.password = password;
-		this.firstname = firstname;
-		this.lastname = lastname;
-		this.role = role;
-	}
+    /**
+     * constructor of a user details implementation
+     * @param UUID user uuid
+     * @param username user username
+     * @param email user email
+     * @param password user password
+     * @param firstname user firstname
+     * @param lastname user lastname
+     * @param role user role
+     */
+    public UserDetailsImpl(String UUID, String username, String email, String password, String firstname, String lastname,
+                           String role) {
+        this.UUID = UUID;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.role = role;
+    }
 
-	public static UserDetailsImpl build(Users user) {
-		return new UserDetailsImpl(
-				user.getId(), 
-				user.getUsername(), 
-				user.getEmail(),
-				user.getPassword(),
-				user.getFirstname(),
-				user.getLastname(),
-				user.getRoles());
-	}
+    /**
+     * build method for a user details implementation
+     * @param user user object
+     * @return userDetails object
+     */
+    public static UserDetailsImpl build(Users user) {
+        return new UserDetailsImpl(
+                user.getUUID(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getPassword(),
+                user.getFirstname(),
+                user.getLastname(),
+                user.getRoles());
+    }
 
-	public String getRole() {
-		return role;
-	}
+    /**
+     * getter for role
+     * @return user role
+     */
+    public String getRole() {
+        return role;
+    }
 
-	public Long getId() {
-		return id;
-	}
+    /**
+     * getting for a uuid
+     * @return user uuid
+     */
+    public String getUUID() {
+        return UUID;
+    }
 
-	public String getEmail() {
-		return email;
-	}
+    /**
+     * getter for email
+     * @return user email
+     */
+    public String getEmail() {
+        return email;
+    }
 
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
+    /**
+     * getter for authorities
+     * @return collection of authorities of a user
+     */
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
 
-		ERole eRole;
+        ERole eRole;
 
-		if (getRole().equals("ROLE_USER"))
-		{
-			eRole = ERole.ROLE_USER;
-		}
-		else if (getRole().equals("ROLE_DISPATCHER"))
-		{
-			eRole = ERole.ROLE_DISPATCHER;
-		}
-		else
-		{
-			eRole = ERole.ROLE_ADMIN;
-		}
+        if (getRole().equals("ROLE_DRIVER")) {
+            eRole = ERole.ROLE_DRIVER;
+        } else if (getRole().equals("ROLE_DISPATCHER")) {
+            eRole = ERole.ROLE_DISPATCHER;
+        } else {
+            eRole = ERole.ROLE_ADMIN;
+        }
 
-		Role tempRole = new Role();
+        Role tempRole = new Role();
 
-		tempRole.setName(eRole);
+        tempRole.setName(eRole);
 
-		Collection<Role> roles = new ArrayList<>();
+        Collection<Role> roles = new ArrayList<>();
 
-		roles.add(tempRole);
+        roles.add(tempRole);
 
-		List<GrantedAuthority> authorities = roles.stream()
-				.map(role -> new SimpleGrantedAuthority(role.getName().name()))
-				.collect(Collectors.toList());
+        List<GrantedAuthority> authorities = roles.stream()
+                .map(role -> new SimpleGrantedAuthority(role.getName().name()))
+                .collect(Collectors.toList());
 
+        return authorities;
+    }
 
-		return authorities;
-	}
+    /**
+     * getter for user password
+     * @return String password
+     */
+    @Override
+    public String getPassword() {
+        return password;
+    }
 
-	@Override
-	public String getPassword() {
-		return password;
-	}
+    /**
+     * getter for username
+     * @return String username
+     */
+    @Override
+    public String getUsername() {
+        return username;
+    }
 
-	@Override
-	public String getUsername() {
-		return username;
-	}
+    /**
+     * is the account nonExpired
+     * @return boolean if the account is non expired or not
+     */
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
 
-	@Override
-	public boolean isAccountNonExpired() {
-		return true;
-	}
+    /**
+     * is the account nonLocked
+     * @return boolean if the account is non locked or not
+     */
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
 
-	@Override
-	public boolean isAccountNonLocked() {
-		return true;
-	}
+    /**
+     * is the credentials offered non expired
+     * @return boolean if the account is non locked or not
+     */
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
 
-	@Override
-	public boolean isCredentialsNonExpired() {
-		return true;
-	}
+    /**
+     * is enabled
+     * @return boolean
+     */
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 
-	@Override
-	public boolean isEnabled() {
-		return true;
-	}
+    /**
+     * override menthod equals of user objects
+     * @param o object
+     * @return boolean if a uuid matches another uuid
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        UserDetailsImpl user = (UserDetailsImpl) o;
+        return Objects.equals(UUID, user.UUID);
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o)
-			return true;
-		if (o == null || getClass() != o.getClass())
-			return false;
-		UserDetailsImpl user = (UserDetailsImpl) o;
-		return Objects.equals(id, user.id);
-	}
-	public String getFirstname() {
-		return firstname;
-	}
+    /**
+     * getter for firstname of user
+     * @return String user firstname
+     */
+    public String getFirstname() {
+        return firstname;
+    }
 
-	public void setFirstname(String firstname) {
-		this.firstname = firstname;
-	}
+    /**
+     * setter for firstname of user
+     * @param firstname of user
+     */
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
 
-	public String getLastname() {
-		return lastname;
-	}
+    /**
+     * getter for lastname of user
+     * @return String user lastname
+     */
+    public String getLastname() {
+        return lastname;
+    }
 
-	public void setLastname(String lastname) {
-		this.lastname = lastname;
-	}
+    /**
+     * setter for lastname of user
+     * @param lastname of user
+     */
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
 }

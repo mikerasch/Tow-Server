@@ -1,5 +1,16 @@
+/**
+ *
+ *
+ *
+ */
+
+
 package edu.uwp.appfactory.tow.controllers.auth;
 
+import edu.uwp.appfactory.tow.entities.Dispatcher;
+import edu.uwp.appfactory.tow.entities.Driver;
+import edu.uwp.appfactory.tow.entities.Users;
+import edu.uwp.appfactory.tow.services.PasswordResetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,13 +21,23 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import edu.uwp.appfactory.tow.WebSecurityConfig.models.ERole;
 import edu.uwp.appfactory.tow.WebSecurityConfig.models.Role;
-import edu.uwp.appfactory.tow.WebSecurityConfig.models.Users;
 import edu.uwp.appfactory.tow.WebSecurityConfig.payload.response.JwtResponse;
 import edu.uwp.appfactory.tow.WebSecurityConfig.payload.response.MessageResponse;
 import edu.uwp.appfactory.tow.WebSecurityConfig.repository.RoleRepository;
 import edu.uwp.appfactory.tow.WebSecurityConfig.repository.UsersRepository;
 import edu.uwp.appfactory.tow.WebSecurityConfig.security.jwt.JwtUtils;
 import edu.uwp.appfactory.tow.WebSecurityConfig.security.services.UserDetailsImpl;
+import org.springframework.transaction.TransactionSystemException;
+
+import javax.validation.ConstraintViolationException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
+import java.util.Optional;
+import java.util.Random;
+
+import static java.lang.String.format;
 
 @Controller
 public class AuthController {
@@ -31,15 +52,21 @@ public class AuthController {
 
     private final JwtUtils jwtUtils;
 
+    private final PasswordResetService sender;
+
     @Autowired
-    public AuthController(AuthenticationManager authenticationManager, UsersRepository usersRepository, RoleRepository roleRepository, PasswordEncoder encoder, JwtUtils jwtUtils) {
+    public AuthController(AuthenticationManager authenticationManager, UsersRepository usersRepository, RoleRepository roleRepository, PasswordEncoder encoder, JwtUtils jwtUtils, PasswordResetService sender) {
         this.authenticationManager = authenticationManager;
         this.usersRepository = usersRepository;
         this.roleRepository = roleRepository;
         this.encoder = encoder;
         this.jwtUtils = jwtUtils;
+        this.sender = sender;
     }
 
+    public ResponseEntity<?> refreshToken(String jwtToken) {
+        return ResponseEntity.ok(jwtUtils.refreshJwtToken(jwtUtils.getUUIDFromJwtToken(jwtToken)));
+    }
 
     public ResponseEntity<?> getUserByEmail(String email) {
         Users user = usersRepository.findByEmail(email);
@@ -80,52 +107,50 @@ public class AuthController {
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-        return ResponseEntity.ok(new JwtResponse(jwt,
-                userDetails.getId(),
+        return ResponseEntity.ok(new JwtResponse(
+                jwt,
+                userDetails.getUUID(),
                 userDetails.getUsername(),
                 userDetails.getEmail(),
                 userDetails.getFirstname(),
                 userDetails.getLastname(),
-                userDetails.getRole()));
+                userDetails.getRole()
+        ));
     }
 
-    public ResponseEntity<?> registerUser(String email, String password, String firstname, String lastname) {
+    public ResponseEntity<?> registerDriver(String email, String password, String firstname, String lastname) {
+        try {
+            if (usersRepository.existsByEmail(email)) {
+                return ResponseEntity
+                        .badRequest()
+                        .body(new MessageResponse("Error: Email is already in use!"));
+            }
 
-        if (usersRepository.existsByUsername(email)) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Username is already taken!"));
+            // Create new user's account
+            Driver driver = new Driver(email,
+                    email,
+                    encoder.encode(password),
+                    firstname,
+                    lastname,
+                    0,
+                    0,
+                    false);
+
+            Role role = roleRepository.findByName(ERole.ROLE_DRIVER)
+                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+
+            driver.setRoles(role.getName().toString());
+            usersRepository.save(driver);
+
+            return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+        } catch (ConstraintViolationException e) {
+            return ResponseEntity.status(498).body("Invalid Entries: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(499).body("Error: " + e.getMessage());
         }
-
-        if (usersRepository.existsByEmail(email)) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Email is already in use!"));
-        }
-
-        // Create new user's account
-        Users user = new Users(email,
-                email,
-                encoder.encode(password),
-                firstname,
-                lastname);
-
-        Role role = roleRepository.findByName(ERole.ROLE_USER)
-                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-
-        user.setRoles(role.getName().toString());
-        usersRepository.save(user);
-
-        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
 
     public ResponseEntity<?> registerAdmin(String email, String password, String firstname, String lastname) {
-
-        if (usersRepository.existsByUsername(email)) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Username is already taken!"));
-        }
 
         if (usersRepository.existsByEmail(email)) {
             return ResponseEntity
@@ -148,53 +173,74 @@ public class AuthController {
 
         return ResponseEntity.ok(new MessageResponse("Admin registered successfully!"));
     }
-}
 
-//    @PostMapping("/register")
-//    public ResponseEntity<?> register(@RequestHeader("email") final String email,
-//                                          @RequestHeader("password") final String password,
-//                                          @RequestHeader("firstname") final String firstname,
-//                                          @RequestHeader("lastname") final String lastname,
-//                                          @RequestHeader("role") final String reqRoles) {
-//
-//        if (usersRepository.existsByUsername(email)) {
-//            return ResponseEntity
-//                    .badRequest()
-//                    .body(new MessageResponse("Error: Username is already taken!"));
-//        }
-//
-//        if (usersRepository.existsByEmail(email)) {
-//            return ResponseEntity
-//                    .badRequest()
-//                    .body(new MessageResponse("Error: Email is already in use!"));
-//        }
-//
-//        // Create new user's account
-//        Users user = new Users(email,
-//                email,
-//                encoder.encode(password),
-//                firstname,
-//                lastname);
-//
-//        Role role;
-//
-//		if (reqRoles.equals("admin")) {
-//			Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-//					.orElseThrow(() -> new RuntimeException("Error: Role is not found. Admin"));
-//			role = adminRole;
-//		} else if (reqRoles.equals("dispatcher")) {
-//			Role dispatcherRole = roleRepository.findByName(ERole.ROLE_DISPATCHER)
-//					.orElseThrow(() -> new RuntimeException("Error: Role is not found. Dispatcher"));
-//			role = dispatcherRole;
-//		} else {
-//			Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-//					.orElseThrow(() -> new RuntimeException("Error: Role is not found. User"));
-//			role = userRole ;
-//		}
-//
-//
-//        user.setRoles(role.getName().toString());
-//        usersRepository.save(user);
-//
-//        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
-//    }
+    public ResponseEntity<?> registerDispatcher(String email, String password, String firstname, String lastname, String precinct) {
+        try {
+            if (usersRepository.existsByEmail(email)) {
+                return ResponseEntity
+                        .badRequest()
+                        .body(new MessageResponse("Error: Email is already in use!"));
+            }
+
+            // Create new user's account
+            Dispatcher dispatcher = new Dispatcher(
+                    email,
+                    email,
+                    encoder.encode(password),
+                    firstname,
+                    lastname,
+                    precinct);
+
+            Role role = roleRepository.findByName(ERole.ROLE_DISPATCHER)
+                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+
+            dispatcher.setRoles(role.getName().toString());
+            usersRepository.save(dispatcher);
+
+            return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+        } catch (TransactionSystemException | ConstraintViolationException e) {
+            return ResponseEntity.status(499).body("Invalid Entries");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("System Error");
+        }
+    }
+
+
+    public ResponseEntity<?> verification(String token) {
+        try {
+            Optional<Users> usersOptional = usersRepository.findByVerToken(token);
+            if (usersOptional.isEmpty()) {
+                return ResponseEntity
+                        .status(500)
+                        .body(new MessageResponse("Not successful!: token doesnt exist"));
+            }
+            Users user = usersOptional.get();
+
+            LocalDate userVerifyDate = LocalDate.parse(user.getVerifyDate());
+            Period periodBetween = Period.between(userVerifyDate, LocalDate.now());
+
+            if (periodBetween.getDays() < 8) {
+                if (user.getVerifyToken() == token && !user.getVerEnabled()) {
+                    user.setVerEnabled(true);
+                    user.setVerifyToken("");
+                    usersRepository.save(user);
+                    return ResponseEntity
+                            .status(200)
+                            .body(new MessageResponse("Successful!"));
+                } else {
+                    return ResponseEntity
+                            .status(500)
+                            .body(new MessageResponse("Not successful!"));
+                }
+            } else {
+                return ResponseEntity
+                        .status(500)
+                        .body(new MessageResponse("verification token expired, please request a new one."));
+            }
+        } catch (ConstraintViolationException e) {
+            return ResponseEntity.status(498).body("Invalid Entries: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(499).body("Error: " + e.getMessage());
+        }
+    }
+}

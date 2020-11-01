@@ -22,66 +22,114 @@ import edu.uwp.appfactory.tow.WebSecurityConfig.security.jwt.AuthEntryPointJwt;
 import edu.uwp.appfactory.tow.WebSecurityConfig.security.jwt.AuthTokenFilter;
 import edu.uwp.appfactory.tow.WebSecurityConfig.security.services.UserDetailsServiceImpl;
 
+/**
+ * web security configuration class, utilized for authentication,
+ * roles, and password encoding. Contains the initial security config
+ * method that determines access and authorization
+ */
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(
-		// securedEnabled = true,
-		// jsr250Enabled = true,
-		prePostEnabled = true)
+        // securedEnabled = true,
+        // jsr250Enabled = true,
+        prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-	@Autowired
-	UserDetailsServiceImpl userDetailsService;
 
-	@Autowired
-	private AuthEntryPointJwt unauthorizedHandler;
+    /**
+     * user details service
+     */
+    @Autowired
+    UserDetailsServiceImpl userDetailsService;
 
-	@Bean
-	public AuthTokenFilter authenticationJwtTokenFilter() {
-		return new AuthTokenFilter();
-	}
+    /**
+     * authorization entry point, handles attempted auths
+     */
+    @Autowired
+    private AuthEntryPointJwt unauthorizedHandler;
 
-	@Override
-	public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
-		authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-	}
+    /**
+     * filter for JWT token
+     * @return Authentication filter for a token
+     */
+    @Bean
+    public AuthTokenFilter authenticationJwtTokenFilter() {
+        return new AuthTokenFilter();
+    }
 
-	@Bean
-	@Override
-	public AuthenticationManager authenticationManagerBean() throws Exception {
-		return super.authenticationManagerBean();
-	}
+    /**
+     * main constructor for the configure object for web security
+     * @param authenticationManagerBuilder: builds manager for authentication
+     * @throws Exception: any
+     */
+    @Override
+    public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
+        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+    }
 
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+    /**
+     * getter of the bean for the authentication manager
+     * @return super of the authentication manager bean
+     * @throws Exception any
+     */
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
 
-	@Bean
-	public RoleHierarchy roleHierarchy() {
-		RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
-		/* tricks lies here */
-		roleHierarchy.setHierarchy("ROLE_ADMIN > ROLE_DISPATCHER > ROLE_USER");
-		return roleHierarchy;
-	}
+    /**
+     * encoder for passwords, security
+     * @return bcrypt password encoder
+     */
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
+    /**
+     * role hierarchy method that pulls from the impl, and sets the hierarchy
+     * to what the developer states
+     * @return role hierarchy set by the developer
+     */
+    @Bean
+    public RoleHierarchy roleHierarchy() {
+        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
+        /* tricks lies here */
+        roleHierarchy.setHierarchy("ROLE_ADMIN > ROLE_DISPATCHER ROLE_DRIVER");
+        return roleHierarchy;
+    }
 
-	@Autowired
-	private RoleHierarchy roleHierarchy;
+    /**
+     * declaration of the role hierarchy class variable
+     */
+    @Autowired
+    private RoleHierarchy roleHierarchy;
 
-	private SecurityExpressionHandler<FilterInvocation> webExpressionHandler() {
-		DefaultWebSecurityExpressionHandler defaultWebSecurityExpressionHandler     = new DefaultWebSecurityExpressionHandler();
-		defaultWebSecurityExpressionHandler.setRoleHierarchy(roleHierarchy);
-		return defaultWebSecurityExpressionHandler;
-	}
+    /**
+     * security expression handler, using the default web security expression
+     * and the role hierarchy
+     * @return default web handler
+     */
+    private SecurityExpressionHandler<FilterInvocation> webExpressionHandler() {
+        DefaultWebSecurityExpressionHandler defaultWebSecurityExpressionHandler = new DefaultWebSecurityExpressionHandler();
+        defaultWebSecurityExpressionHandler.setRoleHierarchy(roleHierarchy);
+        return defaultWebSecurityExpressionHandler;
+    }
 
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		http.cors().and().csrf().disable()
-			.exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
-			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-			.authorizeRequests().antMatchers("/**").permitAll()
-			.anyRequest().authenticated();
+    /**
+     * configure method that sets the constraints on accessing the server
+     * in accordance with roles, authentication
+     * @param http HttpSecurity
+     * @throws Exception any
+     */
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.cors().and().csrf().disable()
+                .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                .authorizeRequests().antMatchers("/**").permitAll()
+                .anyRequest().authenticated();
 
-		http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-	}
+        http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+    }
 }
