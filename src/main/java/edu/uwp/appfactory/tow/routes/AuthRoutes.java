@@ -75,7 +75,7 @@ public class AuthRoutes {
         return authController.registerAdmin(email, password, firstname, lastname);
     }
 
-    @PostMapping("/verification")
+    @GetMapping("/verification")
     public ResponseEntity<?> verification(@RequestParam("token") final String token){
 
         return authController.verification(token);

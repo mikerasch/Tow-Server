@@ -6,7 +6,6 @@ plugins {
 }
 
 group = 'edu.uwp.appfactory'
-sourceCompatibility = '14'
 
 configurations {
     compileOnly {

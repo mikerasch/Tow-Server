@@ -73,7 +73,4 @@ public class Driver extends Users implements IDriver {
     public void setLongitude(float longitude) {
         this.longitude = longitude;
     }
-
-    public void setEnabled(boolean b) {
-    }
 }

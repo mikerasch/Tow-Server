@@ -10,7 +10,7 @@ package edu.uwp.appfactory.tow.controllers.auth;
 import edu.uwp.appfactory.tow.entities.Dispatcher;
 import edu.uwp.appfactory.tow.entities.Driver;
 import edu.uwp.appfactory.tow.entities.Users;
-import edu.uwp.appfactory.tow.services.PasswordResetService;
+import edu.uwp.appfactory.tow.services.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,11 +31,9 @@ import org.springframework.transaction.TransactionSystemException;
 
 import javax.validation.ConstraintViolationException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.Period;
-import java.time.format.DateTimeFormatter;
 import java.util.Optional;
-import java.util.Random;
+import java.util.UUID;
 
 import static java.lang.String.format;
 
@@ -52,10 +50,10 @@ public class AuthController {
 
     private final JwtUtils jwtUtils;
 
-    private final PasswordResetService sender;
+    private final EmailService sender;
 
     @Autowired
-    public AuthController(AuthenticationManager authenticationManager, UsersRepository usersRepository, RoleRepository roleRepository, PasswordEncoder encoder, JwtUtils jwtUtils, PasswordResetService sender) {
+    public AuthController(AuthenticationManager authenticationManager, UsersRepository usersRepository, RoleRepository roleRepository, PasswordEncoder encoder, JwtUtils jwtUtils, EmailService sender) {
         this.authenticationManager = authenticationManager;
         this.usersRepository = usersRepository;
         this.roleRepository = roleRepository;
@@ -136,11 +134,18 @@ public class AuthController {
                     0,
                     false);
 
+            final String verifyToken = UUID.randomUUID().toString().replace("-", "");
+
             Role role = roleRepository.findByName(ERole.ROLE_DRIVER)
                     .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
 
             driver.setRoles(role.getName().toString());
+            driver.setVerifyToken(verifyToken);
+            driver.setVerifyDate(String.valueOf(LocalDate.now()));
+            driver.setVerEnabled(false);
             usersRepository.save(driver);
+
+            boolean didSend = sender.sendVerifyMail(driver, verifyToken);
 
             return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
         } catch (ConstraintViolationException e) {
@@ -214,16 +219,24 @@ public class AuthController {
                         .status(500)
                         .body(new MessageResponse("Not successful!: token doesnt exist"));
             }
-            Users user = usersOptional.get();
 
+            Optional<Users> userJPAOptional = usersRepository.findByUsername(usersOptional.get().getEmail());
+            if (userJPAOptional.isEmpty()) {
+                    return ResponseEntity
+                            .status(500)
+                            .body(new MessageResponse("Not successful!: token doesnt exist"));
+            }
+
+            Users user = userJPAOptional.get();
             LocalDate userVerifyDate = LocalDate.parse(user.getVerifyDate());
             Period periodBetween = Period.between(userVerifyDate, LocalDate.now());
 
             if (periodBetween.getDays() < 8) {
-                if (user.getVerifyToken() == token && !user.getVerEnabled()) {
+                if (user.getVerifyToken().equals(token) && !user.getVerEnabled()) {
                     user.setVerEnabled(true);
                     user.setVerifyToken("");
                     usersRepository.save(user);
+
                     return ResponseEntity
                             .status(200)
                             .body(new MessageResponse("Successful!"));

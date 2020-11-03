@@ -21,16 +21,18 @@ public class ContentBuilder {
         this.templateEngine = templateEngine;
     }
 
-    /**
-     *
-     * @param userName
-     * @param token
-     * @return
-     */
-    public String buildEmail(String userName, int token) {
+
+    public String buildPasswordEmail(String userName, int token) {
         Context context = new Context();
         context.setVariable("userName", userName);
         context.setVariable("token", token);
         return templateEngine.process("mailTemplateCray", context);
+    }
+
+    public String buildVerifyEmail(String userName, String verifyLink) {
+        Context context = new Context();
+        context.setVariable("userName", userName);
+        context.setVariable("verifyLink", verifyLink);
+        return templateEngine.process("mailTemplateVerify", context);
     }
 }
