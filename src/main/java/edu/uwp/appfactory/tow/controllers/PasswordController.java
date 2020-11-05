@@ -5,7 +5,7 @@ import edu.uwp.appfactory.tow.WebSecurityConfig.repository.RoleRepository;
 import edu.uwp.appfactory.tow.WebSecurityConfig.repository.UsersRepository;
 import edu.uwp.appfactory.tow.WebSecurityConfig.security.jwt.JwtUtils;
 import edu.uwp.appfactory.tow.entities.Users;
-import edu.uwp.appfactory.tow.services.PasswordResetService;
+import edu.uwp.appfactory.tow.services.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.ResponseEntity;
@@ -15,9 +15,7 @@ import org.springframework.stereotype.Controller;
 
 import javax.validation.ConstraintViolationException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.Period;
-import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.Random;
 
@@ -35,10 +33,10 @@ public class PasswordController {
 
     private final JwtUtils jwtUtils;
 
-    private final PasswordResetService sender;
+    private final EmailService sender;
 
     @Autowired
-    public PasswordController(AuthenticationManager authenticationManager, UsersRepository usersRepository, RoleRepository roleRepository, PasswordEncoder encoder, JwtUtils jwtUtils, PasswordResetService sender) {
+    public PasswordController(AuthenticationManager authenticationManager, UsersRepository usersRepository, RoleRepository roleRepository, PasswordEncoder encoder, JwtUtils jwtUtils, EmailService sender) {
         this.authenticationManager = authenticationManager;
         this.usersRepository = usersRepository;
         this.roleRepository = roleRepository;

@@ -2,7 +2,7 @@ alter table users
     add reset_date varchar(10);
 
 alter table users
-    add verify_token varchar(20);
+    add verify_token varchar(32);
 
 -- create unique index users_verify_token_uindex
 --     on users (verify_token);
