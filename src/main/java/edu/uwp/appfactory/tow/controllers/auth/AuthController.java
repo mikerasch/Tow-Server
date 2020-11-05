@@ -147,7 +147,14 @@ public class AuthController {
 
             boolean didSend = sender.sendVerifyMail(driver, verifyToken);
 
-            return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+            if (didSend) {
+                return ResponseEntity
+                        .ok(new MessageResponse("Driver registered successfully!"));
+            } else {
+                return ResponseEntity
+                        .status(500)
+                        .body(new MessageResponse("Error in driver registration"));
+            }
         } catch (ConstraintViolationException e) {
             return ResponseEntity.status(498).body("Invalid Entries: " + e.getMessage());
         } catch (Exception e) {
