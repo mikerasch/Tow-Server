@@ -216,15 +216,15 @@ public class AuthController {
             Optional<Users> usersOptional = usersRepository.findByVerToken(token);
             if (usersOptional.isEmpty()) {
                 return ResponseEntity
-                        .status(500)
-                        .body(new MessageResponse("Not successful!: token doesnt exist"));
+                        .status(494)
+                        .body(new MessageResponse("Token does not exist"));
             }
 
             Optional<Users> userJPAOptional = usersRepository.findByUsername(usersOptional.get().getEmail());
             if (userJPAOptional.isEmpty()) {
                     return ResponseEntity
-                            .status(500)
-                            .body(new MessageResponse("Not successful!: token doesnt exist"));
+                            .status(495)
+                            .body(new MessageResponse("User does not exist"));
             }
 
             Users user = userJPAOptional.get();
@@ -242,13 +242,13 @@ public class AuthController {
                             .body(new MessageResponse("Successful!"));
                 } else {
                     return ResponseEntity
-                            .status(500)
-                            .body(new MessageResponse("Not successful!"));
+                            .status(496)
+                            .body(new MessageResponse("Different token, or user was already verified"));
                 }
             } else {
                 return ResponseEntity
-                        .status(500)
-                        .body(new MessageResponse("verification token expired, please request a new one."));
+                        .status(497)
+                        .body(new MessageResponse("Verification token expired, please request a new one"));
             }
         } catch (ConstraintViolationException e) {
             return ResponseEntity.status(498).body("Invalid Entries: " + e.getMessage());
