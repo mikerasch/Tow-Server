@@ -55,22 +55,13 @@ public class Users implements IUser {
 
     private int resetToken;
 
-
     private String resetDate;
 
     private String verifyDate;
 
     private boolean verEnabled;
 
-
-
-
-    /**
-     * A collection of attributes that will be the constraints of the users table
-     */
     private String verifyToken;
-
-
 
     /**
      * default constructor
