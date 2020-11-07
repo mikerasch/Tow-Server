@@ -10,7 +10,10 @@ package edu.uwp.appfactory.tow.controllers.auth;
 import edu.uwp.appfactory.tow.entities.Dispatcher;
 import edu.uwp.appfactory.tow.entities.Driver;
 import edu.uwp.appfactory.tow.entities.Users;
+import edu.uwp.appfactory.tow.queryinterfaces.VerifyTokenInterface;
 import edu.uwp.appfactory.tow.services.EmailService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -51,6 +54,8 @@ public class AuthController {
     private final JwtUtils jwtUtils;
 
     private final EmailService sender;
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public AuthController(AuthenticationManager authenticationManager, UsersRepository usersRepository, RoleRepository roleRepository, PasswordEncoder encoder, JwtUtils jwtUtils, EmailService sender) {
@@ -220,29 +225,25 @@ public class AuthController {
 
     public ResponseEntity<?> verification(String token) {
         try {
-            Optional<Users> usersOptional = usersRepository.findByVerToken(token);
+            Optional<VerifyTokenInterface> usersOptional = usersRepository.findByVerifyToken(token);
             if (usersOptional.isEmpty()) {
                 return ResponseEntity
                         .status(494)
                         .body(new MessageResponse("Token does not exist"));
             }
 
-            Optional<Users> userJPAOptional = usersRepository.findByUsername(usersOptional.get().getEmail());
-            if (userJPAOptional.isEmpty()) {
-                    return ResponseEntity
-                            .status(495)
-                            .body(new MessageResponse("User does not exist"));
-            }
+            VerifyTokenInterface user = usersOptional.get();
 
-            Users user = userJPAOptional.get();
+            Optional<Users> usersOptional2 = usersRepository.findByUUID(user.getUUID());
+            logger.error(String.valueOf(usersOptional2.get()));
+
             LocalDate userVerifyDate = LocalDate.parse(user.getVerifyDate());
             Period periodBetween = Period.between(userVerifyDate, LocalDate.now());
+            logger.debug(String.valueOf(periodBetween));
 
             if (periodBetween.getDays() < 8) {
                 if (user.getVerifyToken().equals(token) && !user.getVerEnabled()) {
-                    user.setVerEnabled(true);
-                    user.setVerifyToken("");
-                    usersRepository.save(user);
+                    usersRepository.updateUserEmailVerifiedByUUID(user.getUUID(), true);
 
                     return ResponseEntity
                             .status(200)
@@ -260,6 +261,7 @@ public class AuthController {
         } catch (ConstraintViolationException e) {
             return ResponseEntity.status(498).body("Invalid Entries: " + e.getMessage());
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             return ResponseEntity.status(499).body("Error: " + e.getMessage());
         }
     }

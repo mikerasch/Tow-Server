@@ -3,9 +3,8 @@
  */
 
 package edu.uwp.appfactory.tow.repositories;
-import edu.uwp.appfactory.tow.data.PDriver;
+import edu.uwp.appfactory.tow.queryinterfaces.PDriver;
 import edu.uwp.appfactory.tow.entities.Driver;
-import edu.uwp.appfactory.tow.entities.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

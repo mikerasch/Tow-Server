@@ -7,9 +7,8 @@ package edu.uwp.appfactory.tow.controllers;
 
 import edu.uwp.appfactory.tow.WebSecurityConfig.payload.response.MessageResponse;
 import edu.uwp.appfactory.tow.WebSecurityConfig.security.jwt.JwtUtils;
-import edu.uwp.appfactory.tow.data.PDriver;
+import edu.uwp.appfactory.tow.queryinterfaces.PDriver;
 import edu.uwp.appfactory.tow.entities.Driver;
-import edu.uwp.appfactory.tow.entities.Users;
 import edu.uwp.appfactory.tow.repositories.DriverRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,10 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
 import javax.validation.ConstraintViolationException;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
 
 @EnableAutoConfiguration
@@ -35,7 +32,7 @@ public class DriverController {
      */
     private final DriverRepository driverRepository;
     private final JwtUtils jwtUtils;
-    private static Logger logger = LoggerFactory.getLogger(JwtUtils.class);
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
      * Driver controller constructor matching the local repo newly created,
