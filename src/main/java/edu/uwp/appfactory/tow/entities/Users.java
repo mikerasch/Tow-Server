@@ -8,6 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.UUID;
 
 
 @Entity
@@ -27,7 +28,7 @@ public class Users implements IUser {
     /**
      * A collection of attributes that will be the constraints of the users table
      */
-    private String UUID;
+    private String UUID; // look at java.uuid
 
     @NotBlank
     @Size(max = 100)

@@ -1,7 +1,5 @@
 /**
  *
- *
- *
  */
 
 
@@ -11,6 +9,7 @@ import edu.uwp.appfactory.tow.entities.Dispatcher;
 import edu.uwp.appfactory.tow.entities.Driver;
 import edu.uwp.appfactory.tow.entities.Users;
 import edu.uwp.appfactory.tow.queryinterfaces.VerifyTokenInterface;
+import edu.uwp.appfactory.tow.services.AsyncEmail;
 import edu.uwp.appfactory.tow.services.EmailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,14 +56,17 @@ public class AuthController {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    private final AsyncEmail sendEmail;
+
     @Autowired
-    public AuthController(AuthenticationManager authenticationManager, UsersRepository usersRepository, RoleRepository roleRepository, PasswordEncoder encoder, JwtUtils jwtUtils, EmailService sender) {
+    public AuthController(AuthenticationManager authenticationManager, UsersRepository usersRepository, RoleRepository roleRepository, PasswordEncoder encoder, JwtUtils jwtUtils, EmailService sender, AsyncEmail sendEmail) {
         this.authenticationManager = authenticationManager;
         this.usersRepository = usersRepository;
         this.roleRepository = roleRepository;
         this.encoder = encoder;
         this.jwtUtils = jwtUtils;
         this.sender = sender;
+        this.sendEmail = sendEmail;
     }
 
     public ResponseEntity<?> refreshToken(String jwtToken) {
@@ -139,27 +141,19 @@ public class AuthController {
                     0,
                     false);
 
-            final String verifyToken = UUID.randomUUID().toString().replace("-", "");
-
             Role role = roleRepository.findByName(ERole.ROLE_DRIVER)
                     .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
 
             driver.setRoles(role.getName().toString());
-            driver.setVerifyToken(verifyToken);
+            driver.setVerifyToken(generateEmailUUID());
             driver.setVerifyDate(String.valueOf(LocalDate.now()));
             driver.setVerEnabled(false);
             usersRepository.save(driver);
 
-            boolean didSend = sender.sendVerifyMail(driver, verifyToken);
+            sendEmail.sendEmailAsync(driver);
 
-            if (didSend) {
-                return ResponseEntity
-                        .ok(new MessageResponse("Driver registered successfully!"));
-            } else {
-                return ResponseEntity
-                        .status(500)
-                        .body(new MessageResponse("Error in driver registration"));
-            }
+            return ResponseEntity
+                    .ok(new MessageResponse("Driver registered successfully!"));
         } catch (ConstraintViolationException e) {
             return ResponseEntity.status(498).body("Invalid Entries: " + e.getMessage());
         } catch (Exception e) {
@@ -212,9 +206,22 @@ public class AuthController {
                     .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
 
             dispatcher.setRoles(role.getName().toString());
+            dispatcher.setVerifyToken(generateEmailUUID());
+            dispatcher.setVerifyDate(String.valueOf(LocalDate.now()));
+            dispatcher.setVerEnabled(false);
             usersRepository.save(dispatcher);
 
-            return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+            sendEmail.sendEmailAsync(dispatcher);
+
+            return ResponseEntity
+                    .ok(new MessageResponse("Driver registered successfully!"));
+
+
+            //boolean didSend = sender.sendVerifyMail(dispatcher);
+//          else   return ResponseEntity
+//                        .status(500)
+//                        .body(new MessageResponse("Error in driver registration"));
+//            }
         } catch (TransactionSystemException | ConstraintViolationException e) {
             return ResponseEntity.status(499).body("Invalid Entries");
         } catch (Exception e) {
@@ -233,13 +240,9 @@ public class AuthController {
             }
 
             VerifyTokenInterface user = usersOptional.get();
-
-            Optional<Users> usersOptional2 = usersRepository.findByUUID(user.getUUID());
-            logger.error(String.valueOf(usersOptional2.get()));
-
             LocalDate userVerifyDate = LocalDate.parse(user.getVerifyDate());
             Period periodBetween = Period.between(userVerifyDate, LocalDate.now());
-            logger.debug(String.valueOf(periodBetween));
+
 
             if (periodBetween.getDays() < 8) {
                 if (user.getVerifyToken().equals(token) && !user.getVerEnabled()) {
@@ -254,6 +257,7 @@ public class AuthController {
                             .body(new MessageResponse("Different token, or user was already verified"));
                 }
             } else {
+                //todo: delete account
                 return ResponseEntity
                         .status(497)
                         .body(new MessageResponse("Verification token expired, please request a new one"));
@@ -264,5 +268,9 @@ public class AuthController {
             System.out.println(e.getMessage());
             return ResponseEntity.status(499).body("Error: " + e.getMessage());
         }
+    }
+
+    private String generateEmailUUID() {
+        return UUID.randomUUID().toString().replace("-", "");
     }
 }

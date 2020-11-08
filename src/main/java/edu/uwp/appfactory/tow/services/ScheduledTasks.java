@@ -1,0 +1,98 @@
+package edu.uwp.appfactory.tow.services;
+
+import edu.uwp.appfactory.tow.WebSecurityConfig.repository.UsersRepository;
+import edu.uwp.appfactory.tow.entities.FailedEmail;
+import edu.uwp.appfactory.tow.queryinterfaces.EmailReminderInterface;
+import edu.uwp.appfactory.tow.queryinterfaces.VerifyTokenInterface;
+import edu.uwp.appfactory.tow.repositories.FailedEmailRepository;
+import net.bytebuddy.build.Plugin;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.MailException;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.mail.javamail.MimeMessagePreparator;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class ScheduledTasks {
+    @Value("${SPRING_DNS}")
+    private String dns;
+
+    private final FailedEmailRepository failedEmailRepository;
+    private final UsersRepository usersRepository;
+    private final ContentBuilder contentBuilder;
+    private final JavaMailSender javaMailSender;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    public ScheduledTasks(FailedEmailRepository failedEmailRepository, UsersRepository usersRepository, ContentBuilder contentBuilder, JavaMailSender javaMailSender) {
+        this.failedEmailRepository = failedEmailRepository;
+        this.usersRepository = usersRepository;
+        this.contentBuilder = contentBuilder;
+        this.javaMailSender = javaMailSender;
+    }
+
+    //@Scheduled(cron = "1 34 15 * * *")
+    @Scheduled(cron = "0 0 */11 * * *")
+    public void CheckFailedEmail() {
+        List<FailedEmail> failedEmails = failedEmailRepository.findAll();
+        failedEmails.forEach(entity -> {
+            try {
+                String userName = "Hi, " + entity.getFirstname() + " " + entity.getLastname();
+                String verifyLink = dns + "api/users/verification?token=" + entity.getVerify_token();
+
+                String message = contentBuilder.buildVerifyEmail(userName, verifyLink);
+
+                MimeMessagePreparator messagePreparation = mimeMessage -> {
+                    MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
+                    messageHelper.setFrom("DoNotReply", "DoNotReply");
+                    messageHelper.setTo(entity.getEmail());
+                    messageHelper.setSubject("Email Verification");
+                    messageHelper.setText(message, true);
+                };
+
+                javaMailSender.send(messagePreparation);
+
+                failedEmailRepository.deleteById(entity.getUuid());
+            } catch (MailException e) {
+                logger.error(e.getMessage());
+            }
+        });
+    }
+
+    //todo: if account 4 days old send, if account >8 days, delete account, change cron to every day at noon && midnight
+    //todo: make html page for reminder
+
+    //@Scheduled(cron = "0 0 0 */3 * *")
+//    @Scheduled(cron = "1 55 15 * * *")
+//    private void CheckVerifyStatus() {
+//        List<EmailReminderInterface> nonVerifiedUsers = usersRepository.findAllNonVerified();
+//        if (nonVerifiedUsers.isEmpty()) {
+//            return;
+//        }
+//        nonVerifiedUsers.forEach(entity -> {
+//            try {
+//                String userName = "Hi, " + entity.getFirstname() + " " + entity.getLastname();
+//                String verifyLink = dns + "api/users/verification?token=" + entity.getVerifyToken();
+//
+//                String message = contentBuilder.buildVerifyEmail(userName, verifyLink);
+//
+//                MimeMessagePreparator messagePreparation = mimeMessage -> {
+//                    MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
+//                    messageHelper.setFrom("DoNotReply", "DoNotReply");
+//                    messageHelper.setTo(entity.getEmail());
+//                    messageHelper.setSubject("Email Verification");
+//                    messageHelper.setText(message, true);
+//                };
+//
+//                javaMailSender.send(messagePreparation);
+//            } catch (MailException e) {
+//                logger.error(e.getMessage());
+//            }
+//        });
+//    }
+}

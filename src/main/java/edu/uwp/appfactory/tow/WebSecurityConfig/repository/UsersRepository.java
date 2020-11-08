@@ -1,6 +1,7 @@
 package edu.uwp.appfactory.tow.WebSecurityConfig.repository;
 
 import edu.uwp.appfactory.tow.entities.Users;
+import edu.uwp.appfactory.tow.queryinterfaces.EmailReminderInterface;
 import edu.uwp.appfactory.tow.queryinterfaces.VerifyTokenInterface;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -8,13 +9,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 
 /**
  * users repository to communicate with database
  */
 @Repository
-public interface UsersRepository extends JpaRepository<Users, Long> {
+public interface UsersRepository extends JpaRepository<Users, String> {
     Optional<Users> findByUsername(String username);
 
     Optional<Users> findByResetToken(int resetToken);
@@ -35,4 +37,7 @@ public interface UsersRepository extends JpaRepository<Users, Long> {
 
     @Query(value = "SELECT *, 0 as clazz_ FROM users WHERE uuid = ?1", nativeQuery = true)
     Optional<Users> findByUUID(String UUID);
+
+    @Query(value = "SELECT uuid, email, firstname, lastname, verify_token FROM users WHERE ver_enabled = false", nativeQuery = true)
+    List<EmailReminderInterface> findAllNonVerified();
 }
