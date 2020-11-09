@@ -22,7 +22,7 @@ public class Driver extends Users implements IDriver {
     private boolean active;
 
     /**
-     * A constructor that takes 8 parameters
+     * A constructor that takes 8 parameters inheriting from users
      * @param email the new drivers email  
      * @param username the new drivers username
      * @param password the new drivers password
