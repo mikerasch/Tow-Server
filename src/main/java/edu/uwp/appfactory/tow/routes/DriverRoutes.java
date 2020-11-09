@@ -21,14 +21,6 @@ public class DriverRoutes {
         this.driverController = driverController;
     }
 
-
-    @GetMapping("/accident")
-    public ResponseEntity<?> findAllByDistance(@RequestHeader("latitude") final float latitude,
-                                               @RequestHeader("longitude") final float longitude,
-                                               @RequestHeader("radius") final int radius) {
-        return driverController.findAllByDistance(latitude, longitude, radius);
-    }
-
     /**
      * A method that receives the drivers UTM data, name, and  via the Drivers app
      *

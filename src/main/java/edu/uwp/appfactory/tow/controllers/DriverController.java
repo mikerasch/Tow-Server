@@ -46,18 +46,6 @@ public class DriverController {
         this.jwtUtils = jwtUtils;
     }
 
-    /**
-     * This method gathers all of the drivers in the db, that are within the radius of the accident
-     * @param latitude the lat of the accident site
-     * @param longitude the long o the accident site
-     * @param radius the max radius that the dispathcer chooses to return within
-     * @return returns the list available drivers.
-     */
-    public ResponseEntity<?> findAllByDistance(float latitude, float longitude, int radius) {
-        List<PDriver> drivers = driverRepository.findAllByDistance(latitude, longitude, radius);
-
-        return ResponseEntity.ok(drivers);
-    }
 
     /**
      * work in progress setLocation that
