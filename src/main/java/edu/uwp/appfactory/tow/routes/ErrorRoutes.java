@@ -10,9 +10,9 @@ public class ErrorRoutes {
 
 
 
-    @PostMapping("/general")
+    @GetMapping("/")
     public String handleError() {
-        return "error";
+        return "Error 404 not found";
     }
 
 }
