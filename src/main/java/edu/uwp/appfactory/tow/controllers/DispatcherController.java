@@ -1,19 +1,17 @@
-/**
- * The DispatcherController class communicates between the dispatchers route and the repositories.
- * There are multiple methods contained in this class.
- */
-
 package edu.uwp.appfactory.tow.controllers;
+
 import edu.uwp.appfactory.tow.queryinterfaces.PDriver;
 import edu.uwp.appfactory.tow.repositories.DispatcherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-
 import java.util.List;
 
-
+/**
+ * The DispatcherController class communicates between the dispatchers route and the repositories.
+ * There are multiple methods contained in this class.
+ */
 @EnableAutoConfiguration
 @Controller
 public class DispatcherController {

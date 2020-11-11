@@ -24,15 +24,10 @@ import java.util.Random;
 public class PasswordController {
 
     private final AuthenticationManager authenticationManager;
-
     private final UsersRepository usersRepository;
-
     private final RoleRepository roleRepository;
-
     private final PasswordEncoder encoder;
-
     private final JwtUtils jwtUtils;
-
     private final EmailService sender;
 
     @Autowired
@@ -44,6 +39,7 @@ public class PasswordController {
         this.jwtUtils = jwtUtils;
         this.sender = sender;
     }
+
     public ResponseEntity<?> forgot(String email) {
         try {
             Optional<Users> usersOptional = usersRepository.findByUsername(email);
@@ -60,14 +56,8 @@ public class PasswordController {
             String tokenString = String.format("%06d", number);
             int token = Integer.parseInt(tokenString);
 
-            // maybe make a check to see if the number is == 6
-
-            // update the token value in the db for the user
-            // int count = usersRepository.updateResetToken(token, email, dateTime);
-
             user.setResetToken(token);
             user.setResetDate(String.valueOf(LocalDate.now()));
-            // user.set_date
             usersRepository.save(user);
 
             boolean didSend = sender.sendResetMail(user, token);
@@ -159,23 +149,3 @@ public class PasswordController {
         }
     }
 }
-
-//    public static void main (String []args) {
-//        LocalDate resetDate = LocalDate.of(2020, 10, 24);
-//
-//        Period periodBetween = Period.between(resetDate, LocalDate.now());
-//        System.out.println(String.valueOf(LocalDate.now()));
-//        System.out.println(periodBetween.getDays());
-//        if (periodBetween.getDays() < 8) {
-//            System.out.println("valid");
-//        } else {
-//            System.out.println("invalid");
-//        }
-//    }
-//}
-
-//    LocalDateTime localNow = LocalDateTime.now();
-//    ZonedDateTime myDateObj = localNow.atZone(ZoneId.of("UTC"));
-//    DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("MM-dd-yyyy HH:mm:ss");
-//    String formattedDate = myDateObj.format(myFormatObj);
-//        System.out.println(formattedDate);

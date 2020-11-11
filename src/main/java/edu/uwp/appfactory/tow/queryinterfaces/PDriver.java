@@ -1,8 +1,8 @@
-/**
- * Plain old java object for the driver
- */
 package edu.uwp.appfactory.tow.queryinterfaces;
 
+/**
+ *
+ */
 public interface PDriver {
     String getFirstname();
     String getLastname();

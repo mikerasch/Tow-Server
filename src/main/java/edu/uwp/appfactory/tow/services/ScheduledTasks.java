@@ -3,9 +3,7 @@ package edu.uwp.appfactory.tow.services;
 import edu.uwp.appfactory.tow.WebSecurityConfig.repository.UsersRepository;
 import edu.uwp.appfactory.tow.entities.FailedEmail;
 import edu.uwp.appfactory.tow.queryinterfaces.EmailReminderInterface;
-import edu.uwp.appfactory.tow.queryinterfaces.VerifyTokenInterface;
 import edu.uwp.appfactory.tow.repositories.FailedEmailRepository;
-import net.bytebuddy.build.Plugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,7 +12,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -22,6 +19,9 @@ import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *
+ */
 @Service
 public class ScheduledTasks {
     @Value("${SPRING_DNS}")

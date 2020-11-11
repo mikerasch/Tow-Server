@@ -18,56 +18,19 @@ import java.util.stream.Collectors;
  * user details implementation, implementing userDetails
  */
 public class UserDetailsImpl implements UserDetails {
-    /**
-     * serial version UID
-     */
+
     private static final long serialVersionUID = 1L;
-
-    /**
-     * UUID of a user
-     */
-    private final String UUID;
-
-    /**
-     * username of a user
-     */
+    final String UUID;
     private final String username;
-
-    /**
-     * email of a user
-     */
     private final String email;
-
-    /**
-     * password of a user
-     */
     @JsonIgnore
     private final String password;
-
-    /**
-     * firstname of a user
-     */
     private String firstname;
-
-    /**
-     * lastname of a user
-     */
     private String lastname;
-
-    /**
-     * role of a user
-     */
     private final String role;
 
     /**
      * constructor of a user details implementation
-     * @param UUID user uuid
-     * @param username user username
-     * @param email user email
-     * @param password user password
-     * @param firstname user firstname
-     * @param lastname user lastname
-     * @param role user role
      */
     public UserDetailsImpl(String UUID, String username, String email, String password, String firstname, String lastname,
                            String role) {
@@ -82,8 +45,6 @@ public class UserDetailsImpl implements UserDetails {
 
     /**
      * build method for a user details implementation
-     * @param user user object
-     * @return userDetails object
      */
     public static UserDetailsImpl build(Users user) {
         return new UserDetailsImpl(
@@ -96,29 +57,9 @@ public class UserDetailsImpl implements UserDetails {
                 user.getRoles());
     }
 
-    /**
-     * getter for role
-     * @return user role
-     */
-    public String getRole() {
-        return role;
-    }
-
-    /**
-     * getting for a uuid
-     * @return user uuid
-     */
-    public String getUUID() {
-        return UUID;
-    }
-
-    /**
-     * getter for email
-     * @return user email
-     */
-    public String getEmail() {
-        return email;
-    }
+    public String getRole() { return role; }
+    public String getUUID() { return UUID; }
+    public String getEmail() { return email; }
 
     /**
      * getter for authorities
@@ -126,7 +67,6 @@ public class UserDetailsImpl implements UserDetails {
      */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-
         ERole eRole;
 
         if (getRole().equals("ROLE_DRIVER")) {
@@ -138,11 +78,8 @@ public class UserDetailsImpl implements UserDetails {
         }
 
         Role tempRole = new Role();
-
         tempRole.setName(eRole);
-
         Collection<Role> roles = new ArrayList<>();
-
         roles.add(tempRole);
 
         List<GrantedAuthority> authorities = roles.stream()
@@ -152,65 +89,37 @@ public class UserDetailsImpl implements UserDetails {
         return authorities;
     }
 
-    /**
-     * getter for user password
-     * @return String password
-     */
+
     @Override
     public String getPassword() {
         return password;
     }
 
-    /**
-     * getter for username
-     * @return String username
-     */
     @Override
     public String getUsername() {
         return username;
     }
 
-    /**
-     * is the account nonExpired
-     * @return boolean if the account is non expired or not
-     */
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
-    /**
-     * is the account nonLocked
-     * @return boolean if the account is non locked or not
-     */
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
 
-    /**
-     * is the credentials offered non expired
-     * @return boolean if the account is non locked or not
-     */
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
-    /**
-     * is enabled
-     * @return boolean
-     */
     @Override
     public boolean isEnabled() {
         return true;
     }
 
-    /**
-     * override menthod equals of user objects
-     * @param o object
-     * @return boolean if a uuid matches another uuid
-     */
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -221,34 +130,16 @@ public class UserDetailsImpl implements UserDetails {
         return Objects.equals(UUID, user.UUID);
     }
 
-    /**
-     * getter for firstname of user
-     * @return String user firstname
-     */
     public String getFirstname() {
         return firstname;
     }
-
-    /**
-     * setter for firstname of user
-     * @param firstname of user
-     */
     public void setFirstname(String firstname) {
         this.firstname = firstname;
     }
 
-    /**
-     * getter for lastname of user
-     * @return String user lastname
-     */
     public String getLastname() {
         return lastname;
     }
-
-    /**
-     * setter for lastname of user
-     * @param lastname of user
-     */
     public void setLastname(String lastname) {
         this.lastname = lastname;
     }

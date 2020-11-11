@@ -14,31 +14,27 @@ import edu.uwp.appfactory.tow.WebSecurityConfig.repository.UsersRepository;
  */
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
-    /**
-     * user repo
-     */
+
     @Autowired
     UsersRepository userRepository;
 
     /**
      * load a user by their username, exception if not found
-     * @param username String username of a user
-     * @return the implementation.build, sending a user back to the caller
-     * @throws UsernameNotFoundException if username is not found in the repo
      */
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Users user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
-
         return UserDetailsImpl.build(user);
     }
 
+    /**
+     * load a user by their username, exception if not found
+     */
     public UserDetails loadUserByUUID(String uuid) {
         Users user = userRepository.findByUUID(uuid)
                 .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + uuid));
-
         return UserDetailsImpl.build(user);
     }
 }

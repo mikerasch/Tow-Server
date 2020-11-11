@@ -12,15 +12,10 @@ import org.thymeleaf.context.Context;
 public class ContentBuilder {
     private final TemplateEngine templateEngine;
 
-    /**
-     *
-     * @param templateEngine
-     */
     @Autowired
     public ContentBuilder(TemplateEngine templateEngine) {
         this.templateEngine = templateEngine;
     }
-
 
     public String buildPasswordEmail(String userName, int token) {
         Context context = new Context();
