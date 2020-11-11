@@ -35,4 +35,11 @@ public class ContentBuilder {
         context.setVariable("verifyLink", verifyLink);
         return templateEngine.process("mailTemplateVerify", context);
     }
+
+    public String buildReminderEmail(String userName, String verifyLink) {
+        Context context = new Context();
+        context.setVariable("userName", userName);
+        context.setVariable("verifyLink", verifyLink);
+        return templateEngine.process("mailTemplateReminder", context);
+    }
 }

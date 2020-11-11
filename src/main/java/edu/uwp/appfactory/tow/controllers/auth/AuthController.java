@@ -115,7 +115,7 @@ public class AuthController {
         Optional<Users> usersOptional = usersRepository.findByUsername(email);
         Users user = usersOptional.get();
 
-        if (user.getVerEnabled()) {
+//        if (user.getVerEnabled()) {
             return ResponseEntity.ok(new JwtResponse(
                     jwt,
                     userDetails.getUUID(),
@@ -125,11 +125,11 @@ public class AuthController {
                     userDetails.getLastname(),
                     userDetails.getRole()
             ));
-        } else {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Account not verified."));
-        }
+//        } else {
+//            return ResponseEntity
+//                    .badRequest()
+//                    .body(new MessageResponse("Error: Account not verified."));
+//        }
     }
 
 
