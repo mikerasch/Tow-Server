@@ -16,15 +16,10 @@ import java.util.List;
 @Controller
 public class DispatcherController {
 
-    /**
-     * Creating a new dispatcher repository object.
-     */
     private final DispatcherRepository dispatcherRepository;
 
     /**
-     * DispatcherController constructor that news up a dispatch
-     * controller and sets the repo equal to the current repo.
-     * @param dispatcherRepository set the dispatchrepo to match the current repo
+     * DispatcherController constructor that news up a dispatch controller and sets the repo equal to the current repo.
      */
     @Autowired
     public DispatcherController(DispatcherRepository dispatcherRepository) {
@@ -33,15 +28,10 @@ public class DispatcherController {
 
     /**
      * This method gathers all of the drivers in the db, that are within the radius of the accident
-     * @param latitude the lat of the accident site
-     * @param longitude the long o the accident site
-     * @param radius the max radius that the dispathcer chooses to return within
-     * @return returns the list available drivers.
      */
     public ResponseEntity<?> findAllByDistance(float latitude, float longitude, int radius) {
         List<PDriver> drivers = dispatcherRepository.findAllByDistance(latitude, longitude, radius);
 
         return ResponseEntity.ok(drivers);
     }
-
 }

@@ -21,18 +21,12 @@ import java.util.Optional;
 @Controller
 public class DriverController {
 
-    /**
-     * Newing DriverRepository object.
-     */
     private final DriverRepository driverRepository;
     private final JwtUtils jwtUtils;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
-     * Driver controller constructor matching the local repo newly created,
-     * to the actual driverRepository.
-     * @param driverRepository sends in current repo to set equal to the local repo
-     * @param jwtUtils
+     * Driver controller constructor matching the local repo newly created to the actual driverRepository.
      */
     @Autowired
     public DriverController(DriverRepository driverRepository, JwtUtils jwtUtils) {
@@ -40,10 +34,8 @@ public class DriverController {
         this.jwtUtils = jwtUtils;
     }
 
-
     /**
      * work in progress setLocation that
-     * @param latitude
      */
     public ResponseEntity<?> setLocation(float latitude, float longitude, boolean active, String authorization) {
         try {
@@ -57,7 +49,6 @@ public class DriverController {
             }
 
             Driver driver = driverOptional.get();
-
             driver.setLongitude(longitude);
             driver.setLatitude(latitude);
             driver.setActive(active);
