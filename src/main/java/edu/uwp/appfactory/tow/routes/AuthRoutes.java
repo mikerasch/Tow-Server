@@ -41,7 +41,8 @@ public class AuthRoutes {
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestHeader("email") final String email,
-                                              @RequestHeader("password") final String password) {
+                                              @RequestHeader("password") final String password)
+                                                {
         return authController.authenticateUser(email, password);
     }
 

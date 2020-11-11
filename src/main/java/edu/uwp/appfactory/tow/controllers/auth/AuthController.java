@@ -112,16 +112,26 @@ public class AuthController {
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-        return ResponseEntity.ok(new JwtResponse(
-                jwt,
-                userDetails.getUUID(),
-                userDetails.getUsername(),
-                userDetails.getEmail(),
-                userDetails.getFirstname(),
-                userDetails.getLastname(),
-                userDetails.getRole()
-        ));
+        Optional<Users> usersOptional = usersRepository.findByUsername(email);
+        Users user = usersOptional.get();
+
+        if (user.getVerEnabled()) {
+            return ResponseEntity.ok(new JwtResponse(
+                    jwt,
+                    userDetails.getUUID(),
+                    userDetails.getUsername(),
+                    userDetails.getEmail(),
+                    userDetails.getFirstname(),
+                    userDetails.getLastname(),
+                    userDetails.getRole()
+            ));
+        } else {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Account not verified."));
+        }
     }
+
 
     public ResponseEntity<?> registerDriver(String email, String password, String firstname, String lastname) {
         try {
