@@ -8,25 +8,23 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
-import org.springframework.mail.MailSendException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+/**
+ *
+ */
 @Service
 public class AsyncEmail {
 
     @Value("${SPRING_DNS}")
     private String dns;
-
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
     private final JavaMailSender javaMailSender;
-
     private final ContentBuilder contentBuilder;
-
     private final FailedEmailRepository failedEmailRepository;
 
     @Autowired
@@ -41,8 +39,8 @@ public class AsyncEmail {
         try {
             String userName = "Hi, " + user.getFirstname() + " " + user.getLastname();
             String verifyLink = dns + "api/users/verification?token=" + user.getVerifyToken();
-
             String message = contentBuilder.buildVerifyEmail(userName, verifyLink);
+
             MimeMessagePreparator messagePreparation = mimeMessage -> {
                 MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
                 messageHelper.setFrom("DoNotReply", "DoNotReply");

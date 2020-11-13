@@ -23,21 +23,13 @@ import java.io.IOException;
  */
 @Component
 public class AuthTokenFilter extends OncePerRequestFilter {
-    /**
-     * JWT utilities object
-     */
+
     @Autowired
     private JwtUtils jwtUtils;
 
-    /**
-     * implementation of user details service object
-     */
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
-    /**
-     * logger object to log in console
-     */
     private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
 
     /**
@@ -66,8 +58,6 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
     /**
      * method that parses a JWT token from a user
-     * @param request made by the user
-     * @return the auth token
      */
     private String parseJwt(HttpServletRequest request) {
         String headerAuth = request.getHeader("Authorization");

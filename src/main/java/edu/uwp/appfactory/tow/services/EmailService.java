@@ -17,9 +17,7 @@ import org.springframework.stereotype.Service;
 public class EmailService {
 
     private final Logger logger = LoggerFactory.getLogger(EmailService.class);
-
     private final JavaMailSender javaMailSender;
-
     private final ContentBuilder contentBuilder;
 
     @Autowired
@@ -31,8 +29,8 @@ public class EmailService {
     public boolean sendResetMail(Users user, int token) {
         try {
             String userName = "Hi, " + user.getFirstname() + " " + user.getLastname();
-
             String message = contentBuilder.buildPasswordEmail(userName, token);
+
             MimeMessagePreparator messagePreparation = mimeMessage -> {
                 MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
                 messageHelper.setFrom("DoNotReply", "DoNotReply");
@@ -40,9 +38,10 @@ public class EmailService {
                 messageHelper.setSubject("Password Reset");
                 messageHelper.setText(message, true);
             };
-            javaMailSender.send(messagePreparation);
 
+            javaMailSender.send(messagePreparation);
             return true;
+
         } catch (MailException e) {
             logger.error(e.getMessage());
             return false;

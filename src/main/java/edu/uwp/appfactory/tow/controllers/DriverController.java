@@ -1,13 +1,7 @@
-/**
- *  The DriverController class communicates between the dispatchers route and the repositories.
- *  There are multiple methods contained in this class.
- */
-
 package edu.uwp.appfactory.tow.controllers;
 
 import edu.uwp.appfactory.tow.WebSecurityConfig.payload.response.MessageResponse;
 import edu.uwp.appfactory.tow.WebSecurityConfig.security.jwt.JwtUtils;
-import edu.uwp.appfactory.tow.queryinterfaces.PDriver;
 import edu.uwp.appfactory.tow.entities.Driver;
 import edu.uwp.appfactory.tow.repositories.DriverRepository;
 import org.slf4j.Logger;
@@ -16,29 +10,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-
 import javax.validation.ConstraintViolationException;
-import java.util.List;
 import java.util.Optional;
 
-
+/**
+ *  The DriverController class communicates between the dispatchers route and the repositories.
+ *  There are multiple methods contained in this class.
+ */
 @EnableAutoConfiguration
 @Controller
 public class DriverController {
 
-
-    /**
-     * Newing DriverRepository object.
-     */
     private final DriverRepository driverRepository;
     private final JwtUtils jwtUtils;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
-     * Driver controller constructor matching the local repo newly created,
-     * to the actual driverRepository.
-     * @param driverRepository sends in current repo to set equal to the local repo
-     * @param jwtUtils
+     * Driver controller constructor matching the local repo newly created to the actual driverRepository.
      */
     @Autowired
     public DriverController(DriverRepository driverRepository, JwtUtils jwtUtils) {
@@ -47,21 +35,7 @@ public class DriverController {
     }
 
     /**
-     * This method gathers all of the drivers in the db, that are within the radius of the accident
-     * @param latitude the lat of the accident site
-     * @param longitude the long o the accident site
-     * @param radius the max radius that the dispathcer chooses to return within
-     * @return returns the list available drivers.
-     */
-    public ResponseEntity<?> findAllByDistance(float latitude, float longitude, int radius) {
-        List<PDriver> drivers = driverRepository.findAllByDistance(latitude, longitude, radius);
-
-        return ResponseEntity.ok(drivers);
-    }
-
-    /**
      * work in progress setLocation that
-     * @param latitude
      */
     public ResponseEntity<?> setLocation(float latitude, float longitude, boolean active, String authorization) {
         try {
@@ -75,7 +49,6 @@ public class DriverController {
             }
 
             Driver driver = driverOptional.get();
-
             driver.setLongitude(longitude);
             driver.setLatitude(latitude);
             driver.setActive(active);
@@ -91,5 +64,4 @@ public class DriverController {
             return ResponseEntity.status(499).body("Error: " + e.getMessage());
         }
     }
-
 }

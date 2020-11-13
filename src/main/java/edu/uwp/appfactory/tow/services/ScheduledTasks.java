@@ -3,9 +3,7 @@ package edu.uwp.appfactory.tow.services;
 import edu.uwp.appfactory.tow.WebSecurityConfig.repository.UsersRepository;
 import edu.uwp.appfactory.tow.entities.FailedEmail;
 import edu.uwp.appfactory.tow.queryinterfaces.EmailReminderInterface;
-import edu.uwp.appfactory.tow.queryinterfaces.VerifyTokenInterface;
 import edu.uwp.appfactory.tow.repositories.FailedEmailRepository;
-import net.bytebuddy.build.Plugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,8 +14,14 @@ import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *
+ */
 @Service
 public class ScheduledTasks {
     @Value("${SPRING_DNS}")
@@ -37,7 +41,7 @@ public class ScheduledTasks {
     }
 
     //@Scheduled(cron = "1 34 15 * * *")
-    @Scheduled(cron = "0 0 */11 * * *")
+    @Scheduled(cron = "0 0 0 * * ?")
     public void CheckFailedEmail() {
         List<FailedEmail> failedEmails = failedEmailRepository.findAll();
         failedEmails.forEach(entity -> {
@@ -64,35 +68,38 @@ public class ScheduledTasks {
         });
     }
 
-    //todo: if account 4 days old send, if account >8 days, delete account, change cron to every day at noon && midnight
-    //todo: make html page for reminder
-
     //@Scheduled(cron = "0 0 0 */3 * *")
-//    @Scheduled(cron = "1 55 15 * * *")
-//    private void CheckVerifyStatus() {
-//        List<EmailReminderInterface> nonVerifiedUsers = usersRepository.findAllNonVerified();
-//        if (nonVerifiedUsers.isEmpty()) {
-//            return;
-//        }
-//        nonVerifiedUsers.forEach(entity -> {
-//            try {
-//                String userName = "Hi, " + entity.getFirstname() + " " + entity.getLastname();
-//                String verifyLink = dns + "api/users/verification?token=" + entity.getVerifyToken();
-//
-//                String message = contentBuilder.buildVerifyEmail(userName, verifyLink);
-//
-//                MimeMessagePreparator messagePreparation = mimeMessage -> {
-//                    MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
-//                    messageHelper.setFrom("DoNotReply", "DoNotReply");
-//                    messageHelper.setTo(entity.getEmail());
-//                    messageHelper.setSubject("Email Verification");
-//                    messageHelper.setText(message, true);
-//                };
-//
-//                javaMailSender.send(messagePreparation);
-//            } catch (MailException e) {
-//                logger.error(e.getMessage());
-//            }
-//        });
-//    }
+    @Scheduled(cron = "0 0 1 * * ?")
+    //@Scheduled(cron = "0 * * ? * *")
+    private void CheckVerifyStatus() {
+        ArrayList<EmailReminderInterface> nonVerifiedUsers = usersRepository.findAllNonVerified();
+        if (nonVerifiedUsers.isEmpty()) {
+            return;
+        }
+        nonVerifiedUsers.forEach(entity -> {
+            LocalDate userVerifyDate = LocalDate.parse(entity.getVerifyDate());
+            Period periodBetween = Period.between(userVerifyDate, LocalDate.now());
+            if (periodBetween.getDays() > 8) {
+                usersRepository.deleteByEmail(entity.getEmail());
+            } else if (periodBetween.getDays() == 4) {
+                try {
+                    String userName = "Hi, " + entity.getFirstname() + " " + entity.getLastname();
+                    String verifyLink = dns + "api/users/verification?token=" + entity.getVerifyToken();
+
+                    String message = contentBuilder.buildReminderEmail(userName, verifyLink);
+
+                    MimeMessagePreparator messagePreparation = mimeMessage -> {
+                        MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
+                        messageHelper.setFrom("DoNotReply", "DoNotReply");
+                        messageHelper.setTo(entity.getEmail());
+                        messageHelper.setSubject("Email Verification Reminder");
+                        messageHelper.setText(message, true);
+                    };
+                    javaMailSender.send(messagePreparation);
+                } catch (MailException e) {
+                    logger.error(e.getMessage());
+                }
+            }
+        });
+    }
 }

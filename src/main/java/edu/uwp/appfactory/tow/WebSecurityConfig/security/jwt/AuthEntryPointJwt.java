@@ -16,16 +16,11 @@ import java.io.IOException;
 @Component
 public class AuthEntryPointJwt implements AuthenticationEntryPoint {
 
-    /**
-     * logger to log in console
-     */
     private static final Logger logger = LoggerFactory.getLogger(AuthEntryPointJwt.class);
 
-    /**
-     * commences an authorization, returns error if unauthorized
-     */
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response,
+    public void commence(HttpServletRequest request,
+                         HttpServletResponse response,
                          AuthenticationException authException) throws IOException {
         logger.error("Unauthorized error: {}", authException.getMessage());
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Error: Unauthorized");

@@ -35,22 +35,15 @@ import edu.uwp.appfactory.tow.WebSecurityConfig.security.services.UserDetailsSer
         prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    /**
-     * user details service
-     */
     @Autowired
     UserDetailsServiceImpl userDetailsService;
 
-    /**
-     * authorization entry point, handles attempted auths
-     */
     @Autowired
     private AuthEntryPointJwt unauthorizedHandler;
 
-    /**
-     * filter for JWT token
-     * @return Authentication filter for a token
-     */
+    @Autowired
+    private RoleHierarchy roleHierarchy;
+
     @Bean
     public AuthTokenFilter authenticationJwtTokenFilter() {
         return new AuthTokenFilter();
@@ -98,12 +91,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         roleHierarchy.setHierarchy("ROLE_ADMIN > ROLE_DISPATCHER ROLE_DRIVER");
         return roleHierarchy;
     }
-
-    /**
-     * declaration of the role hierarchy class variable
-     */
-    @Autowired
-    private RoleHierarchy roleHierarchy;
 
     /**
      * security expression handler, using the default web security expression

@@ -1,13 +1,15 @@
 package edu.uwp.appfactory.tow.entities;
 
 import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.UUID;
 
+/**
+ *
+ */
 @Entity
 @Table(name = "failed_email")
 public class FailedEmail {
@@ -17,6 +19,10 @@ public class FailedEmail {
             name = "UUID",
             strategy = "org.hibernate.id.UUIDGenerator"
     )
+
+    /**
+     *
+     */
     private UUID uuid;
     private String email;
     private String firstname;
@@ -25,6 +31,9 @@ public class FailedEmail {
     private String verify_token;
     private int retries;
 
+    /**
+     *
+     */
     public FailedEmail(String email, String user_uuid, String firstname, String lastname, String verify_token) {
         this.email = email;
         this.user_uuid = user_uuid;
@@ -33,14 +42,12 @@ public class FailedEmail {
         this.verify_token = verify_token;
     }
 
-    public FailedEmail() {
+    /**
+     *
+     */
+    public FailedEmail() { }
 
-    }
-
-    public UUID getUuid() {
-        return uuid;
-    }
-
+    public UUID getUuid() { return uuid; }
     public void setUuid(UUID uuid) {
         this.uuid = uuid;
     }
@@ -48,7 +55,6 @@ public class FailedEmail {
     public String getEmail() {
         return email;
     }
-
     public void setEmail(String email) {
         this.email = email;
     }
@@ -56,7 +62,6 @@ public class FailedEmail {
     public String getFirstname() {
         return firstname;
     }
-
     public void setFirstname(String firstname) {
         this.firstname = firstname;
     }
@@ -64,7 +69,6 @@ public class FailedEmail {
     public String getLastname() {
         return lastname;
     }
-
     public void setLastname(String lastname) {
         this.lastname = lastname;
     }
@@ -72,7 +76,6 @@ public class FailedEmail {
     public String getUser_uuid() {
         return user_uuid;
     }
-
     public void setUser_uuid(String user_uuid) {
         this.user_uuid = user_uuid;
     }
@@ -80,7 +83,6 @@ public class FailedEmail {
     public String getVerify_token() {
         return verify_token;
     }
-
     public void setVerify_token(String verify_token) {
         this.verify_token = verify_token;
     }
@@ -88,7 +90,6 @@ public class FailedEmail {
     public int getRetries() {
         return retries;
     }
-
     public void setRetries(int retries) {
         this.retries = retries;
     }

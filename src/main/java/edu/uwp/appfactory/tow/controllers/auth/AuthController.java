@@ -1,8 +1,3 @@
-/**
- *
- */
-
-
 package edu.uwp.appfactory.tow.controllers.auth;
 
 import edu.uwp.appfactory.tow.entities.Dispatcher;
@@ -43,19 +38,12 @@ import static java.lang.String.format;
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
-
     private final UsersRepository usersRepository;
-
     private final RoleRepository roleRepository;
-
     private final PasswordEncoder encoder;
-
     private final JwtUtils jwtUtils;
-
     private final EmailService sender;
-
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
     private final AsyncEmail sendEmail;
 
     @Autowired
@@ -75,21 +63,17 @@ public class AuthController {
 
     public ResponseEntity<?> getUserByEmail(String email) {
         Users user = usersRepository.findByEmail(email);
-
         if (user == null) {
             return ResponseEntity
                     .status(500)
                     .body(new MessageResponse("Error: User does not exist or does not have role of user!"));
         }
-
         user.setPassword("");
-
         return ResponseEntity.ok(user);
     }
 
     public ResponseEntity<?> deleteUserById(String email) {
         Users users = usersRepository.findByEmail(email);
-
         if (users == null) {
             return ResponseEntity
                     .status(500)
@@ -103,7 +87,6 @@ public class AuthController {
     }
 
     public ResponseEntity<?> authenticateUser(String email, String password) {
-
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(email, password));
 
@@ -112,6 +95,15 @@ public class AuthController {
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
+        Optional<Users> usersOptional = usersRepository.findByUsername(email);
+        if (usersOptional.isEmpty()) {
+            return ResponseEntity
+                    .status(494)
+                    .body(new MessageResponse("User does not exist"));
+        }
+        //todo: when not testing, uncomment code
+//        Users user = usersOptional.get();
+//        if (user.getVerEnabled()) {
         return ResponseEntity.ok(new JwtResponse(
                 jwt,
                 userDetails.getUUID(),
@@ -121,7 +113,13 @@ public class AuthController {
                 userDetails.getLastname(),
                 userDetails.getRole()
         ));
+//        } else {
+//            return ResponseEntity
+//                    .badRequest()
+//                    .body(new MessageResponse("Error: Account not verified."));
+//        }
     }
+
 
     public ResponseEntity<?> registerDriver(String email, String password, String firstname, String lastname) {
         try {
@@ -216,19 +214,12 @@ public class AuthController {
             return ResponseEntity
                     .ok(new MessageResponse("Driver registered successfully!"));
 
-
-            //boolean didSend = sender.sendVerifyMail(dispatcher);
-//          else   return ResponseEntity
-//                        .status(500)
-//                        .body(new MessageResponse("Error in driver registration"));
-//            }
         } catch (TransactionSystemException | ConstraintViolationException e) {
             return ResponseEntity.status(499).body("Invalid Entries");
         } catch (Exception e) {
             return ResponseEntity.status(500).body("System Error");
         }
     }
-
 
     public ResponseEntity<?> verification(String token) {
         try {
@@ -243,7 +234,6 @@ public class AuthController {
             LocalDate userVerifyDate = LocalDate.parse(user.getVerifyDate());
             Period periodBetween = Period.between(userVerifyDate, LocalDate.now());
 
-
             if (periodBetween.getDays() < 8) {
                 if (user.getVerifyToken().equals(token) && !user.getVerEnabled()) {
                     usersRepository.updateUserEmailVerifiedByUUID(user.getUUID(), true);
@@ -257,10 +247,10 @@ public class AuthController {
                             .body(new MessageResponse("Different token, or user was already verified"));
                 }
             } else {
-                //todo: delete account
+                usersRepository.deleteByEmail(user.getEmail());
                 return ResponseEntity
-                        .status(497)
-                        .body(new MessageResponse("Verification token expired, please request a new one"));
+                        .status(496)
+                        .body(new MessageResponse("Account has not verified within seven days, account deleted"));
             }
         } catch (ConstraintViolationException e) {
             return ResponseEntity.status(498).body("Invalid Entries: " + e.getMessage());

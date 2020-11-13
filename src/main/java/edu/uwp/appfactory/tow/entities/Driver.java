@@ -1,14 +1,13 @@
-/**
- * The driver entity interacts with the driver table.
- */
 package edu.uwp.appfactory.tow.entities;
 
 import edu.uwp.appfactory.tow.data.IDriver;
-
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
+/**
+ * The driver entity interacts with the driver table.
+ */
 @Entity(name = "Driver")
 @Table(name = "driver")
 @PrimaryKeyJoinColumn(name = "uuid")
@@ -22,15 +21,7 @@ public class Driver extends Users implements IDriver {
     private boolean active;
 
     /**
-     * A constructor that takes 8 parameters
-     * @param email the new drivers email  
-     * @param username the new drivers username
-     * @param password the new drivers password
-     * @param firstname the new drivers first name
-     * @param lastname the new drivers last name
-     * @param latitude the drivers initial UTM lat ( may be null during creation)
-     * @param longitude the drivers initial UTM long ( may be null during creation)
-     * @param active the drivers availability status, will likely start at false
+     * A constructor that takes 8 parameters inheriting from users
      */
     public Driver(String email, String username, String password, String firstname, String lastname, float latitude, float longitude, boolean active) {
         super(email, username, password, firstname, lastname);
@@ -42,18 +33,11 @@ public class Driver extends Users implements IDriver {
     /**
      * default constructor
      */
-    public Driver() {
-
-    }
-
-    /**
-     * Getters & Setters
-     */
+    public Driver() { }
 
     public boolean isActive() {
         return active;
     }
-
     public void setActive(boolean active) {
         this.active = active;
     }
@@ -61,7 +45,6 @@ public class Driver extends Users implements IDriver {
     public float getLatitude() {
         return latitude;
     }
-
     public void setLatitude(float latitude) {
         this.latitude = latitude;
     }
@@ -69,7 +52,6 @@ public class Driver extends Users implements IDriver {
     public float getLongitude() {
         return longitude;
     }
-
     public void setLongitude(float longitude) {
         this.longitude = longitude;
     }

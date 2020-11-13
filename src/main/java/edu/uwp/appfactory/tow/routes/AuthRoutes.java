@@ -1,27 +1,22 @@
-/**
- * this class contains all of the routes that the drivers, dispatchers,
- * and admins may hit in order to create thier account.
- */
 package edu.uwp.appfactory.tow.routes;
-
-/**
- * @author: Gianluca Eickenberg, Colin Hoffman
- * @modifiedBy: Quincy Kayle, Matthew Rank
- */
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import edu.uwp.appfactory.tow.controllers.auth.AuthController;
 
+/**
+ * @author: Gianluca Eickenberg, Colin Hoffman
+ * @modifiedBy: Quincy Kayle, Matthew Rank
+ *  * this class contains all of the routes that the drivers, dispatchers,
+ *  * and admins may hit in order to create thier account.
+ *
+ */
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/users")
 public class AuthRoutes {
 
-    /**
-     *
-     */
     private final AuthController authController;
     public AuthRoutes(AuthController authController) {
         this.authController = authController;
@@ -77,7 +72,6 @@ public class AuthRoutes {
 
     @GetMapping("/verification")
     public ResponseEntity<?> verification(@RequestParam("token") final String token){
-
         return authController.verification(token);
     }
 }

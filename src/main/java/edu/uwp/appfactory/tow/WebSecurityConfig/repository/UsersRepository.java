@@ -7,9 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-
 import javax.transaction.Transactional;
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Optional;
 
 /**
@@ -22,6 +21,10 @@ public interface UsersRepository extends JpaRepository<Users, String> {
     Optional<Users> findByResetToken(int resetToken);
 
     Boolean existsByUsername(String username);
+
+    @Transactional
+    @Modifying
+    void deleteByEmail(String email);
 
     Boolean existsByEmail(String email);
 
@@ -38,6 +41,6 @@ public interface UsersRepository extends JpaRepository<Users, String> {
     @Query(value = "SELECT *, 0 as clazz_ FROM users WHERE uuid = ?1", nativeQuery = true)
     Optional<Users> findByUUID(String UUID);
 
-    @Query(value = "SELECT uuid, email, firstname, lastname, verify_token FROM users WHERE ver_enabled = false", nativeQuery = true)
-    List<EmailReminderInterface> findAllNonVerified();
+    @Query(value = "SELECT uuid, email, firstname, lastname, verify_token, verify_date FROM users WHERE ver_enabled = false", nativeQuery = true)
+    ArrayList<EmailReminderInterface> findAllNonVerified();
 }

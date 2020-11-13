@@ -15,33 +15,20 @@ import java.util.function.Function;
  */
 @Component
 public class JwtUtils {
-    /**
-     * logger to log items in console
-     */
+
     private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 
-    /**
-     * JWT secret used to encode/decode
-     */
     @Value("${tow.app.jwtSecret}")
     private String jwtSecret;
 
-    /**
-     * JWT expiration time in milliseconds
-     */
     @Value("${tow.app.jwtExpirationMs}")
     private int jwtExpirationMs;
 
-    /**
-     * JWT reset expiration time in milliseconds
-     */
     @Value("${tow.app.jwtResetExpirationMs}")
     private int jwtResetExpirationMs;
 
     /**
      * method that generates a JWT token
-     * @param authentication authentication object
-     * @return JWT built token
      */
     public String generateJwtToken(Authentication authentication) {
 
@@ -57,8 +44,6 @@ public class JwtUtils {
 
     /**
      * method to refresh a users JWT token
-     * @param UUID of user
-     * @return JWT built token
      */
     public String refreshJwtToken(String UUID) {
 
@@ -72,8 +57,6 @@ public class JwtUtils {
 
     /**
      * method to get UUID from a JWT token
-     * @param token from JWT for a user
-     * @return UUID of the JWT token user
      */
     public String getUUIDFromJwtToken(String token) {
 
@@ -94,7 +77,7 @@ public class JwtUtils {
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
     }
-    public String generateResetJwtDigit(String resetDigits) { // pull digits to see if digits match provided email
+    public String generateResetJwtDigit(String resetDigits) {
 
         return Jwts.builder()
                 .setSubject(resetDigits)
@@ -106,8 +89,6 @@ public class JwtUtils {
 
     /**
      * method to validate a JWT token
-     * @param authToken of user
-     * @return boolean if it was valid or not
      */
     public boolean validateJwtToken(String authToken) {
         try {
