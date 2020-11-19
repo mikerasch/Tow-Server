@@ -37,7 +37,7 @@ public class DriverController {
     /**
      * work in progress setLocation that
      */
-    public ResponseEntity<?> setLocation(float latitude, float longitude, boolean active, String authorization) {
+    public ResponseEntity<?> setLocation(float latitude, float longitude, String truck, boolean active, String authorization) {
         try {
             logger.debug(authorization);
             String UUID = jwtUtils.getUUIDFromJwtToken(authorization);
@@ -51,6 +51,7 @@ public class DriverController {
             Driver driver = driverOptional.get();
             driver.setLongitude(longitude);
             driver.setLatitude(latitude);
+            driver.setTruck(truck);
             driver.setActive(active);
             driverRepository.save(driver);
 

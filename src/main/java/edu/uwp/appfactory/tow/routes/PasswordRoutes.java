@@ -29,7 +29,7 @@ public class PasswordRoutes {
         return passwordController.verify(email, token);
     }
 
-    @PostMapping("/reset")
+    @PatchMapping("/reset")
     public ResponseEntity<?> reset(@RequestHeader("email") final String email,
                                     @RequestHeader("token") final int token,
                                     @RequestHeader("password") final String password) {

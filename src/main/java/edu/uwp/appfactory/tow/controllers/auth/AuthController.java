@@ -137,6 +137,7 @@ public class AuthController {
                     lastname,
                     0,
                     0,
+                    "temp",
                     false);
 
             Role role = roleRepository.findByName(ERole.ROLE_DRIVER)

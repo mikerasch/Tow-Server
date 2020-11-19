@@ -19,14 +19,16 @@ public class Driver extends Users implements IDriver {
     private float latitude;
     private float longitude;
     private boolean active;
+    private String truck_type;
 
     /**
      * A constructor that takes 8 parameters inheriting from users
      */
-    public Driver(String email, String username, String password, String firstname, String lastname, float latitude, float longitude, boolean active) {
+    public Driver(String email, String username, String password, String firstname, String lastname, float latitude, float longitude, String truck, boolean active) {
         super(email, username, password, firstname, lastname);
         this.latitude = latitude;
         this.longitude = longitude;
+        this.truck_type = truck;
         this.active = active;
     }
 
@@ -38,6 +40,11 @@ public class Driver extends Users implements IDriver {
     public boolean isActive() {
         return active;
     }
+
+    public void setTruck(String truck) {
+        this.truck_type = truck;
+    }
+
     public void setActive(boolean active) {
         this.active = active;
     }
