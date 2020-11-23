@@ -37,6 +37,12 @@ import static java.lang.String.format;
 @Controller
 public class AuthController {
 
+    //access tokens expire quickly
+    //clients ask for new one based on their refresh token
+    //if refresh token is expired, re-auth
+    //logout route
+    //JSON WEB TOKEN NPM
+
     private final AuthenticationManager authenticationManager;
     private final UsersRepository usersRepository;
     private final RoleRepository roleRepository;
@@ -121,7 +127,7 @@ public class AuthController {
     }
 
 
-    public ResponseEntity<?> registerDriver(String email, String password, String firstname, String lastname) {
+    public ResponseEntity<?> registerDriver(String email, String password, String firstname, String lastname, String phone) {
         try {
             if (usersRepository.existsByEmail(email)) {
                 return ResponseEntity
@@ -135,6 +141,7 @@ public class AuthController {
                     encoder.encode(password),
                     firstname,
                     lastname,
+                    phone,
                     0,
                     0,
                     false);
@@ -159,7 +166,7 @@ public class AuthController {
         }
     }
 
-    public ResponseEntity<?> registerAdmin(String email, String password, String firstname, String lastname) {
+    public ResponseEntity<?> registerAdmin(String email, String password, String firstname, String lastname, String phone) {
 
         if (usersRepository.existsByEmail(email)) {
             return ResponseEntity
@@ -172,7 +179,8 @@ public class AuthController {
                 email,
                 encoder.encode(password),
                 firstname,
-                lastname);
+                lastname,
+                phone);
 
         Role role = roleRepository.findByName(ERole.ROLE_ADMIN)
                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
@@ -183,7 +191,7 @@ public class AuthController {
         return ResponseEntity.ok(new MessageResponse("Admin registered successfully!"));
     }
 
-    public ResponseEntity<?> registerDispatcher(String email, String password, String firstname, String lastname, String precinct) {
+    public ResponseEntity<?> registerDispatcher(String email, String password, String firstname, String lastname, String phone, String precinct) {
         try {
             if (usersRepository.existsByEmail(email)) {
                 return ResponseEntity
@@ -198,6 +206,7 @@ public class AuthController {
                     encoder.encode(password),
                     firstname,
                     lastname,
+                    phone,
                     precinct);
 
             Role role = roleRepository.findByName(ERole.ROLE_DISPATCHER)
@@ -218,6 +227,31 @@ public class AuthController {
             return ResponseEntity.status(499).body("Invalid Entries");
         } catch (Exception e) {
             return ResponseEntity.status(500).body("System Error");
+        }
+    }
+
+    public ResponseEntity<?> update(String jwtToken, Users user) {
+        try {
+            Optional<Users> usersOptional = usersRepository.findByUsername(user.getEmail());
+            if (usersOptional.isEmpty()) {
+                return ResponseEntity
+                        .status(500)
+                        .body(new MessageResponse("Not successful!"));
+            }
+
+            Users oldUser = usersOptional.get();
+            oldUser.setFirstname(user.getFirstname());
+            oldUser.setLastname(user.getLastname());
+            //oldUser.setPhoneNumber(user.getPhoneNumber);
+
+            usersRepository.save(oldUser);
+
+            return ResponseEntity
+                    .status(200)
+                    .body(new MessageResponse("Successful!"));
+
+        } catch (Exception e) {
+            return ResponseEntity.status(499).body("Error: " + e.getMessage());
         }
     }
 

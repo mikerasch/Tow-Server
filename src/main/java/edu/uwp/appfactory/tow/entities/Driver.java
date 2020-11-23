@@ -23,8 +23,8 @@ public class Driver extends Users implements IDriver {
     /**
      * A constructor that takes 8 parameters inheriting from users
      */
-    public Driver(String email, String username, String password, String firstname, String lastname, float latitude, float longitude, boolean active) {
-        super(email, username, password, firstname, lastname);
+    public Driver(String email, String username, String password, String firstname, String lastname, String phone, float latitude, float longitude, boolean active) {
+        super(email, username, password, firstname, lastname, phone);
         this.latitude = latitude;
         this.longitude = longitude;
         this.active = active;

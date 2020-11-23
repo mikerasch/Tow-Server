@@ -39,4 +39,7 @@ public interface IUser extends Serializable {
 
      boolean getVerEnabled();
      void setVerEnabled(boolean verEnabled);
+
+     String getPhone();
+     void setPhone(String phone);
 }

@@ -69,8 +69,9 @@ public class ScheduledTasks {
     }
 
     //@Scheduled(cron = "0 0 0 */3 * *")
-    @Scheduled(cron = "0 0 1 * * ?")
+    /////@Scheduled(cron = "0 0 1 * * ?")
     //@Scheduled(cron = "0 * * ? * *")
+    @Scheduled(cron = "1 20 19 * * *")
     private void CheckVerifyStatus() {
         ArrayList<EmailReminderInterface> nonVerifiedUsers = usersRepository.findAllNonVerified();
         if (nonVerifiedUsers.isEmpty()) {

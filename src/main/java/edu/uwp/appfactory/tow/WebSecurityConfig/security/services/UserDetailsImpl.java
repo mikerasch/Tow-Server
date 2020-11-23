@@ -82,11 +82,9 @@ public class UserDetailsImpl implements UserDetails {
         Collection<Role> roles = new ArrayList<>();
         roles.add(tempRole);
 
-        List<GrantedAuthority> authorities = roles.stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName().name()))
+        return roles.stream()
+                .map(role1 -> new SimpleGrantedAuthority(role1.getName().name()))
                 .collect(Collectors.toList());
-
-        return authorities;
     }
 
 

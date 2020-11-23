@@ -48,6 +48,7 @@ public class Users implements IUser {
 
     @NotBlank
     private String role;
+    private String phone;
     private int resetToken;
     private String resetDate;
     private String verifyDate;
@@ -57,12 +58,13 @@ public class Users implements IUser {
     /**
      * constructor that takes 5 parameters
      */
-    public Users(String email, String username, String password, String firstname, String lastname) {
+    public Users(String email, String username, String password, String firstname, String lastname, String phone) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.firstname = firstname;
         this.lastname = lastname;
+        this.phone = phone;
     }
 
     /**
@@ -152,4 +154,7 @@ public class Users implements IUser {
         return verEnabled;
     }
     public void setVerEnabled(boolean verEnabled) { this.verEnabled = verEnabled; }
+
+    public String getPhone() { return phone; }
+    public void setPhone(String phone) { this.phone = phone; }
 }
