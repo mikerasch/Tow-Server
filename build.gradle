@@ -44,9 +44,9 @@ test {
 }
 
 flyway {
-    url = 'jdbc:postgresql://ec2-35-173-164-51.compute-1.amazonaws.com:5432/tow'
-    user = 'tow'
-    password = 'Qm0IeadH4qj40FlEdbMvJB98ZJv8MnFXwIZypPjkPqLN1j4Oo7'
+    url = 'jdbc:postgresql://mattrank.ddns.net/postgres'
+    user = 'postgres'
+    password = '5minrspp'
     schemas = ['public']
 }
 
