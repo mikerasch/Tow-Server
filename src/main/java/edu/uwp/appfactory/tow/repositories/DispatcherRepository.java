@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.UUID;
 
 /**
  * A dispatcher repo that may be needed in the future but currently does nothing.
@@ -19,9 +18,8 @@ public interface DispatcherRepository extends JpaRepository<Driver, String> {
     /**
      * retrieves all drivers within a radius of the accident
      */
-    @Query(value = "with use as (select * from driver where active = true && truck_type = truckParam) " +
+    @Query(value = "with use as (select * from driver where active = true && truck_type = ?4) " +
             "SELECT t1.latitude, t1.longitude,  t2.* from use t1 inner join users t2 on t1.uuid = t2.uuid " +
             "where (SELECT calculate_distance(?1, ?2, t1.latitude, t1.longitude)) <= ?3", nativeQuery = true)
-    List<PDriver> findAllByDistance(float latitude, float longitude, int radius, String truckParam);
-
+    List<PDriver> findByDistance(float latitude, float longitude, int radius, String truckParam);
 }
