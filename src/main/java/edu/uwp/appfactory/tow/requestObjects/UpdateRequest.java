@@ -1,11 +1,11 @@
-package edu.uwp.appfactory.tow.queryinterfaces;
+package edu.uwp.appfactory.tow.requestObjects;
 
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 
-public class UpdateUser {
+public class UpdateRequest {
     @NotBlank
     @Getter
     @Setter

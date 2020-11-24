@@ -139,7 +139,7 @@ public class AuthController {
         }
     }
 
-    public boolean registerDispatcher(String email, String password, String firstname, String lastname, String phone, String precinct) {
+    public boolean registerDispatcher(String firstname, String lastname, String email, String password, String phone) {
         if (!usersRepository.existsByEmail(email)) {
             Dispatcher dispatcher = new Dispatcher(
                     email,
@@ -148,7 +148,7 @@ public class AuthController {
                     firstname,
                     lastname,
                     phone,
-                    precinct);
+                    "");
 
             Role role = roleRepository.findByName(ERole.ROLE_DISPATCHER)
                     .orElseThrow(() -> new RuntimeException("Error: Role is not found."));

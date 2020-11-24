@@ -3,7 +3,8 @@ package edu.uwp.appfactory.tow.routes;
 import edu.uwp.appfactory.tow.WebSecurityConfig.security.jwt.JwtUtils;
 import edu.uwp.appfactory.tow.controllers.UserController;
 import edu.uwp.appfactory.tow.entities.Users;
-import edu.uwp.appfactory.tow.queryinterfaces.UpdateUser;
+import edu.uwp.appfactory.tow.requestObjects.UpdatRequest;
+import edu.uwp.appfactory.tow.requestObjects.UpdateRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -42,9 +43,9 @@ public class UserRoutes {
     @PatchMapping(value = "")
     @PreAuthorize("hasRole('DRIVER') or hasRole('DISPATCHER')")
     public ResponseEntity<?> update(@RequestHeader("Authorization") final String jwtToken,
-                                    @RequestBody UpdateUser userNew) {
+                                    @RequestBody UpdatRequest updateRequest) {
         String userUUID = jwtUtils.getUUIDFromJwtToken(jwtToken);
-        Users data = userController.updateByUUID(userUUID, userNew);
+        Users data = userController.updateByUUID(userUUID, updateRequest.getFirstname(), updateRequest.getLastname(), updateRequest.getEmail(), updateRequest.getPhone());
         if (data != null) {
             return ResponseEntity.ok(data);
         } else {

@@ -2,7 +2,7 @@ package edu.uwp.appfactory.tow.controllers;
 
 import edu.uwp.appfactory.tow.WebSecurityConfig.repository.UsersRepository;
 import edu.uwp.appfactory.tow.entities.Users;
-import edu.uwp.appfactory.tow.queryinterfaces.UpdateUser;
+import edu.uwp.appfactory.tow.requestObjects.UpdateRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -24,16 +24,16 @@ public class UserController {
 
     //todo: do not lock people out if they haven't verified, give them like a week to do it, then lock or delete
     //todo: ask client / zaid
-    public Users updateByUUID(String userUUID, UpdateUser userNew) {
+    public Users updateByUUID(String userUUID, String firstname, String lastname, String email, String phone) {
         //todo: get user by uuid
         Optional<Users> usersOptional = usersRepository.findByUUID(userUUID);
 
         if (usersOptional.isPresent()) {
             Users user = usersOptional.get();
-            user.setFirstname(userNew.getFirstname());
-            user.setLastname(userNew.getLastname());
-            user.setEmail(userNew.getEmail());
-            user.setPhone(userNew.getPhone());
+            user.setFirstname(firstname);
+            user.setLastname(lastname);
+            user.setEmail(email);
+            user.setPhone(phone);
             usersRepository.save(user);
             return user;
         } else

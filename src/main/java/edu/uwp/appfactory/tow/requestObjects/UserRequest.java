@@ -1,9 +1,33 @@
 package edu.uwp.appfactory.tow.requestObjects;
 
-public interface UserRequest {
-    String getFirstname();
-    String getLastname();
-    String getEmail();
-    String getPassword();
-    String getPhone();
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.validation.constraints.NotBlank;
+
+public class UserRequest {
+    @NotBlank
+    @Getter
+    @Setter
+    private String firstname;
+
+    @NotBlank
+    @Getter
+    @Setter
+    private String lastname;
+
+    @NotBlank
+    @Getter
+    @Setter
+    private String email;
+
+    @NotBlank
+    @Getter
+    @Setter
+    private String password;
+
+    @NotBlank
+    @Getter
+    @Setter
+    private String phone;
 }

@@ -28,6 +28,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.flywaydb:flyway-core'
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
+    implementation 'org.jetbrains:annotations:19.0.0'
     compile group: 'com.sun.mail', name: 'javax.mail', version: '1.6.2'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
@@ -44,9 +45,9 @@ test {
 }
 
 flyway {
-    url = 'jdbc:postgresql://mattrank.ddns.net/postgres'
-    user = 'postgres'
-    password = '5minrspp'
+    url = 'jdbc:postgresql://ec2-35-173-164-51.compute-1.amazonaws.com:5432/tow'
+    user = 'tow'
+    password = 'Qm0IeadH4qj40FlEdbMvJB98ZJv8MnFXwIZypPjkPqLN1j4Oo7'
     schemas = ['public']
 }
 
