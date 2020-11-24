@@ -4,10 +4,12 @@ import edu.uwp.appfactory.tow.WebSecurityConfig.repository.UsersRepository;
 import edu.uwp.appfactory.tow.entities.Users;
 import edu.uwp.appfactory.tow.requestObjects.UpdateRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Controller;
 
 import java.util.Optional;
 
+@EnableAutoConfiguration
 @Controller
 public class UserController {
     private final UsersRepository usersRepository;
