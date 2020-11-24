@@ -19,8 +19,8 @@ public class UserController {
         this.usersRepository = usersRepository;
     }
 
-    public Users findByEmail(String email) {
-        Optional<Users> user = usersRepository.findByUsername(email);
+    public Users findByUUID(String userUUID) {
+        Optional<Users> user = usersRepository.findByUUID(userUUID);
         return user.orElse(null);
     }
 
