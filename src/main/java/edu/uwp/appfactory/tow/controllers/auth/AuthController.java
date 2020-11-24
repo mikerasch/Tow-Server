@@ -139,7 +139,7 @@ public class AuthController {
         }
     }
 
-    public boolean registerDispatcher(String firstname, String lastname, String email, String password, String phone) {
+    public boolean registerDispatcher(String email, String password, String firstname, String lastname, String phone) {
         if (!usersRepository.existsByEmail(email)) {
             Dispatcher dispatcher = new Dispatcher(
                     email,

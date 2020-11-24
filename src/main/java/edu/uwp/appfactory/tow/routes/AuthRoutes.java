@@ -23,7 +23,7 @@ public class AuthRoutes {
         if (token != null) {
             return ResponseEntity.ok(token);
         } else {
-            return ResponseEntity.status(400).body(null);
+            return ResponseEntity.status(400).body("Error");
         }
     }
 
@@ -36,7 +36,7 @@ public class AuthRoutes {
     public ResponseEntity<?> registerAdmin(@RequestBody UserRequest userRequest) {
         return authController.registerAdmin(userRequest.getEmail(), userRequest.getPassword(), userRequest.getFirstname(), userRequest.getLastname(), userRequest.getPhone())
                 ? ResponseEntity.ok("Success")
-                : ResponseEntity.status(400).body(null);
+                : ResponseEntity.status(400).body("Error");
     }
 
     @PostMapping("/driver")
@@ -52,7 +52,7 @@ public class AuthRoutes {
     public ResponseEntity<?> registerDispatcher(@RequestBody UserRequest userRequest) {
         return authController.registerDispatcher(userRequest.getEmail(), userRequest.getPassword(), userRequest.getFirstname(), userRequest.getLastname(), userRequest.getPhone())
                 ? ResponseEntity.ok("Success")
-                : ResponseEntity.status(400).body(null);
+                : ResponseEntity.status(400).body("Error");
     }
 
     @GetMapping("/verification")
