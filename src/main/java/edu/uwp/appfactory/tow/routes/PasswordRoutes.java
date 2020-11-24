@@ -33,7 +33,7 @@ public class PasswordRoutes {
                 : ResponseEntity.status(400).body("Token expired or no associated user");
     }
 
-    @PostMapping("/reset")
+    @PatchMapping("/reset")
     public ResponseEntity<?> reset(@RequestHeader("email") final String email,
                                    @RequestHeader("token") final int token,
                                    @RequestHeader("password") final String password) {

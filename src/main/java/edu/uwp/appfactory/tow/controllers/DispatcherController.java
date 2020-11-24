@@ -29,8 +29,8 @@ public class DispatcherController {
     /**
      * This method gathers all of the drivers in the db, that are within the radius of the accident
      */
-    public ResponseEntity<?> findAllByDistance(float latitude, float longitude, int radius) {
-        List<PDriver> drivers = dispatcherRepository.findAllByDistance(latitude, longitude, radius);
+    public ResponseEntity<?> findAllByDistance(float latitude, float longitude, int radius, String truckParam) {
+        List<PDriver> drivers = dispatcherRepository.findAllByDistance(latitude, longitude, radius, truckParam);
 
         return ResponseEntity.ok(drivers);
     }

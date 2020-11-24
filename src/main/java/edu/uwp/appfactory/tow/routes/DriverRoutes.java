@@ -20,11 +20,12 @@ public class DriverRoutes {
         this.driverController = driverController;
     }
 
-    @PostMapping("/setlocation")
+    @PatchMapping("/setlocation")
     public ResponseEntity<?> setLocation(@RequestHeader("latitude") final float latitude,
                                          @RequestHeader("longitude") final float longitude,
+                                         @RequestHeader("truck") final String truck,
                                          @RequestHeader("active") final boolean active,
                                          @RequestHeader("Auth") final String authorization) {
-        return driverController.setLocation(latitude, longitude, active, authorization);
+        return driverController.setLocation(latitude, longitude,truck, active, authorization);
     }
 }
