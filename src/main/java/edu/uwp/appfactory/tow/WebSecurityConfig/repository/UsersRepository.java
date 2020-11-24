@@ -18,6 +18,8 @@ import java.util.Optional;
 public interface UsersRepository extends JpaRepository<Users, String> {
     Optional<Users> findByUsername(String username);
 
+    Optional<Users> findByUUID(String userUUID);
+
     Optional<Users> findByResetToken(int resetToken);
 
     Boolean existsByUsername(String username);
@@ -38,8 +40,8 @@ public interface UsersRepository extends JpaRepository<Users, String> {
     @Query(value = "SELECT uuid, email, verify_token, verify_date, ver_enabled FROM users WHERE verify_token = ?1", nativeQuery = true)
     Optional<VerifyTokenInterface> findByVerifyToken(String verToken);
 
-    @Query(value = "SELECT *, 0 as clazz_ FROM users WHERE uuid = ?1", nativeQuery = true)
-    Optional<Users> findByUUID(String UUID);
+//    @Query(value = "SELECT *, 0 as clazz_ FROM users WHERE uuid = ?1", nativeQuery = true)
+//    Optional<Users> findByUUID(String UUID);
 
     @Query(value = "SELECT uuid, email, firstname, lastname, verify_token, verify_date FROM users WHERE ver_enabled = false", nativeQuery = true)
     ArrayList<EmailReminderInterface> findAllNonVerified();
