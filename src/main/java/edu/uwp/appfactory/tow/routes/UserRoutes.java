@@ -38,7 +38,7 @@ public class UserRoutes {
         return userController.deleteByEmail(email) ? ResponseEntity.ok("Success") : ResponseEntity.status(400).body(null);
     }
 
-    //todo: JWT
+    //todo: JWT AUTH
     @PatchMapping(value = "")
     @PreAuthorize("hasRole('DRIVER') or hasRole('DISPATCHER')")
     public ResponseEntity<?> update(@RequestHeader("Authorization") final String jwtToken,

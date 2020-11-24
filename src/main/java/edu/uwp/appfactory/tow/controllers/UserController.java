@@ -22,7 +22,8 @@ public class UserController {
         return user.orElse(null);
     }
 
-    //todo: do not lock people out if they havent verified, give them like a week to do it, then lock or delete
+    //todo: do not lock people out if they haven't verified, give them like a week to do it, then lock or delete
+    //todo: ask client / zaid
     public Users updateByUUID(String userUUID, UpdateUser userNew) {
         //todo: get user by uuid
         Optional<Users> usersOptional = usersRepository.findByUUID(userUUID);

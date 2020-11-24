@@ -23,9 +23,8 @@ public class DispatcherRoutes {
     @GetMapping("/accident")
     public ResponseEntity<?> findAllByDistance(@RequestHeader("latitude") final float latitude,
                                                @RequestHeader("longitude") final float longitude,
-                                               @RequestHeader("radius") final int radius),
-                                                @RequestHeader("truck_type") final String truck_type)
-                                                 {
+                                               @RequestHeader("radius") final int radius,
+                                               @RequestHeader("truck") final String truck_type) {
         return dispatcherController.findAllByDistance(latitude, longitude, radius, truck_type);
     }
 }
