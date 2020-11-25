@@ -2,7 +2,6 @@ package edu.uwp.appfactory.tow.routes;
 
 import edu.uwp.appfactory.tow.controllers.DriverController;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -18,13 +17,5 @@ public class DriverRoutes {
     @Autowired
     public DriverRoutes(DriverController driverController) {
         this.driverController = driverController;
-    }
-
-    @PostMapping("/setlocation")
-    public ResponseEntity<?> setLocation(@RequestHeader("latitude") final float latitude,
-                                         @RequestHeader("longitude") final float longitude,
-                                         @RequestHeader("active") final boolean active,
-                                         @RequestHeader("Auth") final String authorization) {
-        return driverController.setLocation(latitude, longitude, active, authorization);
     }
 }

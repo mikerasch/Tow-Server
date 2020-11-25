@@ -38,7 +38,7 @@ public class AsyncEmail {
     public void sendEmailAsync(Users user) {
         try {
             String userName = "Hi, " + user.getFirstname() + " " + user.getLastname();
-            String verifyLink = dns + "api/users/verification?token=" + user.getVerifyToken();
+            String verifyLink = dns + "api/auth/verification?token=" + user.getVerifyToken();
             String message = contentBuilder.buildVerifyEmail(userName, verifyLink);
 
             MimeMessagePreparator messagePreparation = mimeMessage -> {

@@ -1,19 +1,12 @@
 package edu.uwp.appfactory.tow.controllers;
 
-import edu.uwp.appfactory.tow.WebSecurityConfig.payload.response.MessageResponse;
-import edu.uwp.appfactory.tow.WebSecurityConfig.repository.RoleRepository;
 import edu.uwp.appfactory.tow.WebSecurityConfig.repository.UsersRepository;
-import edu.uwp.appfactory.tow.WebSecurityConfig.security.jwt.JwtUtils;
 import edu.uwp.appfactory.tow.entities.Users;
 import edu.uwp.appfactory.tow.services.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
-
-import javax.validation.ConstraintViolationException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.Optional;
@@ -23,31 +16,20 @@ import java.util.Random;
 @Controller
 public class PasswordController {
 
-    private final AuthenticationManager authenticationManager;
     private final UsersRepository usersRepository;
-    private final RoleRepository roleRepository;
     private final PasswordEncoder encoder;
-    private final JwtUtils jwtUtils;
     private final EmailService sender;
 
     @Autowired
-    public PasswordController(AuthenticationManager authenticationManager, UsersRepository usersRepository, RoleRepository roleRepository, PasswordEncoder encoder, JwtUtils jwtUtils, EmailService sender) {
-        this.authenticationManager = authenticationManager;
+    public PasswordController(UsersRepository usersRepository, PasswordEncoder encoder, EmailService sender) {
         this.usersRepository = usersRepository;
-        this.roleRepository = roleRepository;
         this.encoder = encoder;
-        this.jwtUtils = jwtUtils;
         this.sender = sender;
     }
 
-    public ResponseEntity<?> forgot(String email) {
-        try {
-            Optional<Users> usersOptional = usersRepository.findByUsername(email);
-            if (usersOptional.isEmpty()) {
-                return ResponseEntity
-                        .status(500)
-                        .body(new MessageResponse("Not successful!"));
-            }
+    public boolean forgot(String email) {
+        Optional<Users> usersOptional = usersRepository.findByUsername(email);
+        if (usersOptional.isPresent()) {
             Users user = usersOptional.get();
 
             // generate random 6 digit token
@@ -60,92 +42,40 @@ public class PasswordController {
             user.setResetDate(String.valueOf(LocalDate.now()));
             usersRepository.save(user);
 
-            boolean didSend = sender.sendResetMail(user, token);
-
-            if (didSend) {
-                return ResponseEntity
-                        .status(200)
-                        .body(new MessageResponse("Successful!"));
-            } else {
-                return ResponseEntity
-                        .status(500)
-                        .body(new MessageResponse("Not successful!"));
-            }
-        } catch (ConstraintViolationException e) {
-            return ResponseEntity.status(498).body("Invalid Entries: " + e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(499).body("Error: " + e.getMessage());
+            return sender.sendResetMail(user, token);
+        } else {
+            return false;
         }
     }
 
-    public ResponseEntity<?> verify(String email, int token) {
-        try {
-            Optional<Users> usersOptional = usersRepository.findByUsername(email);
-            if (usersOptional.isEmpty()) {
-                return ResponseEntity
-                        .status(500)
-                        .body(new MessageResponse("Not successful!"));
-            }
+    public boolean verify(String email, int token) {
+        Optional<Users> usersOptional = usersRepository.findByUsername(email);
+        if (usersOptional.isPresent()) {
+            Users user = usersOptional.get();
+            LocalDate userResetDate = LocalDate.parse(user.getResetDate());
+            Period periodBetween = Period.between(userResetDate, LocalDate.now());
+            return periodBetween.getDays() < 8 && user.getResetToken() == token;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean reset(String email, int token, String password) {
+        Optional<Users> usersOptional = usersRepository.findByUsername(email);
+        if (usersOptional.isPresent()) {
             Users user = usersOptional.get();
             LocalDate userResetDate = LocalDate.parse(user.getResetDate());
             Period periodBetween = Period.between(userResetDate, LocalDate.now());
 
-            if (periodBetween.getDays() < 8) {
-                if (user.getResetToken() == token) {
-                    return ResponseEntity
-                            .status(200)
-                            .body(new MessageResponse("Successful!"));
-                } else {
-                    return ResponseEntity
-                            .status(500)
-                            .body(new MessageResponse("Not successful!"));
-                }
+            if (periodBetween.getDays() < 8 && user.getResetToken() == token) {
+                user.setPassword(encoder.encode(password));
+                usersRepository.save(user);
+                return true;
             } else {
-                return ResponseEntity
-                        .status(500)
-                        .body(new MessageResponse("Password reset token expired, please request a new one."));
+                return false;
             }
-        } catch (ConstraintViolationException e) {
-            return ResponseEntity.status(498).body("Invalid Entries: " + e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(499).body("Error: " + e.getMessage());
-        }
-    }
-
-    public ResponseEntity<?> reset(String email, int token, String password) {
-        try {
-
-            Optional<Users> usersOptional = usersRepository.findByUsername(email);
-            if (usersOptional.isEmpty()) {
-                return ResponseEntity
-                        .status(500)
-                        .body(new MessageResponse("Not successful!"));
-            }
-            Users user = usersOptional.get();
-            LocalDate userResetDate = LocalDate.parse(user.getResetDate());
-            Period periodBetween = Period.between(userResetDate, LocalDate.now());
-
-            if (periodBetween.getDays() < 8) {
-                if (user.getResetToken() == token) {
-                    user.setPassword(encoder.encode(password));
-                    usersRepository.save(user);
-                    return ResponseEntity
-                            .status(200)
-                            .body(new MessageResponse("Successful!"));
-                } else {
-                    return ResponseEntity
-                            .status(500)
-                            .body(new MessageResponse("Not successful!"));
-                }
-            } else {
-                return ResponseEntity
-                        .status(500)
-                        .body(new MessageResponse("Password reset token expired, please request a new one."));
-            }
-        } catch (ConstraintViolationException e) {
-            return ResponseEntity.status(498).body("Invalid Entries: " + e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(499).body("Error: " + e.getMessage());
+        } else {
+            return false;
         }
     }
 }

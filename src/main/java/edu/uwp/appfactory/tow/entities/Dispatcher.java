@@ -20,8 +20,8 @@ public class Dispatcher extends Users implements IDispatcher {
     /**
      * Dispatcher constructor that creates a dispatcher with 6 parameters.
      */
-    public Dispatcher(String email, String username, String password, String firstname, String lastname, String precinct) {
-        super(email, username, password, firstname, lastname);
+    public Dispatcher(String email, String username, String password, String firstname, String lastname, String phone, String precinct) {
+        super(email, username, password, firstname, lastname, phone);
         this.precinct = precinct;
     }
 

@@ -1,77 +1,68 @@
 package edu.uwp.appfactory.tow.routes;
 
+import edu.uwp.appfactory.tow.requestObjects.LoginRequest;
+import edu.uwp.appfactory.tow.requestObjects.UserRequest;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import edu.uwp.appfactory.tow.controllers.auth.AuthController;
 
-/**
- * @author: Gianluca Eickenberg, Colin Hoffman
- * @modifiedBy: Quincy Kayle, Matthew Rank
- *  * this class contains all of the routes that the drivers, dispatchers,
- *  * and admins may hit in order to create thier account.
- *
- */
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/auth")
 public class AuthRoutes {
 
     private final AuthController authController;
+
     public AuthRoutes(AuthController authController) {
         this.authController = authController;
     }
 
-    @GetMapping("/")
-    @PreAuthorize("hasRole('DRIVER') or hasRole('DISPATCHER')")
-    public ResponseEntity<?> getUserByEmail(@RequestHeader("email") final String email) {
-        return authController.getUserByEmail(email);
-    }
-
-    @DeleteMapping("/")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> deleteUserById(@RequestHeader("email") final String email) {
-        return authController.deleteUserById(email);
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refreshToken(@RequestHeader("Authorization") final String jwtToken) {
+        String token = authController.refreshToken(jwtToken);
+        if (token != null) {
+            return ResponseEntity.ok(token);
+        } else {
+            return ResponseEntity.status(400).body("Error");
+        }
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> authenticateUser(@RequestHeader("email") final String email,
-                                              @RequestHeader("password") final String password) {
-        return authController.authenticateUser(email, password);
+    public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
+        return authController.authenticateUser(loginRequest.getEmail(), loginRequest.getPassword());
     }
 
-    @PostMapping("/refresh")
-    public ResponseEntity<?> refreshToken(@RequestHeader("Authorization") final String jwtToken) {
-        return authController.refreshToken(jwtToken);
+    @PostMapping("/admin")
+    public ResponseEntity<?> registerAdmin(@RequestBody UserRequest userRequest) {
+        return authController.registerAdmin(userRequest.getEmail(), userRequest.getPassword(), userRequest.getFirstname(), userRequest.getLastname(), userRequest.getPhone())
+                ? ResponseEntity.ok("Success")
+                : ResponseEntity.status(400).body("Error");
     }
 
-    @PostMapping("/registerdriver")
-    public ResponseEntity<?> registerDriver(@RequestHeader("email") final String email,
-                                            @RequestHeader("password") final String password,
-                                            @RequestHeader("firstname") final String firstname,
-                                            @RequestHeader("lastname") final String lastname) {
-        return authController.registerDriver(email, password, firstname, lastname);
+    @PostMapping("/driver")
+    public ResponseEntity<?> registerDriver(@RequestBody UserRequest userRequest) {
+        String f = userRequest.getEmail();
+        System.out.println(f);
+        return authController.registerDriver(userRequest.getEmail(), userRequest.getPassword(), userRequest.getFirstname(), userRequest.getLastname(), userRequest.getPhone())
+                ? ResponseEntity.ok("Success")
+                : ResponseEntity.status(400).body("Error");
     }
 
-    @PostMapping("/registerdispatcher")
-    public ResponseEntity<?> registerDispatcher(@RequestHeader("email") final String email,
-                                                @RequestHeader("password") final String password,
-                                                @RequestHeader("firstname") final String firstname,
-                                                @RequestHeader("lastname") final String lastname,
-                                                @RequestHeader("precinct") final String precinct) {
-        return authController.registerDispatcher(email, password, firstname, lastname, precinct);
-    }
-
-    @PostMapping("/registeradmin")
-    public ResponseEntity<?> registerAdmin(@RequestHeader("email") final String email,
-                                           @RequestHeader("password") final String password,
-                                           @RequestHeader("firstname") final String firstname,
-                                           @RequestHeader("lastname") final String lastname) {
-        return authController.registerAdmin(email, password, firstname, lastname);
+    @PostMapping("/dispatcher")
+    public ResponseEntity<?> registerDispatcher(@RequestBody UserRequest userRequest) {
+        return authController.registerDispatcher(userRequest.getEmail(), userRequest.getPassword(), userRequest.getFirstname(), userRequest.getLastname(), userRequest.getPhone())
+                ? ResponseEntity.ok("Success")
+                : ResponseEntity.status(400).body("Error");
     }
 
     @GetMapping("/verification")
-    public ResponseEntity<?> verification(@RequestParam("token") final String token){
-        return authController.verification(token);
+    public ResponseEntity<?> verification(@RequestParam("token") final String token) {
+        int status = authController.verification(token);
+        return switch (status) {
+            case 200 -> ResponseEntity.ok("Success");
+            case 410 -> ResponseEntity.status(410).body("User already verified");
+            case 403 -> ResponseEntity.status(403).body("Link expired, account deleted");
+            default -> ResponseEntity.status(404).body("Resource not found");
+        };
     }
 }
