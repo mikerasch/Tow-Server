@@ -25,7 +25,7 @@ public class LocationController {
         this.jwtUtils = jwtUtils;
     }
 
-    public boolean setLocation(float latitude, float longitude, String truck, boolean active, String userUUID) {
+    public boolean setLocation(float latitude, float longitude, boolean active, String userUUID) {
 
         Optional<Driver> driverOptional = driverRepository.findByUUID(userUUID);
 
@@ -33,7 +33,6 @@ public class LocationController {
             Driver driver = driverOptional.get();
             driver.setLongitude(longitude);
             driver.setLatitude(latitude);
-            driver.setTruck(truck);
             driver.setActive(active);
             driverRepository.save(driver);
             return true;
@@ -42,8 +41,8 @@ public class LocationController {
         }
     }
 
-    public List<PDriver> findByDistance(float latitude, float longitude, int radius, String truckParam) {
-        List<PDriver> drivers = dispatcherRepository.findByDistance(latitude, longitude, radius, truckParam);
+    public List<PDriver> findByDistance(float latitude, float longitude, int radius) {
+        List<PDriver> drivers = dispatcherRepository.findByDistance(latitude, longitude, radius);
         if (drivers.size() != 0) {
             return drivers;
         } else {

@@ -28,7 +28,7 @@ public class LocationRoutes {
     public ResponseEntity<?> setLocation(@RequestHeader("Authorization") final String jwtToken,
                                          @RequestBody SetLocationRequest setRequest) {
         String userUUID = jwtUtils.getUUIDFromJwtToken(jwtToken);
-        return locationController.setLocation(setRequest.getLatitude(), setRequest.getLongitude(), setRequest.getTruck(), setRequest.isActive(), userUUID)
+        return locationController.setLocation(setRequest.getLatitude(), setRequest.getLongitude(), setRequest.isActive(), userUUID)
                 ? ResponseEntity.ok("Success")
                 : ResponseEntity.status(400).body("Error");
     }
@@ -38,7 +38,7 @@ public class LocationRoutes {
     public ResponseEntity<?> getLocations(@RequestHeader("Authorization") final String jwtToken,
                                           @RequestBody DriversRequest driversRequest) {
         String userUUID = jwtUtils.getUUIDFromJwtToken(jwtToken);
-        List<?> data = locationController.findByDistance(driversRequest.getLatitude(), driversRequest.getLongitude(), driversRequest.getRadius(), driversRequest.getTruck());
+        List<?> data = locationController.findByDistance(driversRequest.getLatitude(), driversRequest.getLongitude(), driversRequest.getRadius());
         if (data != null) {
             return ResponseEntity.ok(data);
         } else {
