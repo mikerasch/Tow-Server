@@ -3,7 +3,6 @@ package edu.uwp.appfactory.tow.controllers.auth;
 import edu.uwp.appfactory.tow.entities.Dispatcher;
 import edu.uwp.appfactory.tow.entities.Driver;
 import edu.uwp.appfactory.tow.entities.Users;
-import edu.uwp.appfactory.tow.queryinterfaces.VerifyTokenInterface;
 import edu.uwp.appfactory.tow.services.AsyncEmail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -164,16 +163,16 @@ public class AuthController {
     }
 
     public int verification(String token) {
-        Optional<VerifyTokenInterface> usersOptional = usersRepository.findByVerifyToken(token);
+        Optional<Users> usersOptional = usersRepository.findByVerifyToken(token);
         if (usersOptional.isPresent()) {
 
-            VerifyTokenInterface user = usersOptional.get();
+            Users user = usersOptional.get();
             LocalDate userVerifyDate = LocalDate.parse(user.getVerifyDate());
             Period periodBetween = Period.between(userVerifyDate, LocalDate.now());
 
             if (periodBetween.getDays() < 8) {
                 if (user.getVerifyToken().equals(token) && !user.getVerEnabled()) {
-                    usersRepository.updateUserEmailVerifiedByUUID(user.getUUID(), true);
+                    usersRepository.updateUserEmailVerifiedByUUID(user.getId(), true);
                     return 200; // success
                 } else {
                     return 410; // user already verified
