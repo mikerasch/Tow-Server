@@ -20,7 +20,7 @@ import java.util.UUID;
 public interface UsersRepository extends CrudRepository<Users, UUID> {
     Optional<Users> findByUsername(String username);
 
-    Optional<Users> findById(String userUUID);
+    Optional<Users> findById(UUID id);
 
     Optional<Users> findByResetToken(int resetToken);
 

@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/users")
@@ -25,7 +27,7 @@ public class UserRoutes {
     @PreAuthorize("hasRole('DRIVER') or hasRole('DISPATCHER')")
     public ResponseEntity<?> get(@RequestHeader("Authorization") final String jwtToken) {
         String userId = jwtUtils.getUUIDFromJwtToken(jwtToken);
-        Users data = userController.findById(userId);
+        Users data = userController.findById(UUID.fromString(userId));
         if (data != null) {
             return ResponseEntity.ok(data);
         } else {
@@ -45,7 +47,7 @@ public class UserRoutes {
     public ResponseEntity<?> update(@RequestHeader("Authorization") final String jwtToken,
                                     @RequestBody UpdateRequest updateRequest) {
         String userId = jwtUtils.getUUIDFromJwtToken(jwtToken);
-        Users data = userController.updateByUUID(userId, updateRequest.getFirstname(), updateRequest.getLastname(), updateRequest.getEmail(), updateRequest.getPhone());
+        Users data = userController.updateByUUID(UUID.fromString(userId), updateRequest.getFirstname(), updateRequest.getLastname(), updateRequest.getEmail(), updateRequest.getPhone());
         if (data != null) {
             return ResponseEntity.ok(data);
         } else {

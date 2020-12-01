@@ -2,12 +2,14 @@ package edu.uwp.appfactory.tow.WebSecurityConfig.security.jwt;
 
 import edu.uwp.appfactory.tow.WebSecurityConfig.security.services.UserDetailsImpl;
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
+import java.security.Key;
 import java.util.Date;
 import java.util.function.Function;
 
@@ -35,11 +37,13 @@ public class JwtUtils {
 
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
 
+        Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+
         return Jwts.builder()
-                .setSubject(userPrincipal.getId().toString())
+                .setSubject((userPrincipal.getEmail()))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
-                .signWith(SignatureAlgorithm.HS512, jwtSecret)
+                .signWith(key)
                 .compact();
     }
 
@@ -48,11 +52,13 @@ public class JwtUtils {
      */
     public String refreshJwtToken(String UUID) {
 
+        Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+
         return Jwts.builder()
-                .setSubject((UUID))
+                .setSubject(UUID)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
-                .signWith(SignatureAlgorithm.HS512, jwtSecret)
+                .signWith(key)
                 .compact();
     }
 
