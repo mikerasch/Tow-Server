@@ -42,7 +42,7 @@ public interface UsersRepository extends CrudRepository<Users, UUID> {
     @Query(value = "UPDATE users SET  ver_enabled = ?2, verify_token = '' WHERE uuid = ?1")
     void updateUserEmailVerifiedByUUID(String uuid, boolean verEnabled);
 
-    @Query(value = "SELECT uuid, email, verify_token, verify_date, ver_enabled FROM users WHERE verify_token = :verify_token")
+    @Query(value = "SELECT users.id, users.email, users.verify_token, users.verify_date, users.ver_enabled FROM users WHERE verify_token = :verify_token")
     Optional<VerifyTokenInterface> findByVerifyToken(@Param("verify_token") String verToken);
 
     @Query(value = "SELECT uuid, email, firstname, lastname, verify_token, verify_date FROM users WHERE ver_enabled = false")
