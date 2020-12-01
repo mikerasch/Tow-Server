@@ -32,9 +32,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     /**
      * load a user by their username, exception if not found
      */
-    public UserDetails loadUserByUUID(String uuid) {
-        Users user = userRepository.findByUUID(uuid)
-                .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + uuid));
+    public UserDetails loadUserByUUID(String id) {
+        Users user = userRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + id));
         return UserDetailsImpl.build(user);
     }
 }

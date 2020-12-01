@@ -75,7 +75,7 @@ public class AuthController {
                     ? ResponseEntity
                     .ok(new JwtResponse(
                             jwt,
-                            userDetails.getUUID(),
+                            userDetails.getId(),
                             userDetails.getUsername(),
                             userDetails.getEmail(),
                             userDetails.getFirstname(),
@@ -103,7 +103,7 @@ public class AuthController {
             Role role = roleRepository.findByName(ERole.ROLE_ADMIN)
                     .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
 
-            user.setRoles(role.getName().toString());
+            user.setRole(role.getName().toString());
             usersRepository.save(user);
             return true;
         } else {
@@ -124,10 +124,7 @@ public class AuthController {
                     "",
                     false);
 
-            Role role = roleRepository.findByName(ERole.ROLE_DRIVER)
-                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-
-            driver.setRoles(role.getName().toString());
+            driver.setRole("ROLE_DRIVER");
             driver.setVerifyToken(generateEmailUUID());
             driver.setVerifyDate(String.valueOf(LocalDate.now()));
             driver.setVerEnabled(false);
@@ -153,7 +150,7 @@ public class AuthController {
             Role role = roleRepository.findByName(ERole.ROLE_DISPATCHER)
                     .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
 
-            dispatcher.setRoles(role.getName().toString());
+            dispatcher.setRole(role.getName().toString());
             dispatcher.setVerifyToken(generateEmailUUID());
             dispatcher.setVerifyDate(String.valueOf(LocalDate.now()));
             dispatcher.setVerEnabled(false);

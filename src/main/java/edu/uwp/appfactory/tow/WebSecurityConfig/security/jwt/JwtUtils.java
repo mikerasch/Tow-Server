@@ -1,12 +1,13 @@
 package edu.uwp.appfactory.tow.WebSecurityConfig.security.jwt;
 
+import edu.uwp.appfactory.tow.WebSecurityConfig.security.services.UserDetailsImpl;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
-import edu.uwp.appfactory.tow.WebSecurityConfig.security.services.UserDetailsImpl;
+
 import java.util.Date;
 import java.util.function.Function;
 
@@ -35,7 +36,7 @@ public class JwtUtils {
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
 
         return Jwts.builder()
-                .setSubject((userPrincipal.getUUID()))
+                .setSubject(userPrincipal.getId().toString())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
@@ -77,6 +78,7 @@ public class JwtUtils {
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
     }
+
     public String generateResetJwtDigit(String resetDigits) {
 
         return Jwts.builder()

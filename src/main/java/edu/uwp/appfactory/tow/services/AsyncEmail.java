@@ -53,7 +53,7 @@ public class AsyncEmail {
 
         } catch (MailException e) {
             logger.error(e.getMessage());
-            failedEmailRepository.save(new FailedEmail(user.getEmail(), user.getUUID(), user.getFirstname(), user.getLastname(), user.getVerifyToken()));
+            failedEmailRepository.save(new FailedEmail(user.getEmail(), user.getId(), user.getFirstname(), user.getLastname(), user.getVerifyToken()));
         }
     }
 }

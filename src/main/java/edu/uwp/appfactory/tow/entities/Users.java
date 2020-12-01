@@ -1,29 +1,22 @@
 package edu.uwp.appfactory.tow.entities;
-import edu.uwp.appfactory.tow.data.IUser;
-import org.hibernate.annotations.GenericGenerator;
-import javax.persistence.*;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.UUID;
 
-/**
- * The user entity interacts with the user table.
- */
-@Entity
-@Table(	name = "users", schema = "public",
-        uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"email" , "username"})
-})
-@Inheritance(strategy = InheritanceType.JOINED)
-public class Users implements IUser {
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+public class Users {
+
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
-    )
-    private String UUID; // look at java.uuid
+    private UUID id;
 
     @NotBlank
     @Size(max = 100)
@@ -48,16 +41,14 @@ public class Users implements IUser {
 
     @NotBlank
     private String role;
+
     private String phone;
-    private int resetToken;
+    private Integer resetToken;
     private String resetDate;
     private String verifyDate;
-    private boolean verEnabled;
+    private Boolean verEnabled;
     private String verifyToken;
 
-    /**
-     * constructor that takes 5 parameters
-     */
     public Users(String email, String username, String password, String firstname, String lastname, String phone) {
         this.username = username;
         this.email = email;
@@ -66,95 +57,4 @@ public class Users implements IUser {
         this.lastname = lastname;
         this.phone = phone;
     }
-
-    /**
-     * default constructor
-     */
-    public Users() { }
-
-    /**
-     * getters & setters
-     */
-    public String getUUID() {
-        return UUID;
-    }
-    public void setUUID(String UUID) {
-        this.UUID = UUID;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getFirstname() {
-        return firstname;
-    }
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
-    }
-
-    public String getLastname() {
-        return lastname;
-    }
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
-    }
-
-    public String getRoles() {
-        return role;
-    }
-    public void setRoles(String role) {
-        this.role = role;
-    }
-
-    public int getResetToken() {
-        return resetToken;
-    }
-    public void setResetToken(int resetToken) {
-        this.resetToken = resetToken;
-    }
-
-    public String getResetDate() {
-        return resetDate;
-    }
-    public void setResetDate(String resetDate) {
-        this.resetDate = resetDate;
-    }
-
-    public String getVerifyToken() {
-        return verifyToken;
-    }
-    public void setVerifyToken(String verifyToken) {
-        this.verifyToken = verifyToken;
-    }
-
-    public String getVerifyDate() {
-        return verifyDate;
-    }
-    public void setVerifyDate(String verifyDate) { this.verifyDate = verifyDate; }
-
-    public boolean getVerEnabled() {
-        return verEnabled;
-    }
-    public void setVerEnabled(boolean verEnabled) { this.verEnabled = verEnabled; }
-
-    public String getPhone() { return phone; }
-    public void setPhone(String phone) { this.phone = phone; }
 }

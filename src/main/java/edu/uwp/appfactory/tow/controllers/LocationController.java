@@ -41,8 +41,8 @@ public class LocationController {
         }
     }
 
-    public List<PDriver> findByDistance(float latitude, float longitude, int radius) {
-        List<PDriver> drivers = dispatcherRepository.findByDistance(latitude, longitude, radius);
+    public List<Driver> findByDistance(float latitude, float longitude, int radius) {
+        List<Driver> drivers = dispatcherRepository.findByDistance(latitude, longitude, radius);
         if (drivers.size() != 0) {
             return drivers;
         } else {
