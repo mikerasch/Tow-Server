@@ -34,7 +34,7 @@ public class LocationRoutes {
     }
 
     @PreAuthorize("hasRole('DISPATCHER')")
-    @GetMapping("/driver-locations")
+    @PatchMapping("/driver-locations")
     public ResponseEntity<?> getLocations(@RequestHeader("Authorization") final String jwtToken,
                                           @RequestBody DriversRequest driversRequest) {
         String userUUID = jwtUtils.getUUIDFromJwtToken(jwtToken);
