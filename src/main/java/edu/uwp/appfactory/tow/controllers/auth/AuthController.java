@@ -147,10 +147,7 @@ public class AuthController {
                     phone,
                     "");
 
-            Role role = roleRepository.findByName(ERole.ROLE_DISPATCHER)
-                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-
-            dispatcher.setRole(role.getName().toString());
+            dispatcher.setRole("ROLE_DISPATCHER");
             dispatcher.setVerifyToken(generateEmailUUID());
             dispatcher.setVerifyDate(String.valueOf(LocalDate.now()));
             dispatcher.setVerEnabled(false);
