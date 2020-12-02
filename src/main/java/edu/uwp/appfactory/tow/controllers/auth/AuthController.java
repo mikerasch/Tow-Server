@@ -1,5 +1,13 @@
 package edu.uwp.appfactory.tow.controllers.auth;
 
+import edu.uwp.appfactory.tow.WebSecurityConfig.models.ERole;
+import edu.uwp.appfactory.tow.WebSecurityConfig.models.Role;
+import edu.uwp.appfactory.tow.WebSecurityConfig.payload.response.JwtResponse;
+import edu.uwp.appfactory.tow.WebSecurityConfig.payload.response.MessageResponse;
+import edu.uwp.appfactory.tow.WebSecurityConfig.repository.RoleRepository;
+import edu.uwp.appfactory.tow.WebSecurityConfig.repository.UsersRepository;
+import edu.uwp.appfactory.tow.WebSecurityConfig.security.jwt.JwtUtils;
+import edu.uwp.appfactory.tow.WebSecurityConfig.security.services.UserDetailsImpl;
 import edu.uwp.appfactory.tow.entities.Dispatcher;
 import edu.uwp.appfactory.tow.entities.Driver;
 import edu.uwp.appfactory.tow.entities.Users;
@@ -12,21 +20,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
-import edu.uwp.appfactory.tow.WebSecurityConfig.models.ERole;
-import edu.uwp.appfactory.tow.WebSecurityConfig.models.Role;
-import edu.uwp.appfactory.tow.WebSecurityConfig.payload.response.JwtResponse;
-import edu.uwp.appfactory.tow.WebSecurityConfig.payload.response.MessageResponse;
-import edu.uwp.appfactory.tow.WebSecurityConfig.repository.RoleRepository;
-import edu.uwp.appfactory.tow.WebSecurityConfig.repository.UsersRepository;
-import edu.uwp.appfactory.tow.WebSecurityConfig.security.jwt.JwtUtils;
-import edu.uwp.appfactory.tow.WebSecurityConfig.security.services.UserDetailsImpl;
 
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.Optional;
 import java.util.UUID;
-
-import static java.lang.String.format;
 
 @Controller
 public class AuthController {

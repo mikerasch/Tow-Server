@@ -1,7 +1,6 @@
 package edu.uwp.appfactory.tow.routes;
 
 import edu.uwp.appfactory.tow.controllers.PasswordController;
-import edu.uwp.appfactory.tow.requestObjects.LoginRequest;
 import edu.uwp.appfactory.tow.requestObjects.PasswordForgotRequest;
 import edu.uwp.appfactory.tow.requestObjects.PasswordResetRequest;
 import edu.uwp.appfactory.tow.requestObjects.PasswordVerifyRequest;

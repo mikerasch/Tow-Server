@@ -1,7 +1,6 @@
 package edu.uwp.appfactory.tow.repositories;
 
 import edu.uwp.appfactory.tow.entities.Driver;
-import edu.uwp.appfactory.tow.queryinterfaces.PDriver;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;

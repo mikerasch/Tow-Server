@@ -2,7 +2,6 @@ package edu.uwp.appfactory.tow.controllers;
 
 import edu.uwp.appfactory.tow.WebSecurityConfig.security.jwt.JwtUtils;
 import edu.uwp.appfactory.tow.entities.Driver;
-import edu.uwp.appfactory.tow.queryinterfaces.PDriver;
 import edu.uwp.appfactory.tow.repositories.DispatcherRepository;
 import edu.uwp.appfactory.tow.repositories.DriverRepository;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;

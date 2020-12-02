@@ -33,6 +33,7 @@ public class LocationRoutes {
                 : ResponseEntity.status(400).body("Error");
     }
 
+    //todo: patch doesnt really align, but need in order to send body data
     @PreAuthorize("hasRole('DISPATCHER')")
     @PatchMapping("/driver-locations")
     public ResponseEntity<?> getLocations(@RequestHeader("Authorization") final String jwtToken,
