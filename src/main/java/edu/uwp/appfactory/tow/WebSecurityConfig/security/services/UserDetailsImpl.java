@@ -8,10 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -20,7 +17,7 @@ import java.util.stream.Collectors;
 public class UserDetailsImpl implements UserDetails {
 
     private static final long serialVersionUID = 1L;
-    final String UUID;
+    final UUID id;
     private final String username;
     private final String email;
     @JsonIgnore
@@ -32,9 +29,9 @@ public class UserDetailsImpl implements UserDetails {
     /**
      * constructor of a user details implementation
      */
-    public UserDetailsImpl(String UUID, String username, String email, String password, String firstname, String lastname,
+    public UserDetailsImpl(UUID id, String username, String email, String password, String firstname, String lastname,
                            String role) {
-        this.UUID = UUID;
+        this.id = id;
         this.username = username;
         this.email = email;
         this.password = password;
@@ -48,17 +45,17 @@ public class UserDetailsImpl implements UserDetails {
      */
     public static UserDetailsImpl build(Users user) {
         return new UserDetailsImpl(
-                user.getUUID(),
+                user.getId(),
                 user.getUsername(),
                 user.getEmail(),
                 user.getPassword(),
                 user.getFirstname(),
                 user.getLastname(),
-                user.getRoles());
+                user.getRole());
     }
 
     public String getRole() { return role; }
-    public String getUUID() { return UUID; }
+    public UUID getId() { return id; }
     public String getEmail() { return email; }
 
     /**
@@ -125,7 +122,7 @@ public class UserDetailsImpl implements UserDetails {
         if (o == null || getClass() != o.getClass())
             return false;
         UserDetailsImpl user = (UserDetailsImpl) o;
-        return Objects.equals(UUID, user.UUID);
+        return Objects.equals(id, user.id);
     }
 
     public String getFirstname() {

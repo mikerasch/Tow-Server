@@ -1,12 +1,15 @@
 package edu.uwp.appfactory.tow.WebSecurityConfig.security.jwt;
 
+import edu.uwp.appfactory.tow.WebSecurityConfig.security.services.UserDetailsImpl;
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
-import edu.uwp.appfactory.tow.WebSecurityConfig.security.services.UserDetailsImpl;
+
+import java.security.Key;
 import java.util.Date;
 import java.util.function.Function;
 
@@ -18,8 +21,7 @@ public class JwtUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 
-    @Value("${tow.app.jwtSecret}")
-    private String jwtSecret;
+    private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
 
     @Value("${tow.app.jwtExpirationMs}")
     private int jwtExpirationMs;
@@ -35,10 +37,10 @@ public class JwtUtils {
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
 
         return Jwts.builder()
-                .setSubject((userPrincipal.getUUID()))
+                .setSubject((userPrincipal.getId().toString()))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
-                .signWith(SignatureAlgorithm.HS512, jwtSecret)
+                .signWith(key)
                 .compact();
     }
 
@@ -48,10 +50,10 @@ public class JwtUtils {
     public String refreshJwtToken(String UUID) {
 
         return Jwts.builder()
-                .setSubject((UUID))
+                .setSubject(UUID)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
-                .signWith(SignatureAlgorithm.HS512, jwtSecret)
+                .signWith(key)
                 .compact();
     }
 
@@ -59,43 +61,48 @@ public class JwtUtils {
      * method to get UUID from a JWT token
      */
     public String getUUIDFromJwtToken(String token) {
-
         Function<Claims, String> claimsResolver = Claims::getSubject;
-        Claims parsedToken = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
+        Claims parsedToken = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build().parseClaimsJws(token)
+                .getBody();
         return claimsResolver.apply(parsedToken);
     }
 
-    /**
-     * not used, may use later
-     */
-    public String generateResetJwtToken(String UUID) {
+//    /**
+//     * not used, may use later
+//     */
+//    public String generateResetJwtToken(String UUID) {
+//
+//        return Jwts.builder()
+//                .setSubject(UUID)
+//                .setIssuedAt(new Date())
+//                .setExpiration(new Date((new Date()).getTime() + jwtResetExpirationMs))
+//                .signWith(SignatureAlgorithm.HS512, jwtSecret)
+//                .compact();
+//    }
 
-        return Jwts.builder()
-                .setSubject(UUID)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date((new Date()).getTime() + jwtResetExpirationMs))
-                .signWith(SignatureAlgorithm.HS512, jwtSecret)
-                .compact();
-    }
-    public String generateResetJwtDigit(String resetDigits) {
-
-        return Jwts.builder()
-                .setSubject(resetDigits)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date((new Date()).getTime() + jwtResetExpirationMs))
-                .signWith(SignatureAlgorithm.HS512, jwtSecret)
-                .compact();
-    }
+//    public String generateResetJwtDigit(String resetDigits) {
+//
+//        return Jwts.builder()
+//                .setSubject(resetDigits)
+//                .setIssuedAt(new Date())
+//                .setExpiration(new Date((new Date()).getTime() + jwtResetExpirationMs))
+//                .signWith(SignatureAlgorithm.HS512, jwtSecret)
+//                .compact();
+//    }
 
     /**
      * method to validate a JWT token
      */
     public boolean validateJwtToken(String authToken) {
         try {
-            Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
+
+            Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(authToken);
             return true;
-        } catch (SignatureException e) {
-            logger.error("Invalid JWT signature: {}", e.getMessage());
         } catch (MalformedJwtException e) {
             logger.error("Invalid JWT token: {}", e.getMessage());
         } catch (ExpiredJwtException e) {

@@ -41,9 +41,9 @@ public class ScheduledTasks {
     }
 
     //@Scheduled(cron = "1 34 15 * * *")
-    @Scheduled(cron = "0 0 0 * * ?")
+    @Scheduled(cron = "0 0 0 * * *")
     public void CheckFailedEmail() {
-        List<FailedEmail> failedEmails = failedEmailRepository.findAll();
+        Iterable<FailedEmail> failedEmails = failedEmailRepository.findAll();
         failedEmails.forEach(entity -> {
             try {
                 String userName = "Hi, " + entity.getFirstname() + " " + entity.getLastname();

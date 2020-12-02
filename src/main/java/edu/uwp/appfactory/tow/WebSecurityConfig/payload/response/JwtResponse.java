@@ -1,23 +1,33 @@
 package edu.uwp.appfactory.tow.WebSecurityConfig.payload.response;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.UUID;
+
 /**
  * JWT response class
  */
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class JwtResponse {
 
     private String token;
     private String type = "Bearer";
-    private String id;
+    private UUID id;
     private String username;
     private String email;
     private String firstname;
     private String lastname;
-    private final String role;
+    private String role;
 
     /**
      * constructor for a JWT response, used mostly with login
      */
-    public JwtResponse(String accessToken, String id, String username, String email, String
+    public JwtResponse(String accessToken, UUID id, String username, String email, String
             firstname, String lastname, String role) {
         this.token = accessToken;
         this.id = id;
@@ -26,58 +36,5 @@ public class JwtResponse {
         this.firstname = firstname;
         this.lastname = lastname;
         this.role = role;
-    }
-
-    public String getAccessToken() {
-        return token;
-    }
-    public void setAccessToken(String accessToken) {
-        this.token = accessToken;
-    }
-
-    public String getTokenType() {
-        return type;
-    }
-    public void setTokenType(String tokenType) {
-        this.type = tokenType;
-    }
-
-    public String getId() {
-        return id;
-    }
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getFirstname() {
-        return firstname;
-    }
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
-    }
-
-    public String getLastname() {
-        return lastname;
-    }
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
-    }
-
-    public String getRole() {
-        return role;
     }
 }

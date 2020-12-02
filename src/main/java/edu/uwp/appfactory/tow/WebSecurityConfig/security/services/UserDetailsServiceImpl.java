@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import edu.uwp.appfactory.tow.WebSecurityConfig.repository.UsersRepository;
 
+import java.util.UUID;
+
 /**
  * user details service implementation
  */
@@ -32,9 +34,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     /**
      * load a user by their username, exception if not found
      */
-    public UserDetails loadUserByUUID(String uuid) {
-        Users user = userRepository.findByUUID(uuid)
-                .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + uuid));
+    public UserDetails loadUserByUUID(UUID id) {
+        Users user = userRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + id));
         return UserDetailsImpl.build(user);
     }
 }

@@ -20,9 +20,4 @@ public class DriversRequest {
     @Getter
     @Setter
     private int radius;
-
-    @NotBlank
-    @Getter
-    @Setter
-    private String truck;
 }

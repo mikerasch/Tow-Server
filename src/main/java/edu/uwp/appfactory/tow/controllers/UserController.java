@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Controller;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @EnableAutoConfiguration
 @Controller
@@ -19,16 +20,16 @@ public class UserController {
         this.usersRepository = usersRepository;
     }
 
-    public Users findByUUID(String userUUID) {
-        Optional<Users> user = usersRepository.findByUUID(userUUID);
+    public Users findById(UUID userId) {
+        Optional<Users> user = usersRepository.findById(userId);
         return user.orElse(null);
     }
 
     //todo: do not lock people out if they haven't verified, give them like a week to do it, then lock or delete
     //todo: ask client / zaid
-    public Users updateByUUID(String userUUID, String firstname, String lastname, String email, String phone) {
+    public Users updateByUUID(UUID userId, String firstname, String lastname, String email, String phone) {
         //todo: get user by uuid
-        Optional<Users> usersOptional = usersRepository.findByUUID(userUUID);
+        Optional<Users> usersOptional = usersRepository.findById(userId);
 
         if (usersOptional.isPresent()) {
             Users user = usersOptional.get();

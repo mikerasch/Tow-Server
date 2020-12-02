@@ -2,7 +2,7 @@ plugins {
     id 'org.springframework.boot' version '2.3.5.RELEASE'
     id 'io.spring.dependency-management' version '1.0.10.RELEASE'
     id 'java'
-    id "org.flywaydb.flyway" version "6.5.7"
+//    id "org.flywaydb.flyway" version "6.5.7"
 }
 
 group = 'edu.uwp.appfactory'
@@ -20,34 +20,26 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.flywaydb:flyway-core'
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.11.2'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.11.2'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.flywaydb:flyway-core'
-    implementation 'io.jsonwebtoken:jjwt:0.9.1'
-    implementation 'org.jetbrains:annotations:19.0.0'
-    compile group: 'com.sun.mail', name: 'javax.mail', version: '1.6.2'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'org.postgresql:postgresql'
     annotationProcessor 'org.projectlombok:lombok'
-    testImplementation('org.springframework.boot:spring-boot-starter-test') {
-        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-    }
-    testImplementation 'org.springframework.security:spring-security-test'
 }
 
-test {
-    useJUnitPlatform()
-}
-
-flyway {
-    url = 'jdbc:postgresql://ec2-35-173-164-51.compute-1.amazonaws.com:5432/tow'
-    user = 'tow'
-    password = 'Qm0IeadH4qj40FlEdbMvJB98ZJv8MnFXwIZypPjkPqLN1j4Oo7'
-    schemas = ['public']
-}
+//flyway {
+//    url = 'jdbc:postgresql://ec2-35-173-164-51.compute-1.amazonaws.com:5432/tow'
+//    user = 'tow'
+//    password = 'Qm0IeadH4qj40FlEdbMvJB98ZJv8MnFXwIZypPjkPqLN1j4Oo7'
+//    schemas = ['public']
+//}
 

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @EnableAutoConfiguration
 @Controller
@@ -27,7 +28,7 @@ public class LocationController {
 
     public boolean setLocation(float latitude, float longitude, boolean active, String userUUID) {
 
-        Optional<Driver> driverOptional = driverRepository.findByUUID(userUUID);
+        Optional<Driver> driverOptional = driverRepository.findById(UUID.fromString(userUUID));
 
         if (driverOptional.isPresent()) {
             Driver driver = driverOptional.get();
@@ -41,8 +42,8 @@ public class LocationController {
         }
     }
 
-    public List<PDriver> findByDistance(float latitude, float longitude, int radius) {
-        List<PDriver> drivers = dispatcherRepository.findByDistance(latitude, longitude, radius);
+    public List<Driver> findByDistance(float latitude, float longitude, int radius) {
+        List<Driver> drivers = dispatcherRepository.findByDistance(latitude, longitude, radius);
         if (drivers.size() != 0) {
             return drivers;
         } else {

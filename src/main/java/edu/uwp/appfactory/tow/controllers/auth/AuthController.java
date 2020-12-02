@@ -3,7 +3,6 @@ package edu.uwp.appfactory.tow.controllers.auth;
 import edu.uwp.appfactory.tow.entities.Dispatcher;
 import edu.uwp.appfactory.tow.entities.Driver;
 import edu.uwp.appfactory.tow.entities.Users;
-import edu.uwp.appfactory.tow.queryinterfaces.VerifyTokenInterface;
 import edu.uwp.appfactory.tow.services.AsyncEmail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -68,6 +67,7 @@ public class AuthController {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
         Optional<Users> usersOptional = usersRepository.findByUsername(email);
+        System.out.println("WAIT");
         //todo: when not testing, uncomment code
         if (usersOptional.isPresent()) {
             Users user = usersOptional.get();
@@ -75,7 +75,7 @@ public class AuthController {
                     ? ResponseEntity
                     .ok(new JwtResponse(
                             jwt,
-                            userDetails.getUUID(),
+                            userDetails.getId(),
                             userDetails.getUsername(),
                             userDetails.getEmail(),
                             userDetails.getFirstname(),
@@ -103,7 +103,7 @@ public class AuthController {
             Role role = roleRepository.findByName(ERole.ROLE_ADMIN)
                     .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
 
-            user.setRoles(role.getName().toString());
+            user.setRole(role.getName().toString());
             usersRepository.save(user);
             return true;
         } else {
@@ -124,10 +124,7 @@ public class AuthController {
                     "",
                     false);
 
-            Role role = roleRepository.findByName(ERole.ROLE_DRIVER)
-                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-
-            driver.setRoles(role.getName().toString());
+            driver.setRole("ROLE_DRIVER");
             driver.setVerifyToken(generateEmailUUID());
             driver.setVerifyDate(String.valueOf(LocalDate.now()));
             driver.setVerEnabled(false);
@@ -150,10 +147,7 @@ public class AuthController {
                     phone,
                     "");
 
-            Role role = roleRepository.findByName(ERole.ROLE_DISPATCHER)
-                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-
-            dispatcher.setRoles(role.getName().toString());
+            dispatcher.setRole("ROLE_DISPATCHER");
             dispatcher.setVerifyToken(generateEmailUUID());
             dispatcher.setVerifyDate(String.valueOf(LocalDate.now()));
             dispatcher.setVerEnabled(false);
@@ -166,16 +160,16 @@ public class AuthController {
     }
 
     public int verification(String token) {
-        Optional<VerifyTokenInterface> usersOptional = usersRepository.findByVerifyToken(token);
+        Optional<Users> usersOptional = usersRepository.findByVerifyToken(token);
         if (usersOptional.isPresent()) {
 
-            VerifyTokenInterface user = usersOptional.get();
+            Users user = usersOptional.get();
             LocalDate userVerifyDate = LocalDate.parse(user.getVerifyDate());
             Period periodBetween = Period.between(userVerifyDate, LocalDate.now());
 
             if (periodBetween.getDays() < 8) {
                 if (user.getVerifyToken().equals(token) && !user.getVerEnabled()) {
-                    usersRepository.updateUserEmailVerifiedByUUID(user.getUUID(), true);
+                    usersRepository.updateUserEmailVerifiedByUUID(user.getId(), true);
                     return 200; // success
                 } else {
                     return 410; // user already verified

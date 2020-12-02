@@ -17,6 +17,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.UUID;
 
 /**
  * class that filters an auth token
@@ -41,9 +42,9 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         try {
             String jwt = parseJwt(request);
             if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
-                String UUID = jwtUtils.getUUIDFromJwtToken(jwt);
+                String userId = jwtUtils.getUUIDFromJwtToken(jwt);
 
-                UserDetails userDetails = userDetailsService.loadUserByUUID(UUID);
+                UserDetails userDetails = userDetailsService.loadUserByUUID(UUID.fromString(userId));
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
