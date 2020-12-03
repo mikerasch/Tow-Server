@@ -2,7 +2,7 @@ package edu.uwp.appfactory.tow.controllers;
 
 import edu.uwp.appfactory.tow.WebSecurityConfig.repository.UsersRepository;
 import edu.uwp.appfactory.tow.entities.Users;
-import edu.uwp.appfactory.tow.services.EmailService;
+import edu.uwp.appfactory.tow.services.AsyncEmail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,10 +18,10 @@ public class PasswordController {
 
     private final UsersRepository usersRepository;
     private final PasswordEncoder encoder;
-    private final EmailService sender;
+    private final AsyncEmail sender;
 
     @Autowired
-    public PasswordController(UsersRepository usersRepository, PasswordEncoder encoder, EmailService sender) {
+    public PasswordController(UsersRepository usersRepository, PasswordEncoder encoder, AsyncEmail sender) {
         this.usersRepository = usersRepository;
         this.encoder = encoder;
         this.sender = sender;
@@ -41,8 +41,8 @@ public class PasswordController {
             user.setResetToken(token);
             user.setResetDate(String.valueOf(LocalDate.now()));
             usersRepository.save(user);
-
-            return sender.sendResetMail(user, token);
+            sender.sendResetEmailAsync(user, token);
+            return true;
         } else {
             return false;
         }

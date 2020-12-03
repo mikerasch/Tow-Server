@@ -21,7 +21,7 @@ public class ContentBuilder {
         Context context = new Context();
         context.setVariable("userName", userName);
         context.setVariable("token", token);
-        return templateEngine.process("mailTemplateCray", context);
+        return templateEngine.process("mailTemplatePassword", context);
     }
 
     public String buildVerifyEmail(String userName, String verifyLink) {

@@ -56,4 +56,25 @@ public class AsyncEmail {
             failedEmailRepository.save(new FailedEmail(user.getEmail(), user.getId(), user.getFirstname(), user.getLastname(), user.getVerifyToken()));
         }
     }
+
+    @Async
+    public void sendResetEmailAsync(Users user, int token) {
+        try {
+            String userName = "Hi, " + user.getFirstname() + " " + user.getLastname();
+            String message = contentBuilder.buildPasswordEmail(userName, token);
+
+            MimeMessagePreparator messagePreparation = mimeMessage -> {
+                MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
+                messageHelper.setFrom("DoNotReply", "DoNotReply");
+                messageHelper.setTo(user.getEmail());
+                messageHelper.setSubject("Password Reset");
+                messageHelper.setText(message, true);
+            };
+
+            javaMailSender.send(messagePreparation);
+
+        } catch (MailException e) {
+            logger.error(e.getMessage());
+        }
+    }
 }

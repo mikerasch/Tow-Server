@@ -43,6 +43,6 @@ public interface UsersRepository extends CrudRepository<Users, UUID> {
     @Query(value = "SELECT users.id, users.email, users.verify_token, users.verify_date, users.ver_enabled FROM users WHERE verify_token = :verify_token")
     Optional<Users> findByVerifyToken(@Param("verify_token") String verToken);
 
-    @Query(value = "SELECT uuid, email, firstname, lastname, verify_token, verify_date FROM users WHERE ver_enabled = false")
+    @Query(value = "SELECT users.id, users.email, users.firstname, users.lastname, users.verify_token, users.verify_date FROM users WHERE ver_enabled = false")
     ArrayList<EmailReminderInterface> findAllNonVerified();
 }
