@@ -65,7 +65,7 @@ public class AuthController {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
         Optional<Users> usersOptional = usersRepository.findByUsername(email);
-        System.out.println("WAIT");
+
         //todo: when not testing, uncomment code
         if (usersOptional.isPresent()) {
             Users user = usersOptional.get();

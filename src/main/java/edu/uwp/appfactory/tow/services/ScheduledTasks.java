@@ -2,7 +2,7 @@ package edu.uwp.appfactory.tow.services;
 
 import edu.uwp.appfactory.tow.WebSecurityConfig.repository.UsersRepository;
 import edu.uwp.appfactory.tow.entities.FailedEmail;
-import edu.uwp.appfactory.tow.queryinterfaces.EmailReminderInterface;
+import edu.uwp.appfactory.tow.entities.Users;
 import edu.uwp.appfactory.tow.repositories.FailedEmailRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -30,13 +30,18 @@ public class ScheduledTasks {
     private final UsersRepository usersRepository;
     private final ContentBuilder contentBuilder;
     private final JavaMailSender javaMailSender;
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(ScheduledTasks.class);
 
     public ScheduledTasks(FailedEmailRepository failedEmailRepository, UsersRepository usersRepository, ContentBuilder contentBuilder, JavaMailSender javaMailSender) {
         this.failedEmailRepository = failedEmailRepository;
         this.usersRepository = usersRepository;
         this.contentBuilder = contentBuilder;
         this.javaMailSender = javaMailSender;
+    }
+
+    @Scheduled(cron = "0 20 0 * * *")
+    public void GarbageCollection() {
+        System.gc();
     }
 
     //@Scheduled(cron = "1 34 15 * * *")
@@ -67,12 +72,14 @@ public class ScheduledTasks {
         });
     }
 
-    @Scheduled(cron = "0 0 1 * * ?")
+    @Scheduled(cron = "0 0 1 * * *")
     private void CheckVerifyStatus() {
-        ArrayList<EmailReminderInterface> nonVerifiedUsers = usersRepository.findAllNonVerified();
+        List<Users> nonVerifiedUsers = usersRepository.findAllNonVerified();
         if (nonVerifiedUsers.isEmpty()) {
+            logger.debug("No results...");
             return;
         }
+        logger.debug("There are some entries...");
         nonVerifiedUsers.forEach(entity -> {
             LocalDate userVerifyDate = LocalDate.parse(entity.getVerifyDate());
             Period periodBetween = Period.between(userVerifyDate, LocalDate.now());
