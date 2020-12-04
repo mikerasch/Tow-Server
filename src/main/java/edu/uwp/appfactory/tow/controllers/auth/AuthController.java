@@ -119,7 +119,6 @@ public class AuthController {
                     phone,
                     0,
                     0,
-                    "",
                     false);
 
             driver.setRole("ROLE_DRIVER");

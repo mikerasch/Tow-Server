@@ -28,6 +28,7 @@ public class LocationRoutes {
     public ResponseEntity<?> setLocation(@RequestHeader("Authorization") final String jwtToken,
                                          @RequestBody SetLocationRequest setRequest) {
         String userUUID = jwtUtils.getUUIDFromJwtToken(jwtToken);
+        System.out.println("lat: " + setRequest.getLatitude() + " long: " + setRequest.getLongitude() + " active: " + setRequest.isActive());
         return locationController.setLocation(setRequest.getLatitude(), setRequest.getLongitude(), setRequest.isActive(), userUUID)
                 ? ResponseEntity.ok("Success")
                 : ResponseEntity.status(400).body("Error");

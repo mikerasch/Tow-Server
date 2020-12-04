@@ -19,10 +19,5 @@ public class SetLocationRequest {
     @NotBlank
     @Getter
     @Setter
-    private String truck;
-
-    @NotBlank
-    @Getter
-    @Setter
     private boolean active;
 }
