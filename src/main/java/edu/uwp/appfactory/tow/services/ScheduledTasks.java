@@ -39,7 +39,7 @@ public class ScheduledTasks {
         this.javaMailSender = javaMailSender;
     }
 
-    @Scheduled(cron = "0 20 0 * * *")
+    @Scheduled(cron = "0 */20 * * * *")
     public void GarbageCollection() {
         System.gc();
     }
