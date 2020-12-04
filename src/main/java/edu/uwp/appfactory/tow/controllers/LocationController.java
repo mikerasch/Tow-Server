@@ -34,11 +34,16 @@ public class LocationController {
 
         System.out.println(driverOptional);
 
+        System.out.println("lat " + latitude + " long: " + longitude);
+
         if (driverOptional.isPresent()) {
             Driver driver = driverOptional.get();
+            System.out.println(driver);
             driver.setLongitude(longitude);
+            System.out.println(driver.getLongitude());
             driver.setLatitude(latitude);
             driver.setActive(active);
+            System.out.println(driver.getActive());
             driverRepository.save(driver);
             return true;
         } else {
