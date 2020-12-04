@@ -76,10 +76,8 @@ public class ScheduledTasks {
     private void CheckVerifyStatus() {
         List<Users> nonVerifiedUsers = usersRepository.findAllNonVerified();
         if (nonVerifiedUsers.isEmpty()) {
-            logger.debug("No results...");
             return;
         }
-        logger.debug("There are some entries...");
         nonVerifiedUsers.forEach(entity -> {
             LocalDate userVerifyDate = LocalDate.parse(entity.getVerifyDate());
             Period periodBetween = Period.between(userVerifyDate, LocalDate.now());
