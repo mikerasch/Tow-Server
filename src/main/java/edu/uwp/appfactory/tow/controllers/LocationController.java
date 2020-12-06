@@ -26,15 +26,7 @@ public class LocationController {
     }
 
     public boolean setLocation(float latitude, float longitude, boolean active, String userUUID) {
-
-        System.out.println(userUUID);
-        System.out.println(UUID.fromString(userUUID));
-
         Optional<Driver> driverOptional = driverRepository.findById(UUID.fromString(userUUID));
-
-        System.out.println(driverOptional);
-
-        System.out.println("lat " + latitude + " long: " + longitude);
 
         if (driverOptional.isPresent()) {
             Driver driver = driverOptional.get();
