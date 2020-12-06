@@ -1,10 +1,8 @@
 package edu.uwp.appfactory.tow.controllers.auth;
 
 import edu.uwp.appfactory.tow.WebSecurityConfig.models.ERole;
-import edu.uwp.appfactory.tow.WebSecurityConfig.models.Role;
 import edu.uwp.appfactory.tow.WebSecurityConfig.payload.response.JwtResponse;
 import edu.uwp.appfactory.tow.WebSecurityConfig.payload.response.MessageResponse;
-import edu.uwp.appfactory.tow.WebSecurityConfig.repository.RoleRepository;
 import edu.uwp.appfactory.tow.WebSecurityConfig.repository.UsersRepository;
 import edu.uwp.appfactory.tow.WebSecurityConfig.security.jwt.JwtUtils;
 import edu.uwp.appfactory.tow.WebSecurityConfig.security.services.UserDetailsImpl;
@@ -37,16 +35,14 @@ public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final UsersRepository usersRepository;
-    private final RoleRepository roleRepository;
     private final PasswordEncoder encoder;
     private final JwtUtils jwtUtils;
     private final AsyncEmail sendEmail;
 
     @Autowired
-    public AuthController(AuthenticationManager authenticationManager, UsersRepository usersRepository, RoleRepository roleRepository, PasswordEncoder encoder, JwtUtils jwtUtils, AsyncEmail sendEmail) {
+    public AuthController(AuthenticationManager authenticationManager, UsersRepository usersRepository, PasswordEncoder encoder, JwtUtils jwtUtils, AsyncEmail sendEmail) {
         this.authenticationManager = authenticationManager;
         this.usersRepository = usersRepository;
-        this.roleRepository = roleRepository;
         this.encoder = encoder;
         this.jwtUtils = jwtUtils;
         this.sendEmail = sendEmail;
@@ -69,19 +65,17 @@ public class AuthController {
         //todo: when not testing, uncomment code
         if (usersOptional.isPresent()) {
             Users user = usersOptional.get();
-            return user.getVerEnabled()
-                    ? ResponseEntity
-                    .ok(new JwtResponse(
+            return user.getVerEnabled() ?
+                    ResponseEntity.ok(new JwtResponse(
                             jwt,
                             userDetails.getId(),
                             userDetails.getUsername(),
                             userDetails.getEmail(),
                             userDetails.getFirstname(),
                             userDetails.getLastname(),
-                            userDetails.getRole()
-                    )) : ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("User not verified"));
+                            userDetails.getRole())
+                    ) :
+                    ResponseEntity.badRequest().body(new MessageResponse("User not verified"));
         } else {
             return ResponseEntity
                     .status(494)
@@ -96,12 +90,9 @@ public class AuthController {
                     encoder.encode(password),
                     firstname,
                     lastname,
-                    phone);
+                    phone,
+                    ERole.ROLE_ADMIN.name());
 
-            Role role = roleRepository.findByName(ERole.ROLE_ADMIN)
-                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-
-            user.setRole(role.getName().toString());
             usersRepository.save(user);
             return true;
         } else {
@@ -117,11 +108,11 @@ public class AuthController {
                     firstname,
                     lastname,
                     phone,
+                    ERole.ROLE_DRIVER.name(),
                     0,
                     0,
                     false);
 
-            driver.setRole("ROLE_DRIVER");
             driver.setVerifyToken(generateEmailUUID());
             driver.setVerifyDate(String.valueOf(LocalDate.now()));
             driver.setVerEnabled(false);
@@ -142,9 +133,9 @@ public class AuthController {
                     firstname,
                     lastname,
                     phone,
+                    ERole.ROLE_DISPATCHER.name(),
                     "");
 
-            dispatcher.setRole("ROLE_DISPATCHER");
             dispatcher.setVerifyToken(generateEmailUUID());
             dispatcher.setVerifyDate(String.valueOf(LocalDate.now()));
             dispatcher.setVerEnabled(false);
