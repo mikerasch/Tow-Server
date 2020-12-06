@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 public class Dispatcher extends Users {
     private String precinct;
 
-    public Dispatcher(String email, String username, String password, String firstname, String lastname, String phone, String precinct) {
-        super(email, username, password, firstname, lastname, phone);
+    public Dispatcher(String email, String username, String password, String firstname, String lastname, String phone, String verifyToken, String precinct) {
+        super(email, username, password, firstname, lastname, phone, verifyToken);
         this.precinct = precinct;
     }
 }

@@ -49,12 +49,13 @@ public class Users {
     private Boolean verEnabled;
     private String verifyToken;
 
-    public Users(String email, String username, String password, String firstname, String lastname, String phone) {
+    public Users(String email, String username, String password, String firstname, String lastname, String phone, String verifyToken) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.firstname = firstname;
         this.lastname = lastname;
         this.phone = phone;
+        this.verifyToken = verifyToken;
     }
 }

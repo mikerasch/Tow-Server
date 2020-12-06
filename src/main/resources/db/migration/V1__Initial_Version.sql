@@ -21,22 +21,4 @@ CREATE TABLE public.users
 ) WITH (OIDS = FALSE)
   TABLESPACE pg_default;
 
-CREATE SEQUENCE roles_id_seq;
-
-CREATE TABLE public.roles
-(
-    id integer NOT NULL DEFAULT nextval('roles_id_seq'::regclass),
-    name character varying(20) COLLATE pg_catalog."default",
-    CONSTRAINT roles_pkey PRIMARY KEY (id)
-)
-WITH (
-    OIDS = FALSE
-)
-
-TABLESPACE pg_default;
-
-INSERT INTO roles(name) VALUES('ROLE_ADMIN');
-INSERT INTO roles(name) VALUES('ROLE_DRIVER');
-INSERT INTO roles(name) VALUES('ROLE_DISPATCHER');
-
-SET TIMEZONE='America/Chicago';
+SET TIMEZONE = 'America/Chicago';
