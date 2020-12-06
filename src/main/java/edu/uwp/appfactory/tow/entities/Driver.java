@@ -15,8 +15,8 @@ public class Driver extends Users {
     private Float longitude;
     private Boolean active;
 
-    public Driver(String email, String username, String password, String firstname, String lastname, String phone, String verifyToken, float latitude, float longitude, boolean active) {
-        super(email, username, password, firstname, lastname, phone, verifyToken);
+    public Driver(String email, String username, String password, String firstname, String lastname, String phone, String role, float latitude, float longitude, boolean active) {
+        super(email, username, password, firstname, lastname, phone, role);
         this.latitude = latitude;
         this.longitude = longitude;
         this.active = active;
