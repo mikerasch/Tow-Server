@@ -2,6 +2,7 @@ package edu.uwp.appfactory.tow.routes;
 
 import edu.uwp.appfactory.tow.requestObjects.LoginRequest;
 import edu.uwp.appfactory.tow.requestObjects.UserRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import edu.uwp.appfactory.tow.controllers.auth.AuthController;
@@ -35,7 +36,7 @@ public class AuthRoutes {
     @PostMapping("/admin")
     public ResponseEntity<?> registerAdmin(@RequestBody UserRequest userRequest) {
         return authController.registerAdmin(userRequest.getEmail(), userRequest.getPassword(), userRequest.getFirstname(), userRequest.getLastname(), userRequest.getPhone())
-                ? ResponseEntity.ok("Success")
+                ? ResponseEntity.status(HttpStatus.NO_CONTENT).body(null)
                 : ResponseEntity.status(400).body("Error");
     }
 
@@ -44,14 +45,14 @@ public class AuthRoutes {
         String f = userRequest.getEmail();
         System.out.println(f);
         return authController.registerDriver(userRequest.getEmail(), userRequest.getPassword(), userRequest.getFirstname(), userRequest.getLastname(), userRequest.getPhone())
-                ? ResponseEntity.ok("Success")
+                ? ResponseEntity.status(HttpStatus.NO_CONTENT).body(null)
                 : ResponseEntity.status(400).body("Error");
     }
 
     @PostMapping("/dispatcher")
     public ResponseEntity<?> registerDispatcher(@RequestBody UserRequest userRequest) {
         return authController.registerDispatcher(userRequest.getEmail(), userRequest.getPassword(), userRequest.getFirstname(), userRequest.getLastname(), userRequest.getPhone())
-                ? ResponseEntity.ok("Success")
+                ? ResponseEntity.status(HttpStatus.NO_CONTENT).body(null)
                 : ResponseEntity.status(400).body("Error");
     }
 
@@ -59,7 +60,7 @@ public class AuthRoutes {
     public ResponseEntity<?> verification(@RequestParam("token") final String token) {
         int status = authController.verification(token);
         return switch (status) {
-            case 200 -> ResponseEntity.ok("Success");
+            case 200 -> ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
             case 410 -> ResponseEntity.status(410).body("User already verified");
             case 403 -> ResponseEntity.status(403).body("Link expired, account deleted");
             default -> ResponseEntity.status(404).body("Resource not found");

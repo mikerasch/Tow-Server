@@ -4,6 +4,7 @@ import edu.uwp.appfactory.tow.controllers.PasswordController;
 import edu.uwp.appfactory.tow.requestObjects.PasswordForgotRequest;
 import edu.uwp.appfactory.tow.requestObjects.PasswordResetRequest;
 import edu.uwp.appfactory.tow.requestObjects.PasswordVerifyRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,21 +25,21 @@ public class PasswordRoutes {
     @PatchMapping("/forgot")
     public ResponseEntity<?> forgot(@RequestBody PasswordForgotRequest forgotRequest) {
         return passwordController.forgot(forgotRequest.getEmail())
-                ? ResponseEntity.ok("Success")
+                ? ResponseEntity.status(HttpStatus.NO_CONTENT).body(null)
                 : ResponseEntity.status(400).body("Error");
     }
 
     @PatchMapping("/verify")
     public ResponseEntity<?> verify(@RequestBody PasswordVerifyRequest verifyRequest) {
         return passwordController.verify(verifyRequest.getEmail(), verifyRequest.getToken())
-                ? ResponseEntity.ok("Success")
+                ? ResponseEntity.status(HttpStatus.NO_CONTENT).body(null)
                 : ResponseEntity.status(400).body("Token expired or no associated user");
     }
 
     @PatchMapping("/reset")
     public ResponseEntity<?> reset(@RequestBody PasswordResetRequest resetRequest) {
         return passwordController.reset(resetRequest.getEmail(), resetRequest.getToken(), resetRequest.getPassword())
-                ? ResponseEntity.ok("Success")
+                ? ResponseEntity.status(HttpStatus.NO_CONTENT).body(null)
                 : ResponseEntity.status(400).body("Error");
     }
 }

@@ -4,6 +4,7 @@ import edu.uwp.appfactory.tow.WebSecurityConfig.security.jwt.JwtUtils;
 import edu.uwp.appfactory.tow.controllers.UserController;
 import edu.uwp.appfactory.tow.entities.Users;
 import edu.uwp.appfactory.tow.requestObjects.UpdateRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -38,7 +39,7 @@ public class UserRoutes {
     @DeleteMapping("")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> delete(@RequestHeader("email") final String email) {
-        return userController.deleteByEmail(email) ? ResponseEntity.ok("Success") : ResponseEntity.status(400).body(null);
+        return userController.deleteByEmail(email) ? ResponseEntity.status(HttpStatus.NO_CONTENT).body(null) : ResponseEntity.status(400).body(null);
     }
 
     //todo: JWT AUTH
