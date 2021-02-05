@@ -1,6 +1,5 @@
 package edu.uwp.appfactory.tow.routes;
 
-import edu.uwp.appfactory.tow.WebSecurityConfig.payload.response.MessageResponse;
 import edu.uwp.appfactory.tow.WebSecurityConfig.security.jwt.JwtUtils;
 import edu.uwp.appfactory.tow.controllers.LocationController;
 import edu.uwp.appfactory.tow.requestObjects.DriversRequest;

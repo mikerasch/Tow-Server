@@ -1,11 +1,11 @@
 package edu.uwp.appfactory.tow.routes;
 
+import edu.uwp.appfactory.tow.controllers.auth.AuthController;
 import edu.uwp.appfactory.tow.requestObjects.LoginRequest;
 import edu.uwp.appfactory.tow.requestObjects.UserRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import edu.uwp.appfactory.tow.controllers.auth.AuthController;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController

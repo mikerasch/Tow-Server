@@ -9,7 +9,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serial;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -56,12 +59,21 @@ public class UserDetailsImpl implements UserDetails {
                 user.getRole());
     }
 
-    public String getRole() { return role; }
-    public UUID getId() { return id; }
-    public String getEmail() { return email; }
+    public String getRole() {
+        return role;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
 
     /**
      * getter for authorities
+     *
      * @return collection of authorities of a user
      */
     @Override
@@ -130,6 +142,7 @@ public class UserDetailsImpl implements UserDetails {
     public String getFirstname() {
         return firstname;
     }
+
     public void setFirstname(String firstname) {
         this.firstname = firstname;
     }
@@ -137,6 +150,7 @@ public class UserDetailsImpl implements UserDetails {
     public String getLastname() {
         return lastname;
     }
+
     public void setLastname(String lastname) {
         this.lastname = lastname;
     }

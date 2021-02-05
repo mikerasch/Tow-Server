@@ -1,5 +1,8 @@
 package edu.uwp.appfactory.tow.WebSecurityConfig.security;
 
+import edu.uwp.appfactory.tow.WebSecurityConfig.security.jwt.AuthEntryPointJwt;
+import edu.uwp.appfactory.tow.WebSecurityConfig.security.jwt.AuthTokenFilter;
+import edu.uwp.appfactory.tow.WebSecurityConfig.security.services.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,9 +21,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import edu.uwp.appfactory.tow.WebSecurityConfig.security.jwt.AuthEntryPointJwt;
-import edu.uwp.appfactory.tow.WebSecurityConfig.security.jwt.AuthTokenFilter;
-import edu.uwp.appfactory.tow.WebSecurityConfig.security.services.UserDetailsServiceImpl;
 
 /**
  * web security configuration class, utilized for authentication,
@@ -51,6 +51,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     /**
      * main constructor for the configure object for web security
+     *
      * @param authenticationManagerBuilder: builds manager for authentication
      * @throws Exception: any
      */
@@ -61,6 +62,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     /**
      * getter of the bean for the authentication manager
+     *
      * @return super of the authentication manager bean
      * @throws Exception any
      */
@@ -72,6 +74,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     /**
      * encoder for passwords, security
+     *
      * @return bcrypt password encoder
      */
     @Bean
@@ -82,6 +85,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     /**
      * role hierarchy method that pulls from the impl, and sets the hierarchy
      * to what the developer states
+     *
      * @return role hierarchy set by the developer
      */
     @Bean
@@ -95,6 +99,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     /**
      * security expression handler, using the default web security expression
      * and the role hierarchy
+     *
      * @return default web handler
      */
     private SecurityExpressionHandler<FilterInvocation> webExpressionHandler() {
@@ -106,6 +111,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     /**
      * configure method that sets the constraints on accessing the server
      * in accordance with roles, authentication
+     *
      * @param http HttpSecurity
      * @throws Exception any
      */

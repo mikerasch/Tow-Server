@@ -8,7 +8,7 @@
         * /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
     2. Install Gradle with Homebrew
         * brew install gradle
-        
+
 ## To Run the Migrations
 
 * gradle build flywayMigrate -i (This will run the migrations)
