@@ -2,7 +2,7 @@ plugins {
     id 'org.springframework.boot' version '2.3.5.RELEASE'
     id 'io.spring.dependency-management' version '1.0.10.RELEASE'
     id 'java'
-//    id "org.flywaydb.flyway" version "6.5.7"
+    id "org.flywaydb.flyway" version "6.5.7"
 }
 
 group = 'edu.uwp.appfactory'
@@ -36,10 +36,10 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
 }
 
-//flyway {
-//    url = 'jdbc:postgresql://ec2-35-173-164-51.compute-1.amazonaws.com:5432/tow'
-//    user = 'tow'
-//    password = 'Qm0IeadH4qj40FlEdbMvJB98ZJv8MnFXwIZypPjkPqLN1j4Oo7'
-//    schemas = ['public']
-//}
+flyway {
+    url = 'jdbc:postgresql://192.168.0.103:5432/tow'
+    user = 'mattrank'
+    password = '5minrspp'
+    schemas = ['public']
+}
 
