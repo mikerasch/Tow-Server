@@ -1,12 +1,9 @@
-create table public.driver
+create table public.pdadmin
 (
-    truck_type character varying(255),
-    longitude  float4  NOT NULL default 0.0,
-    latitude   float4  NOT NULL default 0.0,
-    active     boolean NOT NULL default false
+    precinct character varying(255)
 ) inherits (public.users);
 
-create table public.dispatcher
+create table public.tcadmin
 (
-    precinct varchar(255)
+    company varchar(255)
 ) inherits (public.users);
