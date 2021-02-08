@@ -6,9 +6,7 @@ import edu.uwp.appfactory.tow.WebSecurityConfig.payload.response.MessageResponse
 import edu.uwp.appfactory.tow.WebSecurityConfig.repository.UsersRepository;
 import edu.uwp.appfactory.tow.WebSecurityConfig.security.jwt.JwtUtils;
 import edu.uwp.appfactory.tow.WebSecurityConfig.security.services.UserDetailsImpl;
-import edu.uwp.appfactory.tow.entities.Dispatcher;
-import edu.uwp.appfactory.tow.entities.Driver;
-import edu.uwp.appfactory.tow.entities.Users;
+import edu.uwp.appfactory.tow.entities.*;
 import edu.uwp.appfactory.tow.services.AsyncEmail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -118,6 +116,50 @@ public class AuthController {
             driver.setVerEnabled(false);
             usersRepository.save(driver);
             sendEmail.sendEmailAsync(driver);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean registerPDAdmin(String email, String password, String firstname, String lastname, String phone) {
+        if (!usersRepository.existsByEmail(email)) {
+            PDAdmin pdadmin = new PDAdmin(email,
+                    email,
+                    encoder.encode(password),
+                    firstname,
+                    lastname,
+                    phone,
+                    ERole.ROLE_PDADMIN.name(),
+                    "admin");
+
+            pdadmin.setVerifyToken(generateEmailUUID());
+            pdadmin.setVerifyDate(String.valueOf(LocalDate.now()));
+            pdadmin.setVerEnabled(false);
+            usersRepository.save(pdadmin);
+            sendEmail.sendEmailAsync(pdadmin);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean registerTCAdmin(String email, String password, String firstname, String lastname, String phone) {
+        if (!usersRepository.existsByEmail(email)) {
+            TCAdmin tcadmin = new TCAdmin(email,
+                    email,
+                    encoder.encode(password),
+                    firstname,
+                    lastname,
+                    phone,
+                    ERole.ROLE_PDADMIN.name(),
+                    "cool tow company");
+
+            tcadmin.setVerifyToken(generateEmailUUID());
+            tcadmin.setVerifyDate(String.valueOf(LocalDate.now()));
+            tcadmin.setVerEnabled(false);
+            usersRepository.save(tcadmin);
+            sendEmail.sendEmailAsync(tcadmin);
             return true;
         } else {
             return false;
