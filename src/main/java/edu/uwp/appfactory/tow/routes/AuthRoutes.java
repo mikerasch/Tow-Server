@@ -40,6 +40,20 @@ public class AuthRoutes {
                 : ResponseEntity.status(400).body("Error");
     }
 
+    @PostMapping("/tcadmin")
+    public ResponseEntity<?> registerTCAdmin(@RequestBody UserRequest userRequest) {
+        return authController.registerDriver(userRequest.getEmail(), userRequest.getPassword(), userRequest.getFirstname(), userRequest.getLastname(), userRequest.getPhone())
+                ? ResponseEntity.status(HttpStatus.NO_CONTENT).body(null)
+                : ResponseEntity.status(400).body("Error");
+    }
+
+    @PostMapping("/pdadmin")
+    public ResponseEntity<?> registerPDAdmin(@RequestBody UserRequest userRequest) {
+        return authController.registerDriver(userRequest.getEmail(), userRequest.getPassword(), userRequest.getFirstname(), userRequest.getLastname(), userRequest.getPhone())
+                ? ResponseEntity.status(HttpStatus.NO_CONTENT).body(null)
+                : ResponseEntity.status(400).body("Error");
+    }
+
     @PostMapping("/driver")
     public ResponseEntity<?> registerDriver(@RequestBody UserRequest userRequest) {
         String f = userRequest.getEmail();
