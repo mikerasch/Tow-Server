@@ -42,14 +42,14 @@ public class AuthRoutes {
 
     @PostMapping("/tcadmin")
     public ResponseEntity<?> registerTCAdmin(@RequestBody UserRequest userRequest) {
-        return authController.registerDriver(userRequest.getEmail(), userRequest.getPassword(), userRequest.getFirstname(), userRequest.getLastname(), userRequest.getPhone())
+        return authController.registerTCAdmin(userRequest.getEmail(), userRequest.getPassword(), userRequest.getFirstname(), userRequest.getLastname(), userRequest.getPhone())
                 ? ResponseEntity.status(HttpStatus.NO_CONTENT).body(null)
                 : ResponseEntity.status(400).body("Error");
     }
 
     @PostMapping("/pdadmin")
     public ResponseEntity<?> registerPDAdmin(@RequestBody UserRequest userRequest) {
-        return authController.registerDriver(userRequest.getEmail(), userRequest.getPassword(), userRequest.getFirstname(), userRequest.getLastname(), userRequest.getPhone())
+        return authController.registerPDAdmin(userRequest.getEmail(), userRequest.getPassword(), userRequest.getFirstname(), userRequest.getLastname(), userRequest.getPhone())
                 ? ResponseEntity.status(HttpStatus.NO_CONTENT).body(null)
                 : ResponseEntity.status(400).body("Error");
     }
@@ -81,3 +81,11 @@ public class AuthRoutes {
         };
     }
 }
+
+// sign up, schedule an appointment by checking a calender and finding an open slot (30m/hour)
+// up to 5 people can be schedule if 5 people have that time slot open
+
+// worked on, no design, auth done, but no pieces come together
+// when applicants arrive, they want to track people by 'checking them in'
+// to generate metrics
+
