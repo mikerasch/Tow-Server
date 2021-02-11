@@ -16,53 +16,54 @@ import java.util.UUID;
 public class FileDB {
 
 
-    @Id
-    private UUID id;
+//    @I
+//    private UUID id;
 
-    @NotBlank
-    private UUID useruuid;
+//    @NotBlank
+//    private UUID useruuid;
 
-    private String name;
-
-    private String type;
+//    private String name;
+//
+//    private String type;
 
     private byte[] data;
 
 
-    public FileDB(String name, String type, byte[] data, UUID useruuid) {
-        this.name = name;
-        this.type = type;
-        this.data = data;
-        this.useruuid = useruuid;
-    }
+//    public FileDB(String name, String type, byte[] data) {
+//        this.name = name;
+//        this.type = type;
+//        this.data = data;
+////        this.useruuid = useruuid;
+//    }
 
-    public UUID getId() {
-        return id;
-    }
 
-    public UUID getUseruuid() {
-        return useruuid;
-    }
+//    public UUID getId() {
+//        return id;
+//    }
 
-    public void setUseruuid(UUID useruuid) {
-        this.useruuid = useruuid;
-    }
+//    public UUID getUseruuid() {
+//        return useruuid;
+//    }
+//
+//    public void setUseruuid(UUID useruuid) {
+//        this.useruuid = useruuid;
+//    }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
+//    public String getName() {
+//        return name;
+//    }
+//
+//    public void setName(String name) {
+//        this.name = name;
+//    }
+//
+//    public String getType() {
+//        return type;
+//    }
+//
+//    public void setType(String type) {
+//        this.type = type;
+//    }
 
     public byte[] getData() {
         return data;
@@ -73,11 +74,11 @@ public class FileDB {
     }
 
 
-    private Integer resetToken;
-    private String resetDate;
-    private String verifyDate;
-    private Boolean verEnabled;
-    private String verifyToken;
+//    private Integer resetToken;
+//    private String resetDate;
+//    private String verifyDate;
+//    private Boolean verEnabled;
+//    private String verifyToken;
 
 
 }
