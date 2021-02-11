@@ -15,8 +15,9 @@ import java.util.UUID;
 @Data
 public class FileDB {
 
-
-//    @I
+    @Id
+    private UUID id;
+//    @Id
 //    private UUID id;
 
 //    @NotBlank
@@ -28,10 +29,13 @@ public class FileDB {
 
     private byte[] data;
 
+    public FileDB(byte[] data) {
+        this.data = data;
+    }
 
-//    public FileDB(String name, String type, byte[] data) {
-//        this.name = name;
-//        this.type = type;
+
+//    public FileDB( byte[] data) {
+//
 //        this.data = data;
 ////        this.useruuid = useruuid;
 //    }
