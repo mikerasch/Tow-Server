@@ -27,8 +27,8 @@ public class FileController {
     }
 
 
-    public FileDB findById(UUID userId) {
-        Optional<FileDB> fileDB = fileDBRepository.findById(userId);
+    public FileDB findById(UUID Id) {
+        Optional<FileDB> fileDB = fileDBRepository.findById(Id);
         return fileDB.orElse(null);
     }
 
@@ -44,14 +44,10 @@ public class FileController {
     }
 
 
-
     public FileDB getFile(UUID id) {
         return fileDBRepository.findById(id).get();
     }
 
-//    public Stream<FileDB> getAllFiles() {
-//        return fileDBRepository.findAll().stream();
-//    }
 }
 
 
