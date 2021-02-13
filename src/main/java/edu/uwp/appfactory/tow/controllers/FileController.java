@@ -43,10 +43,17 @@ public class FileController {
         return fileDBRepository.save(FileDB);
     }
 
+    public <Multipartfile> FileDB UploadMultipart(Multipartfile fila) throws IOException {
 
-    public FileDB getFile(UUID id) {
-        return fileDBRepository.findById(id).get();
+        FileDB FileDB = new FileDB(data);
+
+        return fileDBRepository.save(FileDB);
     }
+
+
+//    public FileDB getFile(UUID id) {
+//        return fileDBRepository.findById(id).get();
+//    }
 
 }
 
