@@ -9,6 +9,6 @@ public class FileRequest {
     @NotBlank
     @Getter
     @Setter
-    private byte[] data;
+    private String image;
 
 }

@@ -17,14 +17,12 @@ public class FileDB {
 
     @Id
     private UUID id;
-//    @Id
-//    private UUID id;
 
 //    @NotBlank
 //    private UUID useruuid;
 
 //    private String name;
-//
+
 //    private String type;
 
     private byte[] data;
