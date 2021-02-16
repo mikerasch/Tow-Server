@@ -1,6 +1,7 @@
 package edu.uwp.appfactory.tow.routes;
 
 
+import edu.uwp.appfactory.tow.WebSecurityConfig.security.jwt.JwtUtils;
 import edu.uwp.appfactory.tow.entities.FileDB;
 import edu.uwp.appfactory.tow.requestObjects.FileRequest;
 import org.springframework.http.HttpStatus;
@@ -22,8 +23,10 @@ import java.util.UUID;
 public class ImageRoutes {
 
     private final FileController fileController;
-    public ImageRoutes( FileController fileController) {
-        this.fileController = fileController;
+    private final JwtUtils jwtUtils;
+    public ImageRoutes( FileController fileController, JwtUtils jwtUtils) {
+                this.fileController = fileController;
+                this.jwtUtils = jwtUtils;
     }
 
     @PostMapping("/upload")
@@ -57,6 +60,27 @@ public class ImageRoutes {
             byte[] data = Base64.getMimeDecoder().decode(y);
 
             fileController.Upload(data);
+            //System.out.println(Arrays.toString(data));
+
+            return  ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+        } catch (Exception e) {
+            return  ResponseEntity.status(400).body("Error" + e);
+        }
+
+    }
+
+
+    @PostMapping("/upload-base64-jwt")
+    public ResponseEntity<?> uploadBase64Jwt(@RequestHeader final String jwtToken,
+                                             @RequestBody FileRequest file)throws IOException {
+        try{
+
+            String userUUID = jwtUtils.getUUIDFromJwtToken(jwtToken);
+            String x = file.getImage();
+            String y = x.substring(22);
+            byte[] data = Base64.getMimeDecoder().decode(y);
+
+            fileController.Uploadjwt(data, userUUID);
             //System.out.println(Arrays.toString(data));
 
             return  ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);

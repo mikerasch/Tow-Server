@@ -11,4 +11,9 @@ public class FileRequest {
     @Setter
     private String image;
 
+
+    @Getter
+    @Setter
+    private String userUUID;
+
 }

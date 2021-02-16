@@ -43,6 +43,13 @@ public class FileController {
         return fileDBRepository.save(FileDB);
     }
 
+    public FileDB Uploadjwt(byte[] data,String userUUID) throws IOException {
+
+        FileDB FileDB = new FileDB(data, userUUID);
+
+        return fileDBRepository.save(FileDB);
+    }
+
 //    public <Multipartfile> FileDB UploadMultipart(Multipartfile file) throws IOException {
 //
 //        byte[] data = file.getdada

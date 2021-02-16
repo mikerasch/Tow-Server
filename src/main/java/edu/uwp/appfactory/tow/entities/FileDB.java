@@ -19,7 +19,7 @@ public class FileDB {
     private UUID id;
 
 //    @NotBlank
-//    private UUID useruuid;
+    private String userUUID;
 
 //    private String name;
 
@@ -28,6 +28,11 @@ public class FileDB {
     private byte[] data;
 
     public FileDB(byte[] data) {
+        this.data = data;
+    }
+
+    public FileDB(byte[] data, String userUUID) {
+        this.userUUID = userUUID;
         this.data = data;
     }
 
