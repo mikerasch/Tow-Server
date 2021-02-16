@@ -54,15 +54,15 @@ public class AuthController {
         return jwtUtils.refreshJwtToken(jwtUtils.getUUIDFromJwtToken(jwtToken));
     }
 
-    public ResponseEntity<?> authenticateUser(String email, String password) {
+    public ResponseEntity<?> authenticateUser(LoginRequest loginRequest) {
         Authentication authentication = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(email, password));
+                .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-        Optional<Users> usersOptional = usersRepository.findByUsername(email);
+        Optional<Users> usersOptional = usersRepository.findByUsername(loginRequest.getEmail());
 
         //todo: when not testing, uncomment code
         if (usersOptional.isPresent()) {
