@@ -1,6 +1,6 @@
 package edu.uwp.appfactory.tow.controllers;
 
-import edu.uwp.appfactory.tow.repositories.DriverRepository;
+import edu.uwp.appfactory.tow.repositories.PDAdminRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Controller;
@@ -9,10 +9,10 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class PDAdminController {
 
-    private final DriverRepository driverRepository;
+    private final PDAdminRepository pdAdminRepository;
 
     @Autowired
-    public PDAdminController(DriverRepository driverRepository) {
-        this.driverRepository = driverRepository;
+    public PDAdminController(PDAdminRepository pdAdminRepository) {
+        this.pdAdminRepository = pdAdminRepository;
     }
 }

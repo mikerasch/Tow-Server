@@ -92,7 +92,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public RoleHierarchy roleHierarchy() {
         RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
         /* tricks lies here */
-        roleHierarchy.setHierarchy("ROLE_ADMIN > ROLE_DISPATCHER ROLE_DRIVER");
+        roleHierarchy.setHierarchy("ROLE_ADMIN > ROLE_TCADMIN ROLE_PDADMIN > ROLE_TCUSER ROLE_PDUSER");
         return roleHierarchy;
     }
 

@@ -1,6 +1,6 @@
 package edu.uwp.appfactory.tow.controllers;
 
-import edu.uwp.appfactory.tow.repositories.DriverRepository;
+import edu.uwp.appfactory.tow.repositories.PDUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Controller;
@@ -9,10 +9,10 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class PDUserController {
 
-    private final DriverRepository driverRepository;
+    private final PDUserRepository pdUserRepository;
 
     @Autowired
-    public PDUserController(DriverRepository driverRepository) {
-        this.driverRepository = driverRepository;
+    public PDUserController(PDUserRepository pdUserRepository) {
+        this.pdUserRepository = pdUserRepository;
     }
 }

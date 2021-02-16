@@ -14,12 +14,11 @@ import java.util.UUID;
 public class PDUser extends Users {
 
     private String frontID;
-    private UUID authUUID;
+    private UUID adminUUID;
 
-
-    public PDUser(String email, String username, String password, String firstname, String lastname, String phone, String role, String precinct) {
+    public PDUser(String email, String username, String password, String firstname, String lastname, String phone, String role, String frontID, UUID adminUUID) {
         super(email, username, password, firstname, lastname, phone, role);
         this.frontID = frontID;
-        this.authUUID = authUUID;
+        this.adminUUID = adminUUID;
     }
 }

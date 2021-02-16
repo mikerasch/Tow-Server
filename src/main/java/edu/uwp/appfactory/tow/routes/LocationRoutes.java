@@ -24,7 +24,7 @@ public class LocationRoutes {
         this.jwtUtils = jwtUtils;
     }
 
-    @PreAuthorize("hasRole('DRIVER')")
+    @PreAuthorize("hasRole('TCUSER')")
     @PatchMapping("/my-location")
     public ResponseEntity<?> setLocation(@RequestHeader("Authorization") final String jwtToken,
                                          @RequestBody SetLocationRequest setRequest) {
@@ -37,7 +37,7 @@ public class LocationRoutes {
 
     //todo: patch doesnt really align, but need in order to send body data
     //todo: it needs to be 200 or something even if no drivers are returned
-    @PreAuthorize("hasRole('DISPATCHER')")
+    @PreAuthorize("hasRole('PDUSER')")
     @PatchMapping("/driver-locations")
     public ResponseEntity<?> getLocations(@RequestBody DriversRequest driversRequest) {
         List<?> data = locationController.findByDistance(driversRequest.getLatitude(), driversRequest.getLongitude(), driversRequest.getRadius());

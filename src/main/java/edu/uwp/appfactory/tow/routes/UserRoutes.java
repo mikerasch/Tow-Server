@@ -25,7 +25,7 @@ public class UserRoutes {
     }
 
     @GetMapping("")
-    @PreAuthorize("hasRole('DRIVER') or hasRole('DISPATCHER')")
+    @PreAuthorize("hasRole('PDADMIN') or hasRole('PDUSER') or hasRole('TCADMIN') or hasRole('TCUSER')")
     public ResponseEntity<?> get(@RequestHeader("Authorization") final String jwtToken) {
         String userId = jwtUtils.getUUIDFromJwtToken(jwtToken);
         Users data = userController.findById(UUID.fromString(userId));
@@ -44,7 +44,7 @@ public class UserRoutes {
 
     //todo: JWT AUTH
     @PatchMapping(value = "")
-    @PreAuthorize("hasRole('DRIVER') or hasRole('DISPATCHER')")
+    @PreAuthorize("hasRole('PDADMIN') or hasRole('PDUSER') or hasRole('TCADMIN') or hasRole('TCUSER')")
     public ResponseEntity<?> update(@RequestHeader("Authorization") final String jwtToken,
                                     @RequestBody UpdateRequest updateRequest) {
         String userId = jwtUtils.getUUIDFromJwtToken(jwtToken);
