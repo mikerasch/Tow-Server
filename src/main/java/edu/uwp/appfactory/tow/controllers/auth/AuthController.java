@@ -7,6 +7,9 @@ import edu.uwp.appfactory.tow.WebSecurityConfig.repository.UsersRepository;
 import edu.uwp.appfactory.tow.WebSecurityConfig.security.jwt.JwtUtils;
 import edu.uwp.appfactory.tow.WebSecurityConfig.security.services.UserDetailsImpl;
 import edu.uwp.appfactory.tow.entities.*;
+import edu.uwp.appfactory.tow.repositories.PDAdminRepository;
+import edu.uwp.appfactory.tow.requestObjects.PDAdminRequest;
+import edu.uwp.appfactory.tow.requestObjects.PDUserRequest;
 import edu.uwp.appfactory.tow.services.AsyncEmail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -33,14 +36,16 @@ public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final UsersRepository usersRepository;
+    private final PDAdminRepository pdAdminRepository;
     private final PasswordEncoder encoder;
     private final JwtUtils jwtUtils;
     private final AsyncEmail sendEmail;
 
     @Autowired
-    public AuthController(AuthenticationManager authenticationManager, UsersRepository usersRepository, PasswordEncoder encoder, JwtUtils jwtUtils, AsyncEmail sendEmail) {
+    public AuthController(AuthenticationManager authenticationManager, UsersRepository usersRepository, PDAdminRepository pdAdminRepository, PasswordEncoder encoder, JwtUtils jwtUtils, AsyncEmail sendEmail) {
         this.authenticationManager = authenticationManager;
         this.usersRepository = usersRepository;
+        this.pdAdminRepository = pdAdminRepository;
         this.encoder = encoder;
         this.jwtUtils = jwtUtils;
         this.sendEmail = sendEmail;
@@ -122,16 +127,20 @@ public class AuthController {
         }
     }
 
-    public boolean registerPDAdmin(String email, String password, String firstname, String lastname, String phone) {
-        if (!usersRepository.existsByEmail(email)) {
-            PDAdmin pdadmin = new PDAdmin(email,
-                    email,
-                    encoder.encode(password),
-                    firstname,
-                    lastname,
-                    phone,
+    public boolean registerPDAdmin(PDAdminRequest pdAdminRequest) {
+        if (!usersRepository.existsByEmail(pdAdminRequest.getEmail())) {
+            PDAdmin pdadmin = new PDAdmin(pdAdminRequest.getEmail(),
+                    pdAdminRequest.getEmail(),
+                    encoder.encode(pdAdminRequest.getPassword()),
+                    pdAdminRequest.getFirstname(),
+                    pdAdminRequest.getLastname(),
+                    pdAdminRequest.getPhone(),
                     ERole.ROLE_PDADMIN.name(),
-                    "admin");
+                    pdAdminRequest.getCity(),
+                    pdAdminRequest.getAddressNumber(),
+                    pdAdminRequest.getDepartment(),
+                    pdAdminRequest.getDepartmentShort()
+                    );
 
             pdadmin.setVerifyToken(generateEmailUUID());
             pdadmin.setVerifyDate(String.valueOf(LocalDate.now()));
@@ -144,7 +153,60 @@ public class AuthController {
         }
     }
 
+    public boolean registerPDUser(PDUserRequest pdUserRequest, String adminUUID) {
+        if (!usersRepository.existsByEmail(pdUserRequest.getEmail())) {
+
+            String frontID;
+
+            Optional<PDAdmin> usersOptional = pdAdminRepository.findById(UUID.fromString(adminUUID));
+                    if (usersOptional.isPresent()) {
+                        Users user = usersOptional.get();
+                        frontID = user.get
+                    }
+
+                    PDUser pduser = new PDUser(pdUserRequest.getEmail(),
+                    pdUserRequest.getEmail(),
+                    generatePDUserUUID(),
+                    pdUserRequest.getFirstname(),
+                    pdUserRequest.getLastname(),
+                    pdUserRequest.getPhone(),
+                    ERole.ROLE_PDUSER.name(),
+                    frontID,
+                    adminUUID);
+
+            pduser.setVerifyToken("");
+            pduser.setVerifyDate("");
+            pduser.setVerEnabled(true);
+            usersRepository.save(pduser);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public boolean registerTCAdmin(String email, String password, String firstname, String lastname, String phone) {
+        if (!usersRepository.existsByEmail(email)) {
+            TCAdmin tcadmin = new TCAdmin(email,
+                    email,
+                    encoder.encode(password),
+                    firstname,
+                    lastname,
+                    phone,
+                    ERole.ROLE_PDADMIN.name(),
+                    "cool tow company");
+
+            tcadmin.setVerifyToken(generateEmailUUID());
+            tcadmin.setVerifyDate(String.valueOf(LocalDate.now()));
+            tcadmin.setVerEnabled(false);
+            usersRepository.save(tcadmin);
+            sendEmail.sendEmailAsync(tcadmin);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean registerTCUser(String email, String password, String firstname, String lastname, String phone) {
         if (!usersRepository.existsByEmail(email)) {
             TCAdmin tcadmin = new TCAdmin(email,
                     email,
@@ -215,5 +277,8 @@ public class AuthController {
 
     private String generateEmailUUID() {
         return UUID.randomUUID().toString().replace("-", "");
+    }
+    private String generatePDUserUUID() {
+        return UUID.randomUUID().toString().replace("-", "").substring(0,6);
     }
 }

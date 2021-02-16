@@ -1,11 +1,17 @@
 package edu.uwp.appfactory.tow.routes;
 
+import edu.uwp.appfactory.tow.WebSecurityConfig.security.jwt.JwtUtils;
 import edu.uwp.appfactory.tow.controllers.auth.AuthController;
 import edu.uwp.appfactory.tow.requestObjects.LoginRequest;
+import edu.uwp.appfactory.tow.requestObjects.PDAdminRequest;
 import edu.uwp.appfactory.tow.requestObjects.UserRequest;
+import edu.uwp.appfactory.tow.requestObjects.PDUserRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -13,9 +19,11 @@ import org.springframework.web.bind.annotation.*;
 public class AuthRoutes {
 
     private final AuthController authController;
+    private final JwtUtils jwtUtils;
 
-    public AuthRoutes(AuthController authController) {
+    public AuthRoutes(AuthController authController, JwtUtils jwtUtils) {
         this.authController = authController;
+        this.jwtUtils = jwtUtils;
     }
 
     @PostMapping("/refresh")
@@ -40,6 +48,23 @@ public class AuthRoutes {
                 : ResponseEntity.status(400).body("Error");
     }
 
+    @PostMapping("/pdadmin")
+    public ResponseEntity<?> registerPDAdmin(@RequestBody PDAdminRequest pdAdminRequest) {
+        return authController.registerPDAdmin(pdAdminRequest)
+                ? ResponseEntity.status(HttpStatus.NO_CONTENT).body(null)
+                : ResponseEntity.status(400).body("Error");
+    }
+
+    @PreAuthorize("hasRole('PDADMIN')")
+    @PostMapping("/pduser")
+    public ResponseEntity<?> registerPDUser(@RequestHeader("Authorization") final String jwtToken,
+                                            @RequestBody PDUserRequest pdUserRequest) {
+        String adminUUID = jwtUtils.getUUIDFromJwtToken(jwtToken);
+        return authController.registerPDUser(pdUserRequest, adminUUID)
+                ? ResponseEntity.status(HttpStatus.NO_CONTENT).body(null)
+                : ResponseEntity.status(400).body("Error");
+    }
+
     @PostMapping("/tcadmin")
     public ResponseEntity<?> registerTCAdmin(@RequestBody UserRequest userRequest) {
         return authController.registerTCAdmin(userRequest.getEmail(), userRequest.getPassword(), userRequest.getFirstname(), userRequest.getLastname(), userRequest.getPhone())
@@ -47,29 +72,16 @@ public class AuthRoutes {
                 : ResponseEntity.status(400).body("Error");
     }
 
-    @PostMapping("/pdadmin")
-    public ResponseEntity<?> registerPDAdmin(@RequestBody UserRequest userRequest) {
-        return authController.registerPDAdmin(userRequest.getEmail(), userRequest.getPassword(), userRequest.getFirstname(), userRequest.getLastname(), userRequest.getPhone())
+    @PreAuthorize("hasRole('TCADMIN')")
+    @PostMapping("/tcuser")
+    public ResponseEntity<?> registerTCUser(@RequestBody UserRequest userRequest) {
+        return authController.registerTCAdmin(userRequest.getEmail(), userRequest.getPassword(), userRequest.getFirstname(), userRequest.getLastname(), userRequest.getPhone())
                 ? ResponseEntity.status(HttpStatus.NO_CONTENT).body(null)
                 : ResponseEntity.status(400).body("Error");
     }
 
     @PostMapping("/driver")
     public ResponseEntity<?> registerDriver(@RequestBody UserRequest userRequest) {
-        return authController.registerDriver(userRequest.getEmail(), userRequest.getPassword(), userRequest.getFirstname(), userRequest.getLastname(), userRequest.getPhone())
-                ? ResponseEntity.status(HttpStatus.NO_CONTENT).body(null)
-                : ResponseEntity.status(400).body("Error");
-    }
-
-    @PostMapping("/tcadmin")
-    public ResponseEntity<?> registerTCAdmin(@RequestBody UserRequest userRequest) {
-        return authController.registerDriver(userRequest.getEmail(), userRequest.getPassword(), userRequest.getFirstname(), userRequest.getLastname(), userRequest.getPhone())
-                ? ResponseEntity.status(HttpStatus.NO_CONTENT).body(null)
-                : ResponseEntity.status(400).body("Error");
-    }
-
-    @PostMapping("/pdadmin")
-    public ResponseEntity<?> registerPDAdmin(@RequestBody UserRequest userRequest) {
         return authController.registerDriver(userRequest.getEmail(), userRequest.getPassword(), userRequest.getFirstname(), userRequest.getLastname(), userRequest.getPhone())
                 ? ResponseEntity.status(HttpStatus.NO_CONTENT).body(null)
                 : ResponseEntity.status(400).body("Error");

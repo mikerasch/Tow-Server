@@ -11,10 +11,20 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 public class PDAdmin extends Users {
 
-    private String precinct;
+    private String city;
+    private int addressNumber;
+    private String department;
+    private String departmentShort;
 
-    public PDAdmin(String email, String username, String password, String firstname, String lastname, String phone, String role, String precinct) {
+    public PDAdmin(String email, String username, String password,
+                   String firstname, String lastname, String phone,
+                   String role, String city, int addressNumber, String department, String departmentShort)
+    {
+
         super(email, username, password, firstname, lastname, phone, role);
-        this.precinct = precinct;
+        this.city = city;
+        this.addressNumber = addressNumber;
+        this.department = department;
+        this.departmentShort = departmentShort;
     }
 }
