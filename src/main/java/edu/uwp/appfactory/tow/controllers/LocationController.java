@@ -1,9 +1,9 @@
 package edu.uwp.appfactory.tow.controllers;
 
 import edu.uwp.appfactory.tow.WebSecurityConfig.security.jwt.JwtUtils;
-import edu.uwp.appfactory.tow.entities.Driver;
-import edu.uwp.appfactory.tow.repositories.DispatcherRepository;
-import edu.uwp.appfactory.tow.repositories.DriverRepository;
+import edu.uwp.appfactory.tow.entities.TCUser;
+import edu.uwp.appfactory.tow.repositories.PDUserRepository;
+import edu.uwp.appfactory.tow.repositories.TCUserRepository;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Controller;
 
@@ -15,36 +15,36 @@ import java.util.UUID;
 @Controller
 public class LocationController {
 
-    private final DriverRepository driverRepository;
-    private final DispatcherRepository dispatcherRepository;
     private final JwtUtils jwtUtils;
+    private final TCUserRepository tcUserRepository;
+    private final PDUserRepository pdUserRepository;
 
-    public LocationController(DriverRepository driverRepository, DispatcherRepository dispatcherRepository, JwtUtils jwtUtils) {
-        this.driverRepository = driverRepository;
-        this.dispatcherRepository = dispatcherRepository;
+    public LocationController(JwtUtils jwtUtils, TCUserRepository tcUserRepository, PDUserRepository pdUserRepository) {
         this.jwtUtils = jwtUtils;
+        this.tcUserRepository = tcUserRepository;
+        this.pdUserRepository = pdUserRepository;
     }
 
     public boolean setLocation(float latitude, float longitude, boolean active, String userUUID) {
-        Optional<Driver> driverOptional = driverRepository.findById(UUID.fromString(userUUID));
+        Optional<TCUser> tcUserOptional = tcUserRepository.findById(UUID.fromString(userUUID));
 
-        if (driverOptional.isPresent()) {
-            Driver driver = driverOptional.get();
-            System.out.println(driver);
-            driver.setLongitude(longitude);
-            System.out.println(driver.getLongitude());
-            driver.setLatitude(latitude);
-            driver.setActive(active);
-            System.out.println(driver.getActive());
-            driverRepository.save(driver);
+        if (tcUserOptional.isPresent()) {
+            TCUser tcUser = tcUserOptional.get();
+            System.out.println(tcUser);
+            tcUser.setLongitude(longitude);
+            System.out.println(tcUser.getLongitude());
+            tcUser.setLatitude(latitude);
+            tcUser.setActive(active);
+            System.out.println(tcUser.getActive());
+            tcUserRepository.save(tcUser);
             return true;
         } else {
             return false;
         }
     }
 
-    public List<Driver> findByDistance(float latitude, float longitude, int radius) {
-        List<Driver> drivers = dispatcherRepository.findByDistance(latitude, longitude, radius);
+    public List<TCUser> findByDistance(float latitude, float longitude, int radius) {
+        List<TCUser> drivers = pdUserRepository.findByDistance(latitude, longitude, radius);
         if (drivers.size() != 0) {
             return drivers;
         } else {

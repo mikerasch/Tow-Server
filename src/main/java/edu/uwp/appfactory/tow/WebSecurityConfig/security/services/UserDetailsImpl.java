@@ -78,15 +78,13 @@ public class UserDetailsImpl implements UserDetails {
      */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        ERole eRole;
-
-        if (getRole().equals("ROLE_DRIVER")) {
-            eRole = ERole.ROLE_DRIVER;
-        } else if (getRole().equals("ROLE_DISPATCHER")) {
-            eRole = ERole.ROLE_DISPATCHER;
-        } else {
-            eRole = ERole.ROLE_ADMIN;
-        }
+        ERole eRole = switch (getRole()) {
+            case "ROLE_PDADMIN" -> ERole.ROLE_PDADMIN;
+            case "ROLE_PDUSER" -> ERole.ROLE_PDUSER;
+            case "ROLE_TCADMIN" -> ERole.ROLE_TCADMIN;
+            case "ROLE_TCUSER" -> ERole.ROLE_TCUSER;
+            default -> ERole.ROLE_ADMIN;
+        };
 
         Role tempRole = new Role();
         tempRole.setName(eRole);

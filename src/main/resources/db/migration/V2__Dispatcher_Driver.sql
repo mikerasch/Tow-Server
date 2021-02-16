@@ -1,12 +1,29 @@
-create table public.driver
+create table public.pd_admin
 (
-    truck_type character varying(255),
-    longitude  float4  NOT NULL default 0.0,
-    latitude   float4  NOT NULL default 0.0,
-    active     boolean NOT NULL default false
+    city             character varying(100),
+    address_number   int NOT NULL default 0.0,
+    department       character varying(100),
+    department_short character varying(100)
 ) inherits (public.users);
 
-create table public.dispatcher
+
+create table public.pd_user
 (
-    precinct varchar(255)
+    front_id   character varying(100),
+    admin_UUID uuid
+) inherits (public.users);
+
+
+create table public.tc_admin
+(
+    company character varying(255)
+) inherits (public.users);
+
+
+create table public.tc_user
+(
+    longitude  float4  NOT NULL default 0.0,
+    latitude   float4  NOT NULL default 0.0,
+    active     boolean NOT NULL default false,
+    admin_UUID uuid
 ) inherits (public.users);

@@ -5,7 +5,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 
-public class UserRequest {
+public class TCAdminRequest {
     @NotBlank
     @Getter
     @Setter
@@ -30,4 +30,9 @@ public class UserRequest {
     @Getter
     @Setter
     private String phone;
+
+    @NotBlank
+    @Getter
+    @Setter
+    private String company;
 }

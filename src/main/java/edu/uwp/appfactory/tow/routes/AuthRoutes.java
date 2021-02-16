@@ -1,11 +1,14 @@
 package edu.uwp.appfactory.tow.routes;
 
+import edu.uwp.appfactory.tow.WebSecurityConfig.security.jwt.JwtUtils;
 import edu.uwp.appfactory.tow.controllers.auth.AuthController;
-import edu.uwp.appfactory.tow.requestObjects.LoginRequest;
-import edu.uwp.appfactory.tow.requestObjects.UserRequest;
+import edu.uwp.appfactory.tow.requestObjects.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -13,9 +16,11 @@ import org.springframework.web.bind.annotation.*;
 public class AuthRoutes {
 
     private final AuthController authController;
+    private final JwtUtils jwtUtils;
 
-    public AuthRoutes(AuthController authController) {
+    public AuthRoutes(AuthController authController, JwtUtils jwtUtils) {
         this.authController = authController;
+        this.jwtUtils = jwtUtils;
     }
 
     @PostMapping("/refresh")
@@ -34,38 +39,42 @@ public class AuthRoutes {
     }
 
     @PostMapping("/admin")
-    public ResponseEntity<?> registerAdmin(@RequestBody UserRequest userRequest) {
-        return authController.registerAdmin(userRequest.getEmail(), userRequest.getPassword(), userRequest.getFirstname(), userRequest.getLastname(), userRequest.getPhone())
-                ? ResponseEntity.status(HttpStatus.NO_CONTENT).body(null)
-                : ResponseEntity.status(400).body("Error");
-    }
-
-    @PostMapping("/tcadmin")
-    public ResponseEntity<?> registerTCAdmin(@RequestBody UserRequest userRequest) {
-        return authController.registerTCAdmin(userRequest.getEmail(), userRequest.getPassword(), userRequest.getFirstname(), userRequest.getLastname(), userRequest.getPhone())
+    public ResponseEntity<?> registerAdmin(@RequestBody AdminRequest adminRequest) {
+        return authController.registerAdmin(adminRequest)
                 ? ResponseEntity.status(HttpStatus.NO_CONTENT).body(null)
                 : ResponseEntity.status(400).body("Error");
     }
 
     @PostMapping("/pdadmin")
-    public ResponseEntity<?> registerPDAdmin(@RequestBody UserRequest userRequest) {
-        return authController.registerPDAdmin(userRequest.getEmail(), userRequest.getPassword(), userRequest.getFirstname(), userRequest.getLastname(), userRequest.getPhone())
+    public ResponseEntity<?> registerPDAdmin(@RequestBody PDAdminRequest pdAdminRequest) {
+        return authController.registerPDAdmin(pdAdminRequest)
                 ? ResponseEntity.status(HttpStatus.NO_CONTENT).body(null)
                 : ResponseEntity.status(400).body("Error");
     }
 
-    @PostMapping("/driver")
-    public ResponseEntity<?> registerDriver(@RequestBody UserRequest userRequest) {
-        String f = userRequest.getEmail();
-        System.out.println(f);
-        return authController.registerDriver(userRequest.getEmail(), userRequest.getPassword(), userRequest.getFirstname(), userRequest.getLastname(), userRequest.getPhone())
+    @PreAuthorize("hasRole('PDADMIN')")
+    @PostMapping("/pduser")
+    public ResponseEntity<?> registerPDUser(@RequestHeader("Authorization") final String jwtToken,
+                                            @RequestBody PDUserRequest pdUserRequest) {
+        UUID adminUUID = UUID.fromString(jwtUtils.getUUIDFromJwtToken(jwtToken));
+        return authController.registerPDUser(pdUserRequest, adminUUID)
                 ? ResponseEntity.status(HttpStatus.NO_CONTENT).body(null)
                 : ResponseEntity.status(400).body("Error");
     }
 
-    @PostMapping("/dispatcher")
-    public ResponseEntity<?> registerDispatcher(@RequestBody UserRequest userRequest) {
-        return authController.registerDispatcher(userRequest.getEmail(), userRequest.getPassword(), userRequest.getFirstname(), userRequest.getLastname(), userRequest.getPhone())
+    @PostMapping("/tcadmin")
+    public ResponseEntity<?> registerTCAdmin(@RequestBody TCAdminRequest tcAdminRequest) {
+        return authController.registerTCAdmin(tcAdminRequest)
+                ? ResponseEntity.status(HttpStatus.NO_CONTENT).body(null)
+                : ResponseEntity.status(400).body("Error");
+    }
+
+    @PreAuthorize("hasRole('TCADMIN')")
+    @PostMapping("/tcuser")
+    public ResponseEntity<?> registerTCUser(@RequestHeader("Authorization") final String jwtToken,
+                                            @RequestBody TCUserRequest tcUserRequest) {
+        UUID adminUUID = UUID.fromString(jwtUtils.getUUIDFromJwtToken(jwtToken));
+        return authController.registerTCUser(tcUserRequest, adminUUID)
                 ? ResponseEntity.status(HttpStatus.NO_CONTENT).body(null)
                 : ResponseEntity.status(400).body("Error");
     }
