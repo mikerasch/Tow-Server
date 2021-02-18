@@ -54,7 +54,7 @@ public class AuthController {
         return jwtUtils.refreshJwtToken(jwtUtils.getUUIDFromJwtToken(jwtToken));
     }
 
-    public ResponseEntity<?> authenticateUser(LoginRequest loginRequest) {
+    public ResponseEntity<?> authenticateUser(String email, String password) {
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
@@ -65,6 +65,7 @@ public class AuthController {
         Optional<Users> usersOptional = usersRepository.findByUsername(loginRequest.getEmail());
 
         //todo: when not testing, uncomment code
+        if(userDetails.getRole().equals(role)){
         if (usersOptional.isPresent()) {
             Users user = usersOptional.get();
             return user.getVerEnabled() ?
@@ -82,6 +83,10 @@ public class AuthController {
             return ResponseEntity
                     .status(494)
                     .body(new MessageResponse("User does not exist"));
+        }}else{
+            return ResponseEntity
+                    .status(401)
+                    .body(new MessageResponse("User is not permitted to use this dashboard"));
         }
     }
 
