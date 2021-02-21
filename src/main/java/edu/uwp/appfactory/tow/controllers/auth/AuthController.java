@@ -54,7 +54,7 @@ public class AuthController {
         return jwtUtils.refreshJwtToken(jwtUtils.getUUIDFromJwtToken(jwtToken));
     }
 
-    public ResponseEntity<?> authenticateUser(String email, String password, String role) {
+    public ResponseEntity<?> authenticateUser(String email, String password, String platform) {
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(email, password));
 
@@ -65,7 +65,7 @@ public class AuthController {
         Optional<Users> usersOptional = usersRepository.findByUsername(email);
 
         //todo: when not testing, uncomment code
-        if(userDetails.getRole().equals(role)){
+        if(userDetails.getRole().equals(platform)){
         if (usersOptional.isPresent()) {
             Users user = usersOptional.get();
             return user.getVerEnabled() ?
