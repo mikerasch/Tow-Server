@@ -19,7 +19,7 @@ public class LoginRequest {
     @NotBlank
     @Getter
     @Setter
-    private String role;
+    private String platform;
 
 
 }
