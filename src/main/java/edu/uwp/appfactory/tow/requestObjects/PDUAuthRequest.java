@@ -15,4 +15,9 @@ public class PDUAuthRequest {
     @Getter
     @Setter
     private String password;
+
+    public PDUAuthRequest(String frontID, String password) {
+        this.username = frontID;
+        this.password = password;
+    }
 }

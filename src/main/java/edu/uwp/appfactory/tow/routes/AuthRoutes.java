@@ -55,9 +55,12 @@ public class AuthRoutes {
     public ResponseEntity<?> registerPDUser(@RequestHeader("Authorization") final String jwtToken,
                                             @RequestBody PDUserRequest pdUserRequest) {
         UUID adminUUID = UUID.fromString(jwtUtils.getUUIDFromJwtToken(jwtToken));
-        return authController.registerPDUser(pdUserRequest, adminUUID)
-                ? ResponseEntity.status(HttpStatus.NO_CONTENT).body(null)
-                : ResponseEntity.status(400).body("Error");
+        PDUAuthRequest data =  authController.registerPDUser(pdUserRequest, adminUUID);
+        if (data != null) {
+            return ResponseEntity.ok(data);
+        } else {
+            return ResponseEntity.status(400).body("Error");
+        }
     }
 
     @PostMapping("/tcadmin")

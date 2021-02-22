@@ -2,9 +2,9 @@
 create table public.file_db
 (
     id       uuid                     DEFAULT uuid_generate_v4() NOT NULL PRIMARY KEY,
-    data     bytea
-
---     name     character varying(100),
+    data     bytea,
+    useruuid    UUID,
+    name     character varying(100)
 --     type     character varying(100),
 --     useruuid uuid,
 

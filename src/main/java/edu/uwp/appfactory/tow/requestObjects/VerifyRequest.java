@@ -10,4 +10,9 @@ public class VerifyRequest {
     @Getter
     @Setter
     private String token;
+
+    public VerifyRequest(String verifyToken) {
+
+        token = verifyToken;
+    }
 }

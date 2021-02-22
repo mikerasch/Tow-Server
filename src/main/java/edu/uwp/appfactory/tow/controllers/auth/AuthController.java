@@ -100,6 +100,7 @@ public class AuthController {
                     adminRequest.getLastname(),
                     adminRequest.getPhone(),
                     ERole.ROLE_ADMIN.name());
+            user.setVerEnabled(true);
 
             usersRepository.save(user);
             return true;
@@ -132,16 +133,19 @@ public class AuthController {
             pdAdmin.setVerEnabled(false);
             usersRepository.save(pdAdmin);
             sendEmail.sendEmailAsync(pdAdmin);
-            return ResponseEntity.ok(pdAdmin.getVerifyToken());
+            VerifyRequest x = new VerifyRequest(pdAdmin.getVerifyToken());
+            ;
+            return ResponseEntity.ok(x);
         } else {
             return ResponseEntity.status(400).body("Error");
         }
     }
 
-    public boolean registerPDUser(PDUserRequest pdUserRequest, UUID adminUUID) {
+    public PDUAuthRequest registerPDUser(PDUserRequest pdUserRequest, UUID adminUUID) {
         if (!usersRepository.existsByEmail(pdUserRequest.getEmail())) {
 
             String frontID = "";
+            String password = generatePDUserUUID();
 
             Optional<PDAdmin> adminsOptional = pdAdminRepository.findById(adminUUID);
             if (adminsOptional.isPresent()) {
@@ -150,8 +154,9 @@ public class AuthController {
             }
 
             PDUser pdUser = new PDUser(pdUserRequest.getEmail(),
-                    pdUserRequest.getEmail(),
-                    generatePDUserUUID(),
+                    frontID,
+                    encoder.encode(password),
+
                     pdUserRequest.getFirstname(),
                     pdUserRequest.getLastname(),
                     "",
@@ -163,9 +168,10 @@ public class AuthController {
             pdUser.setVerifyDate(String.valueOf(LocalDate.now()));
             pdUser.setVerEnabled(true);
             usersRepository.save(pdUser);
-            return true;
+            PDUAuthRequest x = new PDUAuthRequest(frontID, password);
+            return x;
         } else {
-            return false;
+            return null;
         }
     }
 
@@ -191,7 +197,8 @@ public class AuthController {
             tcAdmin.setVerEnabled(false);
             usersRepository.save(tcAdmin);
             sendEmail.sendEmailAsync(tcAdmin);
-            return ResponseEntity.ok(tcAdmin.getVerifyToken());
+            VerifyRequest x = new VerifyRequest(tcAdmin.getVerifyToken());
+            return ResponseEntity.ok(x);
         } else {
             return ResponseEntity.status(400).build(); //TODO:Not sure if .build is correct
         }
@@ -216,7 +223,8 @@ public class AuthController {
             tcuser.setVerEnabled(false);
             usersRepository.save(tcuser);
             sendEmail.sendEmailAsync(tcuser);
-            return ResponseEntity.ok(tcuser.getVerifyToken());
+            VerifyRequest x = new VerifyRequest(tcuser.getVerifyToken());
+            return ResponseEntity.ok(x);
         } else {
             return ResponseEntity.status(400).body("Error");
         }

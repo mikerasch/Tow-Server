@@ -87,9 +87,42 @@ public class ImageRoutes {
 
     }
 
+    @PostMapping("/upload-base64-jwt-name")
+    public ResponseEntity<?> uploadBase64JwtName(@RequestHeader final String jwtToken,
+                                             @RequestBody FileRequest file)throws IOException {
+        try{
 
-    @GetMapping("/retrieve")
-    public ResponseEntity<?> retrieve(@RequestHeader UUID id) {
+            String userUUID = jwtUtils.getUUIDFromJwtToken(jwtToken);
+            String x = file.getImage();
+            String y = x.substring(22);
+            byte[] data = Base64.getMimeDecoder().decode(y);
+
+            fileController.Uploadjwt(data, userUUID);
+            //System.out.println(Arrays.toString(data));
+
+            return  ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+        } catch (Exception e) {
+            return  ResponseEntity.status(400).body("Error" + e);
+        }
+
+    }
+
+
+
+
+//    @GetMapping("/retrieve")
+//    public ResponseEntity<?> retrieve(@RequestHeader final String jwtToken) {
+//
+//
+//        byte[] data = fileController.findById(id).getData();
+//        data = Base64.getMimeEncoder().encode(data);
+//        return ResponseEntity.ok(data);
+//
+//    }
+
+
+    @GetMapping("/retrieve-jwt")
+    public ResponseEntity<?> retrieveJwt(@RequestHeader UUID id) {
 
 
         byte[] data = fileController.findById(id).getData();
@@ -97,5 +130,6 @@ public class ImageRoutes {
         return ResponseEntity.ok(data);
 
     }
+
 }
 

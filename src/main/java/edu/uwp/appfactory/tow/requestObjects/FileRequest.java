@@ -16,4 +16,10 @@ public class FileRequest {
     @Setter
     private String userUUID;
 
+    @Getter
+    @Setter
+    private String name;
+
+
+
 }
