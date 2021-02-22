@@ -146,7 +146,7 @@ public class AuthController {
             Optional<PDAdmin> adminsOptional = pdAdminRepository.findById(adminUUID);
             if (adminsOptional.isPresent()) {
                 PDAdmin admin = adminsOptional.get();
-                frontID = admin.getDepartmentShort() + "-" + admin.getAddressNumber();
+                frontID = admin.getDepartmentShort() + "-" + generatePDUserUUID();
             }
 
             PDUser pdUser = new PDUser(pdUserRequest.getEmail(),
