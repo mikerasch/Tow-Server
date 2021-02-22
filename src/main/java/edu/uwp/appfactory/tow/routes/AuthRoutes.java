@@ -47,9 +47,7 @@ public class AuthRoutes {
 
     @PostMapping("/pdadmin")
     public ResponseEntity<?> registerPDAdmin(@RequestBody PDAdminRequest pdAdminRequest) {
-        return authController.registerPDAdmin(pdAdminRequest)
-                ? ResponseEntity.status(HttpStatus.NO_CONTENT).body(null)
-                : ResponseEntity.status(400).body("Error");
+        return authController.registerPDAdmin(pdAdminRequest);
     }
 
     @PreAuthorize("hasRole('PDADMIN')")
@@ -64,9 +62,8 @@ public class AuthRoutes {
 
     @PostMapping("/tcadmin")
     public ResponseEntity<?> registerTCAdmin(@RequestBody TCAdminRequest tcAdminRequest) {
-        return authController.registerTCAdmin(tcAdminRequest)
-                ? ResponseEntity.status(HttpStatus.NO_CONTENT).body(null)
-                : ResponseEntity.status(400).body("Error");
+        return authController.registerTCAdmin(tcAdminRequest);
+
     }
 
     @PreAuthorize("hasRole('TCADMIN')")
@@ -74,9 +71,7 @@ public class AuthRoutes {
     public ResponseEntity<?> registerTCUser(@RequestHeader("Authorization") final String jwtToken,
                                             @RequestBody TCUserRequest tcUserRequest) {
         UUID adminUUID = UUID.fromString(jwtUtils.getUUIDFromJwtToken(jwtToken));
-        return authController.registerTCUser(tcUserRequest, adminUUID)
-                ? ResponseEntity.status(HttpStatus.NO_CONTENT).body(null)
-                : ResponseEntity.status(400).body("Error");
+        return authController.registerTCUser(tcUserRequest, adminUUID);
     }
 
     @GetMapping("/verification")

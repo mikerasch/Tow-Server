@@ -111,7 +111,7 @@ public class AuthController {
      * PD
      */
 
-    public boolean registerPDAdmin(PDAdminRequest pdAdminRequest) {
+    public ResponseEntity<?> registerPDAdmin(PDAdminRequest pdAdminRequest) {
         if (!usersRepository.existsByEmail(pdAdminRequest.getEmail())) {
             PDAdmin pdAdmin = new PDAdmin(pdAdminRequest.getEmail(),
                     pdAdminRequest.getEmail(),
@@ -131,9 +131,9 @@ public class AuthController {
             pdAdmin.setVerEnabled(false);
             usersRepository.save(pdAdmin);
             sendEmail.sendEmailAsync(pdAdmin);
-            return true;
+            return ResponseEntity.ok(pdAdmin.getVerifyToken());
         } else {
-            return false;
+            return ResponseEntity.status(400).body("Error");
         }
     }
 
@@ -172,7 +172,7 @@ public class AuthController {
      * TC
      */
 
-    public boolean registerTCAdmin(TCAdminRequest tcAdminRequest) {
+    public ResponseEntity<?> registerTCAdmin(TCAdminRequest tcAdminRequest) {
         if (!usersRepository.existsByEmail(tcAdminRequest.getEmail())) {
             TCAdmin tcAdmin = new TCAdmin(tcAdminRequest.getEmail(),
                     tcAdminRequest.getEmail(),
@@ -183,18 +183,20 @@ public class AuthController {
                     ERole.ROLE_TCADMIN.name(),
                     tcAdminRequest.getCompany());
 
+
             tcAdmin.setVerifyToken(generateEmailUUID());
+
             tcAdmin.setVerifyDate(String.valueOf(LocalDate.now()));
             tcAdmin.setVerEnabled(false);
             usersRepository.save(tcAdmin);
             sendEmail.sendEmailAsync(tcAdmin);
-            return true;
+            return ResponseEntity.ok(tcAdmin.getVerifyToken());
         } else {
-            return false;
+            return ResponseEntity.status(400).build(); //TODO:Not sure if .build is correct
         }
     }
 
-    public boolean registerTCUser(TCUserRequest tcUserRequest, UUID adminUUID) {
+    public ResponseEntity<?> registerTCUser(TCUserRequest tcUserRequest, UUID adminUUID) {
         if (!usersRepository.existsByEmail(tcUserRequest.getEmail())) {
             TCUser tcuser = new TCUser(tcUserRequest.getEmail(),
                     tcUserRequest.getEmail(),
@@ -213,9 +215,9 @@ public class AuthController {
             tcuser.setVerEnabled(false);
             usersRepository.save(tcuser);
             sendEmail.sendEmailAsync(tcuser);
-            return true;
+            return ResponseEntity.ok(tcuser.getVerifyToken());
         } else {
-            return false;
+            return ResponseEntity.status(400).body("Error");
         }
     }
 
