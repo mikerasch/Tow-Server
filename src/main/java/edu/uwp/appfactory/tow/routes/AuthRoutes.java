@@ -35,7 +35,7 @@ public class AuthRoutes {
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
-        return authController.authenticateUser(loginRequest.getEmail(), loginRequest.getPassword(), loginRequest.getPlatform());
+        return authController.authenticateUser(loginRequest);
     }
 
     @PostMapping("/admin")

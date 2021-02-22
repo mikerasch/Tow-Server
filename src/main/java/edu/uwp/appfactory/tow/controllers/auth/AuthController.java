@@ -54,36 +54,37 @@ public class AuthController {
         return jwtUtils.refreshJwtToken(jwtUtils.getUUIDFromJwtToken(jwtToken));
     }
 
-    public ResponseEntity<?> authenticateUser(String email, String password, String platform) {
+    public ResponseEntity<?> authenticateUser(LoginRequest loginRequest) {
         Authentication authentication = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(email, password));
+                .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-        Optional<Users> usersOptional = usersRepository.findByUsername(email);
+        Optional<Users> usersOptional = usersRepository.findByUsername(loginRequest.getEmail());
 
         //todo: when not testing, uncomment code
-        if(userDetails.getRole().equals(platform)){
-        if (usersOptional.isPresent()) {
-            Users user = usersOptional.get();
-            return user.getVerEnabled() ?
-                    ResponseEntity.ok(new JwtResponse(
-                            jwt,
-                            userDetails.getId(),
-                            userDetails.getUsername(),
-                            userDetails.getEmail(),
-                            userDetails.getFirstname(),
-                            userDetails.getLastname(),
-                            userDetails.getRole())
-                    ) :
-                    ResponseEntity.badRequest().body(new MessageResponse("User not verified"));
+        if (userDetails.getRole().equals(loginRequest.getPlatform())) {
+            if (usersOptional.isPresent()) {
+                Users user = usersOptional.get();
+                return user.getVerEnabled() ?
+                        ResponseEntity.ok(new JwtResponse(
+                                jwt,
+                                userDetails.getId(),
+                                userDetails.getUsername(),
+                                userDetails.getEmail(),
+                                userDetails.getFirstname(),
+                                userDetails.getLastname(),
+                                userDetails.getRole())
+                        ) :
+                        ResponseEntity.badRequest().body(new MessageResponse("User not verified"));
+            } else {
+                return ResponseEntity
+                        .status(494)
+                        .body(new MessageResponse("User does not exist"));
+            }
         } else {
-            return ResponseEntity
-                    .status(494)
-                    .body(new MessageResponse("User does not exist"));
-        }}else{
             return ResponseEntity
                     .status(401)
                     .body(new MessageResponse("User is not permitted to use this dashboard"));
@@ -153,7 +154,7 @@ public class AuthController {
                     generatePDUserUUID(),
                     pdUserRequest.getFirstname(),
                     pdUserRequest.getLastname(),
-                    pdUserRequest.getPhone(),
+                    "",
                     ERole.ROLE_PDUSER.name(),
                     frontID,
                     adminUUID);
@@ -248,7 +249,8 @@ public class AuthController {
     private String generateEmailUUID() {
         return UUID.randomUUID().toString().replace("-", "");
     }
+
     private String generatePDUserUUID() {
-        return UUID.randomUUID().toString().replace("-", "").substring(0,6);
+        return UUID.randomUUID().toString().replace("-", "").substring(0, 6);
     }
 }

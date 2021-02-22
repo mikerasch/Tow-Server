@@ -18,8 +18,7 @@ public class PDAdmin extends Users {
 
     public PDAdmin(String email, String username, String password,
                    String firstname, String lastname, String phone,
-                   String role, String city, int addressNumber, String department, String departmentShort)
-    {
+                   String role, String city, int addressNumber, String department, String departmentShort) {
 
         super(email, username, password, firstname, lastname, phone, role);
         this.city = city;

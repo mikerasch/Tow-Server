@@ -20,9 +20,4 @@ public class PDUserRequest {
     @Getter
     @Setter
     private String email;
-
-    @NotBlank
-    @Getter
-    @Setter
-    private String phone;
 }

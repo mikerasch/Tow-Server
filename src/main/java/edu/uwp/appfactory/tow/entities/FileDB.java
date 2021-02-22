@@ -5,9 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 import java.util.UUID;
 
 @NoArgsConstructor
@@ -18,7 +15,7 @@ public class FileDB {
     @Id
     private UUID id;
 
-//    @NotBlank
+    //    @NotBlank
     private String userUUID;
 
 //    private String name;
