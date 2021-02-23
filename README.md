@@ -38,3 +38,5 @@
     'message': "User registered successfully!"
 }
 ```
+
+## WebSockets coming soon
