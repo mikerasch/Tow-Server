@@ -1,7 +1,7 @@
 package edu.uwp.appfactory.tow.routes;
 
 import edu.uwp.appfactory.tow.WebSecurityConfig.security.jwt.JwtUtils;
-import edu.uwp.appfactory.tow.controllers.auth.AuthController;
+import edu.uwp.appfactory.tow.controllers.AuthController;
 import edu.uwp.appfactory.tow.requestObjects.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -55,7 +55,7 @@ public class AuthRoutes {
     public ResponseEntity<?> registerPDUser(@RequestHeader("Authorization") final String jwtToken,
                                             @RequestBody PDUserRequest pdUserRequest) {
         UUID adminUUID = UUID.fromString(jwtUtils.getUUIDFromJwtToken(jwtToken));
-        PDUAuthRequest data =  authController.registerPDUser(pdUserRequest, adminUUID);
+        PDUAuthRequest data = authController.registerPDUser(pdUserRequest, adminUUID);
         if (data != null) {
             return ResponseEntity.ok(data);
         } else {
@@ -89,6 +89,8 @@ public class AuthRoutes {
     }
 }
 
+
+// TODO: The stuff below
 // sign up, schedule an appointment by checking a calender and finding an open slot (30m/hour)
 // up to 5 people can be schedule if 5 people have that time slot open
 

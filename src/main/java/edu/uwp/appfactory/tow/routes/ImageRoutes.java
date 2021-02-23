@@ -89,8 +89,8 @@ public class ImageRoutes {
 
     @PostMapping("/upload-base64-jwt-name")
     public ResponseEntity<?> uploadBase64JwtName(@RequestHeader final String jwtToken,
-                                             @RequestBody FileRequest file)throws IOException {
-        try{
+                                                 @RequestBody FileRequest file) throws IOException {
+        try {
 
             String userUUID = jwtUtils.getUUIDFromJwtToken(jwtToken);
             String x = file.getImage();
@@ -100,14 +100,12 @@ public class ImageRoutes {
             fileController.Uploadjwt(data, userUUID);
             //System.out.println(Arrays.toString(data));
 
-            return  ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
         } catch (Exception e) {
-            return  ResponseEntity.status(400).body("Error" + e);
+            return ResponseEntity.status(400).body("Error" + e);
         }
 
     }
-
-
 
 
 //    @GetMapping("/retrieve")

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Controller;
 import java.util.Optional;
 import java.util.UUID;
 
-@EnableAutoConfiguration
+
 @Controller
 public class UserController {
     private final UsersRepository usersRepository;

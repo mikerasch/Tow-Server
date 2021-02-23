@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.UUID;
 
-@EnableAutoConfiguration
+
 @Controller
 public class FileController {
 

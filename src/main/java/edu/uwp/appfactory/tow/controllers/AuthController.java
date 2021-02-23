@@ -1,4 +1,4 @@
-package edu.uwp.appfactory.tow.controllers.auth;
+package edu.uwp.appfactory.tow.controllers;
 
 import edu.uwp.appfactory.tow.WebSecurityConfig.models.ERole;
 import edu.uwp.appfactory.tow.WebSecurityConfig.payload.response.JwtResponse;

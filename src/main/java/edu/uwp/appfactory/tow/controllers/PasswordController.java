@@ -13,7 +13,7 @@ import java.time.Period;
 import java.util.Optional;
 import java.util.Random;
 
-@EnableAutoConfiguration
+
 @Controller
 public class PasswordController {
 
