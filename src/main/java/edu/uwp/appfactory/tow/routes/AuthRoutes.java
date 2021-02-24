@@ -50,33 +50,6 @@ public class AuthRoutes {
         return authController.registerPDAdmin(pdAdminRequest);
     }
 
-    @PreAuthorize("hasRole('PDADMIN')")
-    @PostMapping("/pduser")
-    public ResponseEntity<?> registerPDUser(@RequestHeader("Authorization") final String jwtToken,
-                                            @RequestBody PDUserRequest pdUserRequest) {
-        UUID adminUUID = UUID.fromString(jwtUtils.getUUIDFromJwtToken(jwtToken));
-        PDUAuthRequest data = authController.registerPDUser(pdUserRequest, adminUUID);
-        if (data != null) {
-            return ResponseEntity.ok(data);
-        } else {
-            return ResponseEntity.status(400).body("Error");
-        }
-    }
-
-    @PostMapping("/tcadmin")
-    public ResponseEntity<?> registerTCAdmin(@RequestBody TCAdminRequest tcAdminRequest) {
-        return authController.registerTCAdmin(tcAdminRequest);
-
-    }
-
-    @PreAuthorize("hasRole('TCADMIN')")
-    @PostMapping("/tcuser")
-    public ResponseEntity<?> registerTCUser(@RequestHeader("Authorization") final String jwtToken,
-                                            @RequestBody TCUserRequest tcUserRequest) {
-        UUID adminUUID = UUID.fromString(jwtUtils.getUUIDFromJwtToken(jwtToken));
-        return authController.registerTCUser(tcUserRequest, adminUUID);
-    }
-
     @GetMapping("/verification")
     public ResponseEntity<?> verification(@RequestParam("token") final String token) {
         int status = authController.verification(token);

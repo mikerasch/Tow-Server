@@ -179,57 +179,6 @@ public class AuthController {
      * TC
      */
 
-    public ResponseEntity<?> registerTCAdmin(TCAdminRequest tcAdminRequest) {
-        if (!usersRepository.existsByEmail(tcAdminRequest.getEmail())) {
-            TCAdmin tcAdmin = new TCAdmin(tcAdminRequest.getEmail(),
-                    tcAdminRequest.getEmail(),
-                    encoder.encode(tcAdminRequest.getPassword()),
-                    tcAdminRequest.getFirstname(),
-                    tcAdminRequest.getLastname(),
-                    tcAdminRequest.getPhone(),
-                    ERole.ROLE_TCADMIN.name(),
-                    tcAdminRequest.getCompany());
-
-
-            tcAdmin.setVerifyToken(generateEmailUUID());
-
-            tcAdmin.setVerifyDate(String.valueOf(LocalDate.now()));
-            tcAdmin.setVerEnabled(false);
-            usersRepository.save(tcAdmin);
-            sendEmail.sendEmailAsync(tcAdmin);
-            VerifyRequest x = new VerifyRequest(tcAdmin.getVerifyToken());
-            return ResponseEntity.ok(x);
-        } else {
-            return ResponseEntity.status(400).build(); //TODO:Not sure if .build is correct
-        }
-    }
-
-    public ResponseEntity<?> registerTCUser(TCUserRequest tcUserRequest, UUID adminUUID) {
-        if (!usersRepository.existsByEmail(tcUserRequest.getEmail())) {
-            TCUser tcuser = new TCUser(tcUserRequest.getEmail(),
-                    tcUserRequest.getEmail(),
-                    encoder.encode(tcUserRequest.getPassword()),
-                    tcUserRequest.getFirstname(),
-                    tcUserRequest.getLastname(),
-                    tcUserRequest.getPhone(),
-                    ERole.ROLE_TCUSER.name(),
-                    0.0f,
-                    0.0f,
-                    false,
-                    adminUUID);
-
-            tcuser.setVerifyToken(generateEmailUUID());
-            tcuser.setVerifyDate(String.valueOf(LocalDate.now()));
-            tcuser.setVerEnabled(false);
-            usersRepository.save(tcuser);
-            sendEmail.sendEmailAsync(tcuser);
-            VerifyRequest x = new VerifyRequest(tcuser.getVerifyToken());
-            return ResponseEntity.ok(x);
-        } else {
-            return ResponseEntity.status(400).body("Error");
-        }
-    }
-
     public int verification(String token) {
         Optional<Users> usersOptional = usersRepository.findByVerifyToken(token);
         if (usersOptional.isPresent()) {
