@@ -2,6 +2,7 @@ package edu.uwp.appfactory.tow.controllers;
 
 import edu.uwp.appfactory.tow.WebSecurityConfig.repository.UsersRepository;
 import edu.uwp.appfactory.tow.entities.Users;
+import edu.uwp.appfactory.tow.requestObjects.ForgotPassRequest;
 import edu.uwp.appfactory.tow.services.AsyncEmail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,8 +28,9 @@ public class PasswordController {
         this.sender = sender;
     }
 
-    public boolean forgot(String email) {
-        Optional<Users> usersOptional = usersRepository.findByUsername(email);
+    public boolean forgot(ForgotPassRequest forgotPassRequest) {
+        System.out.println(forgotPassRequest.getEmail());
+        Optional<Users> usersOptional = usersRepository.findByUsername(forgotPassRequest.getEmail());
         if (usersOptional.isPresent()) {
             Users user = usersOptional.get();
 
