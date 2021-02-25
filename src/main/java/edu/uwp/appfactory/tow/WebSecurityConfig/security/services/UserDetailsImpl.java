@@ -27,9 +27,9 @@ public class UserDetailsImpl implements UserDetails {
     private final String email;
     @JsonIgnore
     private final String password;
+    private final String role;
     private String firstname;
     private String lastname;
-    private final String role;
 
     /**
      * constructor of a user details implementation

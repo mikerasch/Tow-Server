@@ -4,8 +4,8 @@ import edu.uwp.appfactory.tow.WebSecurityConfig.security.jwt.JwtUtils;
 import edu.uwp.appfactory.tow.controllers.PDUserController;
 import edu.uwp.appfactory.tow.controllers.UserController;
 import edu.uwp.appfactory.tow.entities.PDUser;
-import edu.uwp.appfactory.tow.requestObjects.PDUAuthRequest;
 import edu.uwp.appfactory.tow.requestObjects.PDUserRequest;
+import edu.uwp.appfactory.tow.responseObjects.PDUAuthResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -51,7 +51,7 @@ public class PDUserRoutes {
     public ResponseEntity<?> register(@RequestHeader("Authorization") final String jwtToken,
                                       @RequestBody PDUserRequest pdUserRequest) {
         UUID adminUUID = UUID.fromString(jwtUtils.getUUIDFromJwtToken(jwtToken));
-        PDUAuthRequest data = pdUserController.register(pdUserRequest, adminUUID);
+        PDUAuthResponse data = pdUserController.register(pdUserRequest, adminUUID);
         if (data != null) {
             return ResponseEntity.ok(data);
         } else {

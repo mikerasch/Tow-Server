@@ -6,8 +6,8 @@ import edu.uwp.appfactory.tow.entities.PDAdmin;
 import edu.uwp.appfactory.tow.entities.PDUser;
 import edu.uwp.appfactory.tow.repositories.PDAdminRepository;
 import edu.uwp.appfactory.tow.repositories.PDUserRepository;
-import edu.uwp.appfactory.tow.requestObjects.PDUAuthRequest;
 import edu.uwp.appfactory.tow.requestObjects.PDUserRequest;
+import edu.uwp.appfactory.tow.responseObjects.PDUAuthResponse;
 import edu.uwp.appfactory.tow.services.AsyncEmail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -49,7 +49,7 @@ public class PDUserController {
     /**
      * POST
      */
-    public PDUAuthRequest register(PDUserRequest pdUserRequest, UUID adminUUID) {
+    public PDUAuthResponse register(PDUserRequest pdUserRequest, UUID adminUUID) {
         if (!usersRepository.existsByEmail(pdUserRequest.getEmail())) {
 
             String frontID = "";
@@ -76,7 +76,7 @@ public class PDUserController {
             pdUser.setVerifyDate(String.valueOf(LocalDate.now()));
             pdUser.setVerEnabled(true);
             usersRepository.save(pdUser);
-            return new PDUAuthRequest(frontID, password);
+            return new PDUAuthResponse(frontID, password);
         } else {
             return null;
         }

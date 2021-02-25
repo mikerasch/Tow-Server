@@ -1,9 +1,9 @@
 package edu.uwp.appfactory.tow.routes;
 
 import edu.uwp.appfactory.tow.controllers.PasswordController;
-import edu.uwp.appfactory.tow.requestObjects.PasswordForgotRequest;
-import edu.uwp.appfactory.tow.requestObjects.PasswordResetRequest;
-import edu.uwp.appfactory.tow.requestObjects.PasswordVerifyRequest;
+import edu.uwp.appfactory.tow.requestObjects.password.ForgotPassRequest;
+import edu.uwp.appfactory.tow.requestObjects.password.ResetPassRequest;
+import edu.uwp.appfactory.tow.requestObjects.password.VerifyPassRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,21 +23,21 @@ public class PasswordRoutes {
     }
 
     @PatchMapping("/forgot")
-    public ResponseEntity<?> forgot(@RequestBody PasswordForgotRequest forgotRequest) {
+    public ResponseEntity<?> forgot(@RequestBody ForgotPassRequest forgotRequest) {
         return passwordController.forgot(forgotRequest.getEmail())
                 ? ResponseEntity.status(HttpStatus.NO_CONTENT).body(null)
                 : ResponseEntity.status(400).body("Error");
     }
 
     @PatchMapping("/verify")
-    public ResponseEntity<?> verify(@RequestBody PasswordVerifyRequest verifyRequest) {
+    public ResponseEntity<?> verify(@RequestBody VerifyPassRequest verifyRequest) {
         return passwordController.verify(verifyRequest.getEmail(), verifyRequest.getToken())
                 ? ResponseEntity.status(HttpStatus.NO_CONTENT).body(null)
                 : ResponseEntity.status(400).body("Token expired or no associated user");
     }
 
     @PatchMapping("/reset")
-    public ResponseEntity<?> reset(@RequestBody PasswordResetRequest resetRequest) {
+    public ResponseEntity<?> reset(@RequestBody ResetPassRequest resetRequest) {
         return passwordController.reset(resetRequest.getEmail(), resetRequest.getToken(), resetRequest.getPassword())
                 ? ResponseEntity.status(HttpStatus.NO_CONTENT).body(null)
                 : ResponseEntity.status(400).body("Error");

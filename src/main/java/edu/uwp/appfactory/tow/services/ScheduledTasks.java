@@ -23,14 +23,13 @@ import java.util.List;
  */
 @Service
 public class ScheduledTasks {
-    @Value("${SPRING_DNS}")
-    private String dns;
-
     private final FailedEmailRepository failedEmailRepository;
     private final UsersRepository usersRepository;
     private final ContentBuilder contentBuilder;
     private final JavaMailSender javaMailSender;
     private final Logger logger = LoggerFactory.getLogger(ScheduledTasks.class);
+    @Value("${SPRING_DNS}")
+    private String dns;
 
     public ScheduledTasks(FailedEmailRepository failedEmailRepository, UsersRepository usersRepository, ContentBuilder contentBuilder, JavaMailSender javaMailSender) {
         this.failedEmailRepository = failedEmailRepository;

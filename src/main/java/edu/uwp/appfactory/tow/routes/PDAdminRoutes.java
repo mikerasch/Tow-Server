@@ -31,7 +31,7 @@ public class PDAdminRoutes {
      */
     @GetMapping("")
     @PreAuthorize("hasRole('PDADMIN')")
-    public ResponseEntity<?> get(@RequestHeader("Authorization") final String jwtToken) {
+    public ResponseEntity<PDAdmin> get(@RequestHeader("Authorization") final String jwtToken) {
         String userId = jwtUtils.getUUIDFromJwtToken(jwtToken);
         PDAdmin data = pdAdminController.get(UUID.fromString(userId));
         if (data != null) {

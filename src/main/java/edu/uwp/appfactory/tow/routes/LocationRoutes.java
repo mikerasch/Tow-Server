@@ -2,7 +2,7 @@ package edu.uwp.appfactory.tow.routes;
 
 import edu.uwp.appfactory.tow.WebSecurityConfig.security.jwt.JwtUtils;
 import edu.uwp.appfactory.tow.controllers.LocationController;
-import edu.uwp.appfactory.tow.requestObjects.SetLocationRequest;
+import edu.uwp.appfactory.tow.requestObjects.TCULocationRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,7 +24,7 @@ public class LocationRoutes {
     @PreAuthorize("hasRole('TCUSER')")
     @PatchMapping("/my-location")
     public ResponseEntity<?> setLocation(@RequestHeader("Authorization") final String jwtToken,
-                                         @RequestBody SetLocationRequest setRequest) {
+                                         @RequestBody TCULocationRequest setRequest) {
         String userUUID = jwtUtils.getUUIDFromJwtToken(jwtToken);
         System.out.println("lat: " + setRequest.getLatitude() + " long: " + setRequest.getLongitude() + " active: " + setRequest.isActive());
         return locationController.setLocation(setRequest.getLatitude(), setRequest.getLongitude(), setRequest.isActive(), userUUID)

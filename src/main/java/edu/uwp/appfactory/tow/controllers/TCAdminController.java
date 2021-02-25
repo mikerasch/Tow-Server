@@ -3,9 +3,11 @@ package edu.uwp.appfactory.tow.controllers;
 import edu.uwp.appfactory.tow.WebSecurityConfig.models.ERole;
 import edu.uwp.appfactory.tow.WebSecurityConfig.repository.UsersRepository;
 import edu.uwp.appfactory.tow.entities.TCAdmin;
+import edu.uwp.appfactory.tow.mappers.TCMapper;
 import edu.uwp.appfactory.tow.repositories.TCAdminRepository;
 import edu.uwp.appfactory.tow.requestObjects.TCAdminRequest;
-import edu.uwp.appfactory.tow.requestObjects.VerifyRequest;
+import edu.uwp.appfactory.tow.responseObjects.TCAdminResponse;
+import edu.uwp.appfactory.tow.responseObjects.TestVerifyResponse;
 import edu.uwp.appfactory.tow.services.AsyncEmail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +18,6 @@ import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
 
-
 @Controller
 public class TCAdminController {
 
@@ -24,22 +25,24 @@ public class TCAdminController {
     private final UsersRepository usersRepository;
     private final AsyncEmail sendEmail;
     private final PasswordEncoder encoder;
+    private final TCMapper tcMapper;
 
 
     @Autowired
-    public TCAdminController(TCAdminRepository tcAdminRepository, UsersRepository usersRepository, AsyncEmail sendEmail, PasswordEncoder encoder) {
+    public TCAdminController(TCAdminRepository tcAdminRepository, UsersRepository usersRepository, AsyncEmail sendEmail, PasswordEncoder encoder, TCMapper tcMapper) {
         this.tcAdminRepository = tcAdminRepository;
         this.usersRepository = usersRepository;
         this.sendEmail = sendEmail;
         this.encoder = encoder;
+        this.tcMapper = tcMapper;
     }
 
     /**
      * GET
      */
-    public TCAdmin get(UUID userId) {
+    public TCAdminResponse get(UUID userId) {
         Optional<TCAdmin> user = tcAdminRepository.findById(userId);
-        return user.orElse(null);
+        return user.map(tcMapper::map).orElse(null);
     }
 
 
@@ -62,7 +65,7 @@ public class TCAdminController {
             tcAdmin.setVerEnabled(false);
             usersRepository.save(tcAdmin);
             sendEmail.sendEmailAsync(tcAdmin);
-            VerifyRequest x = new VerifyRequest(tcAdmin.getVerifyToken());
+            TestVerifyResponse x = new TestVerifyResponse(tcAdmin.getVerifyToken());
             return ResponseEntity.ok(x);
         } else {
             return ResponseEntity.status(400).build(); //TODO:Not sure if .build is correct

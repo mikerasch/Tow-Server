@@ -1,38 +1,15 @@
 package edu.uwp.appfactory.tow.requestObjects;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Value;
 
-import javax.validation.constraints.NotBlank;
+// todo: "import javax.validation.constraints.NotBlank;" NotBlank isn't working
 
+@Value
 public class TCAdminRequest {
-    @NotBlank
-    @Getter
-    @Setter
-    private String firstname;
-
-    @NotBlank
-    @Getter
-    @Setter
-    private String lastname;
-
-    @NotBlank
-    @Getter
-    @Setter
-    private String email;
-
-    @NotBlank
-    @Getter
-    @Setter
-    private String password;
-
-    @NotBlank
-    @Getter
-    @Setter
-    private String phone;
-
-    @NotBlank
-    @Getter
-    @Setter
-    private String company;
+    String firstname;
+    String lastname;
+    String email;
+    String password;
+    String phone;
+    String company;
 }

@@ -5,7 +5,7 @@ import edu.uwp.appfactory.tow.WebSecurityConfig.repository.UsersRepository;
 import edu.uwp.appfactory.tow.entities.TCUser;
 import edu.uwp.appfactory.tow.repositories.TCUserRepository;
 import edu.uwp.appfactory.tow.requestObjects.TCUserRequest;
-import edu.uwp.appfactory.tow.requestObjects.VerifyRequest;
+import edu.uwp.appfactory.tow.responseObjects.TestVerifyResponse;
 import edu.uwp.appfactory.tow.services.AsyncEmail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -65,7 +65,7 @@ public class TCUserController {
             tcuser.setVerEnabled(false);
             usersRepository.save(tcuser);
             sendEmail.sendEmailAsync(tcuser);
-            VerifyRequest x = new VerifyRequest(tcuser.getVerifyToken());
+            TestVerifyResponse x = new TestVerifyResponse(tcuser.getVerifyToken());
             return ResponseEntity.ok(x);
         } else {
             return ResponseEntity.status(400).body("Error");

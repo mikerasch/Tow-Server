@@ -1,33 +1,12 @@
 package edu.uwp.appfactory.tow.requestObjects;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Value;
 
-import javax.validation.constraints.NotBlank;
-
+@Value
 public class TCUserRequest {
-    @NotBlank
-    @Getter
-    @Setter
-    private String firstname;
-
-    @NotBlank
-    @Getter
-    @Setter
-    private String lastname;
-
-    @NotBlank
-    @Getter
-    @Setter
-    private String email;
-
-    @NotBlank
-    @Getter
-    @Setter
-    private String password;
-
-    @NotBlank
-    @Getter
-    @Setter
-    private String phone;
+    String firstname;
+    String lastname;
+    String email;
+    String password;
+    String phone;
 }

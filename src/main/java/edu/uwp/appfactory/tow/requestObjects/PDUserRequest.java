@@ -1,23 +1,10 @@
 package edu.uwp.appfactory.tow.requestObjects;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Value;
 
-import javax.validation.constraints.NotBlank;
-
+@Value
 public class PDUserRequest {
-    @NotBlank
-    @Getter
-    @Setter
-    private String firstname;
-
-    @NotBlank
-    @Getter
-    @Setter
-    private String lastname;
-
-    @NotBlank
-    @Getter
-    @Setter
-    private String email;
+    String firstname;
+    String lastname;
+    String email;
 }

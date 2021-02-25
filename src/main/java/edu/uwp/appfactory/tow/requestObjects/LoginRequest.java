@@ -1,25 +1,10 @@
 package edu.uwp.appfactory.tow.requestObjects;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Value;
 
-import javax.validation.constraints.NotBlank;
-
+@Value
 public class LoginRequest {
-    @NotBlank
-    @Getter
-    @Setter
-    private String email;
-
-    @NotBlank
-    @Getter
-    @Setter
-    private String password;
-
-    @NotBlank
-    @Getter
-    @Setter
-    private String platform;
-
-
+    String email;
+    String password;
+    String platform;
 }

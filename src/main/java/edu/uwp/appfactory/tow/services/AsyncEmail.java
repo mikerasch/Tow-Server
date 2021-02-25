@@ -20,12 +20,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class AsyncEmail {
 
-    @Value("${SPRING_DNS}")
-    private String dns;
     private final JavaMailSender javaMailSender;
     private final ContentBuilder contentBuilder;
     private final FailedEmailRepository failedEmailRepository;
     private final Logger logger = LoggerFactory.getLogger(AsyncEmail.class);
+    @Value("${SPRING_DNS}")
+    private String dns;
 
     @Autowired
     public AsyncEmail(JavaMailSender javaMailSender, ContentBuilder contentBuilder, FailedEmailRepository failedEmailRepository) {

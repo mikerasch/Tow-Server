@@ -3,9 +3,10 @@ package edu.uwp.appfactory.tow.controllers;
 import edu.uwp.appfactory.tow.WebSecurityConfig.models.ERole;
 import edu.uwp.appfactory.tow.WebSecurityConfig.repository.UsersRepository;
 import edu.uwp.appfactory.tow.entities.PDAdmin;
+import edu.uwp.appfactory.tow.mappers.PDMapper;
 import edu.uwp.appfactory.tow.repositories.PDAdminRepository;
 import edu.uwp.appfactory.tow.requestObjects.PDAdminRequest;
-import edu.uwp.appfactory.tow.requestObjects.VerifyRequest;
+import edu.uwp.appfactory.tow.responseObjects.TestVerifyResponse;
 import edu.uwp.appfactory.tow.services.AsyncEmail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,14 +25,16 @@ public class PDAdminController {
     private final UsersRepository usersRepository;
     private final AsyncEmail sendEmail;
     private final PasswordEncoder encoder;
+    private final PDMapper pdMapper;
 
 
     @Autowired
-    public PDAdminController(PDAdminRepository pdAdminRepository, UsersRepository usersRepository, AsyncEmail sendEmail, PasswordEncoder encoder) {
+    public PDAdminController(PDAdminRepository pdAdminRepository, UsersRepository usersRepository, AsyncEmail sendEmail, PasswordEncoder encoder, PDMapper pdMapper) {
         this.pdAdminRepository = pdAdminRepository;
         this.usersRepository = usersRepository;
         this.sendEmail = sendEmail;
         this.encoder = encoder;
+        this.pdMapper = pdMapper;
     }
 
     /**
@@ -66,8 +69,8 @@ public class PDAdminController {
             pdAdmin.setVerEnabled(false);
             usersRepository.save(pdAdmin);
             sendEmail.sendEmailAsync(pdAdmin);
-            VerifyRequest x = new VerifyRequest(pdAdmin.getVerifyToken());
-            return ResponseEntity.ok(x);
+            TestVerifyResponse test = new TestVerifyResponse(pdAdmin.getVerifyToken());
+            return ResponseEntity.ok(test);
         } else {
             return ResponseEntity.status(400).body("Error");
         }

@@ -30,7 +30,7 @@ public class TCUserRoutes {
      * GET
      */
     @GetMapping("")
-    @PreAuthorize("hasRole('TCUser')")
+    @PreAuthorize("hasRole('TCUSER')")
     public ResponseEntity<?> get(@RequestHeader("Authorization") final String jwtToken) {
         String userId = jwtUtils.getUUIDFromJwtToken(jwtToken);
         TCUser data = tcUserController.get(UUID.fromString(userId));
