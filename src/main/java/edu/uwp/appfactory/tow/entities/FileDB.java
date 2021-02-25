@@ -15,11 +15,11 @@ public class FileDB {
     @Id
     private UUID id;
 
-    private UUID userUUID;
-
-    private String name;
-
-    private String type;
+//    private UUID userUUID;
+//
+//    private String name;
+//
+//    private String type;
 
     private byte[] data;
 
