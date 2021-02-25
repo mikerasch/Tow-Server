@@ -15,12 +15,11 @@ public class FileDB {
     @Id
     private UUID id;
 
-    //    @NotBlank
-    private String userUUID;
+    private UUID userUUID;
 
-//    private String name;
+    private String name;
 
-//    private String type;
+    private String type;
 
     private byte[] data;
 
@@ -28,10 +27,10 @@ public class FileDB {
         this.data = data;
     }
 
-    public FileDB(byte[] data, String userUUID) {
-        this.userUUID = userUUID;
-        this.data = data;
-    }
+//    public FileDB(byte[] data, String userUUID) {
+//        this.userUUID = userUUID;
+//        this.data = data;
+//    }
 
 
 //    public FileDB( byte[] data) {

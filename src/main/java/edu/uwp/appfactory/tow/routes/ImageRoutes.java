@@ -6,11 +6,13 @@ import edu.uwp.appfactory.tow.controllers.FileController;
 import edu.uwp.appfactory.tow.requestObjects.FileRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Base64;
+import java.util.Objects;
 import java.util.UUID;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -37,17 +39,19 @@ public class ImageRoutes {
 
     }
 
-    @PostMapping("/upload-multipart")
-    public ResponseEntity<?> uploadMultipart(@RequestParam("file") MultipartFile file) throws IOException {
+
+    @PostMapping("/upload-multi")
+    public ResponseEntity<?> uploadMultipart(@RequestBody MultipartFile file) throws IOException {
         try {
-            byte[] data = file.getBytes();
-            fileController.Upload(data);
+
+            fileController.UploadMulti(file);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
         } catch (IOException e) {
             return ResponseEntity.status(400).body("Error" + e);
         }
 
     }
+
 
     @PostMapping("/upload-base64")
     public ResponseEntity<?> uploadMultipart(@RequestBody FileRequest file) throws IOException {
@@ -66,18 +70,13 @@ public class ImageRoutes {
 
     }
 
-
-    @PostMapping("/upload-base64-jwt")
-    public ResponseEntity<?> uploadBase64Jwt(@RequestHeader final String jwtToken,
-                                             @RequestBody FileRequest file) throws IOException {
+    @PostMapping("/upload-base64-noheader")
+    public ResponseEntity<?> uploadMultipartNoHeader(@RequestBody FileRequest file) throws IOException {
         try {
-
-            String userUUID = jwtUtils.getUUIDFromJwtToken(jwtToken);
             String x = file.getImage();
-            String y = x.substring(22);
-            byte[] data = Base64.getMimeDecoder().decode(y);
+            byte[] data = Base64.getMimeDecoder().decode(x);
 
-            fileController.Uploadjwt(data, userUUID);
+            fileController.Upload(data);
             //System.out.println(Arrays.toString(data));
 
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
@@ -86,48 +85,80 @@ public class ImageRoutes {
         }
 
     }
+
+
+
+//    @PostMapping("/upload-base64-jwt")
+//    public ResponseEntity<?> uploadBase64Jwt(@RequestHeader final String jwtToken,
+//                                             @RequestBody FileRequest file) throws IOException {
+//        try {
+//
+//            String userUUID = jwtUtils.getUUIDFromJwtToken(jwtToken);
+//            String x = file.getImage();
+//            String y = x.substring(22);
+//            byte[] data = Base64.getMimeDecoder().decode(y);
+//
+//            fileController.Uploadjwt(data, userUUID);
+//            //System.out.println(Arrays.toString(data));
+//
+//            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+//        } catch (Exception e) {
+//            return ResponseEntity.status(400).body("Error" + e);
+//        }
+//
+//    }
 
     @PostMapping("/upload-base64-jwt-name")
     public ResponseEntity<?> uploadBase64JwtName(@RequestHeader final String jwtToken,
-                                                 @RequestBody FileRequest file) throws IOException {
-        try {
+                                             @RequestBody FileRequest file)throws IOException {
+        try{
 
             String userUUID = jwtUtils.getUUIDFromJwtToken(jwtToken);
             String x = file.getImage();
             String y = x.substring(22);
             byte[] data = Base64.getMimeDecoder().decode(y);
-
-            fileController.Uploadjwt(data, userUUID);
+            UUID ownersUuid = file.getUserUUID();
+            String name = file.getName();
+            String type = file.getType();
+            fileController.UploadFinished(data, userUUID, name, type);
             //System.out.println(Arrays.toString(data));
 
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+            return  ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
         } catch (Exception e) {
+            return  ResponseEntity.status(400).body("Error" + e);
+        }
+
+    }
+
+
+
+
+    @GetMapping("/retrieve")
+    public ResponseEntity<?> retrieve(@RequestHeader UUID id) {
+
+        try {
+            byte[] data = fileController.findById(id).getData();
+            data = Base64.getMimeEncoder().encode(data);
+            return ResponseEntity.ok(data);
+        } catch (Exception e){
             return ResponseEntity.status(400).body("Error" + e);
         }
 
     }
 
 
-//    @GetMapping("/retrieve")
-//    public ResponseEntity<?> retrieve(@RequestHeader final String jwtToken) {
+
+//    @GetMapping("/retrieve-jwt")
+//    public ResponseEntity<?> retrieveJwt(@RequestHeader final String jwtToken,
+//                                         @RequestBody FileRequest file) {
 //
+//        String userUUID = jwtUtils.getUUIDFromJwtToken(jwtToken);
 //
-//        byte[] data = fileController.findById(id).getData();
+//        byte[] data = fileController.findByIdJwt(file.getId(), userUUID).getData();
 //        data = Base64.getMimeEncoder().encode(data);
 //        return ResponseEntity.ok(data);
 //
 //    }
-
-
-    @GetMapping("/retrieve-jwt")
-    public ResponseEntity<?> retrieveJwt(@RequestHeader UUID id) {
-
-
-        byte[] data = fileController.findById(id).getData();
-        data = Base64.getMimeEncoder().encode(data);
-        return ResponseEntity.ok(data);
-
-    }
 
 }
 
