@@ -40,6 +40,10 @@ public class PDUserController {
     /**
      * GET
      */
+    public PDUser get(UUID userId) {
+        Optional<PDUser> user = pdUserRepository.findById(userId);
+        return user.orElse(null);
+    }
 
 
     /**
@@ -72,8 +76,7 @@ public class PDUserController {
             pdUser.setVerifyDate(String.valueOf(LocalDate.now()));
             pdUser.setVerEnabled(true);
             usersRepository.save(pdUser);
-            PDUAuthRequest x = new PDUAuthRequest(frontID, password);
-            return x;
+            return new PDUAuthRequest(frontID, password);
         } else {
             return null;
         }

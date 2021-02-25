@@ -3,20 +3,17 @@ package edu.uwp.appfactory.tow.controllers;
 import edu.uwp.appfactory.tow.WebSecurityConfig.models.ERole;
 import edu.uwp.appfactory.tow.WebSecurityConfig.repository.UsersRepository;
 import edu.uwp.appfactory.tow.entities.PDAdmin;
-import edu.uwp.appfactory.tow.entities.PDUser;
 import edu.uwp.appfactory.tow.repositories.PDAdminRepository;
-import edu.uwp.appfactory.tow.repositories.PDUserRepository;
 import edu.uwp.appfactory.tow.requestObjects.PDAdminRequest;
-import edu.uwp.appfactory.tow.requestObjects.PDUserRequest;
 import edu.uwp.appfactory.tow.requestObjects.VerifyRequest;
 import edu.uwp.appfactory.tow.services.AsyncEmail;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 
 import java.time.LocalDate;
+import java.util.Optional;
 import java.util.UUID;
 
 
@@ -40,6 +37,10 @@ public class PDAdminController {
     /**
      * GET
      */
+    public PDAdmin get(UUID userId) {
+        Optional<PDAdmin> user = pdAdminRepository.findById(userId);
+        return user.orElse(null);
+    }
 
 
     /**
@@ -66,7 +67,6 @@ public class PDAdminController {
             usersRepository.save(pdAdmin);
             sendEmail.sendEmailAsync(pdAdmin);
             VerifyRequest x = new VerifyRequest(pdAdmin.getVerifyToken());
-            ;
             return ResponseEntity.ok(x);
         } else {
             return ResponseEntity.status(400).body("Error");
@@ -74,7 +74,7 @@ public class PDAdminController {
     }
 
     /**
-     * PAPDH
+     * PATCH
      */
 
 

@@ -4,10 +4,8 @@ import edu.uwp.appfactory.tow.WebSecurityConfig.security.jwt.JwtUtils;
 import edu.uwp.appfactory.tow.entities.TCUser;
 import edu.uwp.appfactory.tow.repositories.PDUserRepository;
 import edu.uwp.appfactory.tow.repositories.TCUserRepository;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Controller;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -43,12 +41,12 @@ public class LocationController {
         }
     }
 
-    public List<TCUser> findByDistance(float latitude, float longitude, int radius) {
-        List<TCUser> drivers = pdUserRepository.findByDistance(latitude, longitude, radius);
-        if (drivers.size() != 0) {
-            return drivers;
-        } else {
-            return null;
-        }
-    }
+//    public List<PDUser> findByDistance(float latitude, float longitude, int radius) {
+//        List<PDUser> drivers = pdUserRepository.findByDistance(latitude, longitude, radius);
+//        if (drivers.size() != 0) {
+//            return drivers;
+//        } else {
+//            return null;
+//        }
+//    }
 }

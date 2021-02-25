@@ -6,9 +6,10 @@ import edu.uwp.appfactory.tow.WebSecurityConfig.payload.response.MessageResponse
 import edu.uwp.appfactory.tow.WebSecurityConfig.repository.UsersRepository;
 import edu.uwp.appfactory.tow.WebSecurityConfig.security.jwt.JwtUtils;
 import edu.uwp.appfactory.tow.WebSecurityConfig.security.services.UserDetailsImpl;
-import edu.uwp.appfactory.tow.entities.*;
+import edu.uwp.appfactory.tow.entities.Users;
 import edu.uwp.appfactory.tow.repositories.PDAdminRepository;
-import edu.uwp.appfactory.tow.requestObjects.*;
+import edu.uwp.appfactory.tow.requestObjects.AdminRequest;
+import edu.uwp.appfactory.tow.requestObjects.LoginRequest;
 import edu.uwp.appfactory.tow.services.AsyncEmail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -108,76 +109,6 @@ public class AuthController {
             return false;
         }
     }
-
-    /**
-     * PD
-     */
-
-    public ResponseEntity<?> registerPDAdmin(PDAdminRequest pdAdminRequest) {
-        if (!usersRepository.existsByEmail(pdAdminRequest.getEmail())) {
-            PDAdmin pdAdmin = new PDAdmin(pdAdminRequest.getEmail(),
-                    pdAdminRequest.getEmail(),
-                    encoder.encode(pdAdminRequest.getPassword()),
-                    pdAdminRequest.getFirstname(),
-                    pdAdminRequest.getLastname(),
-                    pdAdminRequest.getPhone(),
-                    ERole.ROLE_PDADMIN.name(),
-                    pdAdminRequest.getCity(),
-                    pdAdminRequest.getAddressNumber(),
-                    pdAdminRequest.getDepartment(),
-                    pdAdminRequest.getDepartmentShort()
-            );
-
-            pdAdmin.setVerifyToken(generateEmailUUID());
-            pdAdmin.setVerifyDate(String.valueOf(LocalDate.now()));
-            pdAdmin.setVerEnabled(false);
-            usersRepository.save(pdAdmin);
-            sendEmail.sendEmailAsync(pdAdmin);
-            VerifyRequest x = new VerifyRequest(pdAdmin.getVerifyToken());
-            ;
-            return ResponseEntity.ok(x);
-        } else {
-            return ResponseEntity.status(400).body("Error");
-        }
-    }
-
-    public PDUAuthRequest registerPDUser(PDUserRequest pdUserRequest, UUID adminUUID) {
-        if (!usersRepository.existsByEmail(pdUserRequest.getEmail())) {
-
-            String frontID = "";
-            String password = generatePDUserUUID();
-
-            Optional<PDAdmin> adminsOptional = pdAdminRepository.findById(adminUUID);
-            if (adminsOptional.isPresent()) {
-                PDAdmin admin = adminsOptional.get();
-                frontID = admin.getDepartmentShort() + "-" + generatePDUserUUID();
-            }
-
-            PDUser pdUser = new PDUser(pdUserRequest.getEmail(),
-                    frontID,
-                    encoder.encode(password),
-
-                    pdUserRequest.getFirstname(),
-                    pdUserRequest.getLastname(),
-                    "",
-                    ERole.ROLE_PDUSER.name(),
-                    frontID,
-                    adminUUID);
-
-            pdUser.setVerifyToken("");
-            pdUser.setVerifyDate(String.valueOf(LocalDate.now()));
-            pdUser.setVerEnabled(true);
-            usersRepository.save(pdUser);
-            PDUAuthRequest x = new PDUAuthRequest(frontID, password);
-            return x;
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * TC
-     */
 
     public int verification(String token) {
         Optional<Users> usersOptional = usersRepository.findByVerifyToken(token);

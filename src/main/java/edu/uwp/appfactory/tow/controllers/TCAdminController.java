@@ -3,20 +3,17 @@ package edu.uwp.appfactory.tow.controllers;
 import edu.uwp.appfactory.tow.WebSecurityConfig.models.ERole;
 import edu.uwp.appfactory.tow.WebSecurityConfig.repository.UsersRepository;
 import edu.uwp.appfactory.tow.entities.TCAdmin;
-import edu.uwp.appfactory.tow.entities.TCUser;
 import edu.uwp.appfactory.tow.repositories.TCAdminRepository;
-import edu.uwp.appfactory.tow.repositories.TCUserRepository;
 import edu.uwp.appfactory.tow.requestObjects.TCAdminRequest;
-import edu.uwp.appfactory.tow.requestObjects.TCUserRequest;
 import edu.uwp.appfactory.tow.requestObjects.VerifyRequest;
 import edu.uwp.appfactory.tow.services.AsyncEmail;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 
 import java.time.LocalDate;
+import java.util.Optional;
 import java.util.UUID;
 
 
@@ -40,6 +37,10 @@ public class TCAdminController {
     /**
      * GET
      */
+    public TCAdmin get(UUID userId) {
+        Optional<TCAdmin> user = tcAdminRepository.findById(userId);
+        return user.orElse(null);
+    }
 
 
     /**
@@ -56,9 +57,7 @@ public class TCAdminController {
                     ERole.ROLE_TCADMIN.name(),
                     tcAdminRequest.getCompany());
 
-
             tcAdmin.setVerifyToken(generateEmailUUID());
-
             tcAdmin.setVerifyDate(String.valueOf(LocalDate.now()));
             tcAdmin.setVerEnabled(false);
             usersRepository.save(tcAdmin);

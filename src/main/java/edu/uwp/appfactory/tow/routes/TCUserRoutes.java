@@ -3,6 +3,7 @@ package edu.uwp.appfactory.tow.routes;
 import edu.uwp.appfactory.tow.WebSecurityConfig.security.jwt.JwtUtils;
 import edu.uwp.appfactory.tow.controllers.TCUserController;
 import edu.uwp.appfactory.tow.controllers.UserController;
+import edu.uwp.appfactory.tow.entities.TCUser;
 import edu.uwp.appfactory.tow.requestObjects.TCUserRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -12,7 +13,7 @@ import java.util.UUID;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/tcuser")
+@RequestMapping("/tcusers")
 public class TCUserRoutes {
 
     private final UserController userController;
@@ -28,15 +29,26 @@ public class TCUserRoutes {
     /**
      * GET
      */
+    @GetMapping("")
+    @PreAuthorize("hasRole('TCUser')")
+    public ResponseEntity<?> get(@RequestHeader("Authorization") final String jwtToken) {
+        String userId = jwtUtils.getUUIDFromJwtToken(jwtToken);
+        TCUser data = tcUserController.get(UUID.fromString(userId));
+        if (data != null) {
+            return ResponseEntity.ok(data);
+        } else {
+            return ResponseEntity.status(400).body(null);
+        }
+    }
 
 
     /**
      * POST
      */
     @PreAuthorize("hasRole('TCADMIN')")
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<?> register(@RequestHeader("Authorization") final String jwtToken,
-                                            @RequestBody TCUserRequest tcUserRequest) {
+                                      @RequestBody TCUserRequest tcUserRequest) {
         UUID adminUUID = UUID.fromString(jwtUtils.getUUIDFromJwtToken(jwtToken));
         return tcUserController.register(tcUserRequest, adminUUID);
     }

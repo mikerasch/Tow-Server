@@ -2,13 +2,12 @@ package edu.uwp.appfactory.tow.routes;
 
 import edu.uwp.appfactory.tow.WebSecurityConfig.security.jwt.JwtUtils;
 import edu.uwp.appfactory.tow.controllers.AuthController;
-import edu.uwp.appfactory.tow.requestObjects.*;
+import edu.uwp.appfactory.tow.requestObjects.AdminRequest;
+import edu.uwp.appfactory.tow.requestObjects.LoginRequest;
+import edu.uwp.appfactory.tow.requestObjects.PDAdminRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.UUID;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController

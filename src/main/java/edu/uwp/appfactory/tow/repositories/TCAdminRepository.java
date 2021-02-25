@@ -12,6 +12,7 @@ import java.util.UUID;
 @Repository
 public interface TCAdminRepository extends CrudRepository<TCAdmin, UUID> {
 
+
 }
 
 ///**
