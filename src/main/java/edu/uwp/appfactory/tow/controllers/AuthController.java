@@ -23,7 +23,6 @@ import org.springframework.stereotype.Controller;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.Optional;
-import java.util.UUID;
 
 @Controller
 public class AuthController {
@@ -132,13 +131,5 @@ public class AuthController {
         } else {
             return 404; // token doesnt exist
         }
-    }
-
-    private String generateEmailUUID() {
-        return UUID.randomUUID().toString().replace("-", "");
-    }
-
-    private String generatePDUserUUID() {
-        return UUID.randomUUID().toString().replace("-", "").substring(0, 6);
     }
 }

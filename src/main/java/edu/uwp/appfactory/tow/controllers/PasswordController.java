@@ -2,7 +2,7 @@ package edu.uwp.appfactory.tow.controllers;
 
 import edu.uwp.appfactory.tow.WebSecurityConfig.repository.UsersRepository;
 import edu.uwp.appfactory.tow.entities.Users;
-import edu.uwp.appfactory.tow.requestObjects.ForgotPassRequest;
+import edu.uwp.appfactory.tow.requestObjects.password.ForgotPassRequest;
 import edu.uwp.appfactory.tow.services.AsyncEmail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
