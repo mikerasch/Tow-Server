@@ -7,7 +7,7 @@ import java.util.UUID;
 @Value
 public class FileRequest {
     String image;
-//    UUID userUUID;
+    //    UUID userUUID;
 //    String name;
     UUID id;
 }

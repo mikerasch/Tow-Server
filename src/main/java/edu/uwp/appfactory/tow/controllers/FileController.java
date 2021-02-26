@@ -1,17 +1,12 @@
 package edu.uwp.appfactory.tow.controllers;
 
 import edu.uwp.appfactory.tow.entities.FileDB;
-import edu.uwp.appfactory.tow.entities.Users;
 import edu.uwp.appfactory.tow.repositories.FileDBRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.Period;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -32,7 +27,6 @@ public class FileController {
         Optional<FileDB> fileDB = fileDBRepository.findById(Id);
         return fileDB.orElse(null);
     }
-
 
 
 //    public ResponseEntity<?> findByIdJwt(UUID Id, String useruuid) {
@@ -64,7 +58,6 @@ public class FileController {
 //    }
 
 
-
     public FileDB Upload(byte[] data) throws IOException {
 
         FileDB FileDB = new FileDB(data);
@@ -72,7 +65,7 @@ public class FileController {
         return fileDBRepository.save(FileDB);
     }
 
-    public FileDB UploadFinished(byte[] data,UUID userUUID,String name,String type) throws IOException {
+    public FileDB UploadFinished(byte[] data, UUID userUUID, String name, String type) throws IOException {
 
         FileDB FileDB = new FileDB(data);
 

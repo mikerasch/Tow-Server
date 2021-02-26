@@ -6,13 +6,11 @@ import edu.uwp.appfactory.tow.controllers.FileController;
 import edu.uwp.appfactory.tow.requestObjects.FileRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Base64;
-import java.util.Objects;
 import java.util.UUID;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -87,7 +85,6 @@ public class ImageRoutes {
     }
 
 
-
 //    @PostMapping("/upload-base64-jwt")
 //    public ResponseEntity<?> uploadBase64Jwt(@RequestHeader final String jwtToken,
 //                                             @RequestBody FileRequest file) throws IOException {
@@ -131,8 +128,6 @@ public class ImageRoutes {
 //    }
 
 
-
-
     @GetMapping("/retrieve")
     public ResponseEntity<?> retrieve(@RequestHeader UUID id) {
 
@@ -140,12 +135,11 @@ public class ImageRoutes {
             byte[] data = fileController.findById(id).getData();
             data = Base64.getMimeEncoder().encode(data);
             return ResponseEntity.ok(data);
-        } catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(400).body("Error" + e);
         }
 
     }
-
 
 
 //    @GetMapping("/retrieve-jwt")
