@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/tcusers")
@@ -37,7 +39,7 @@ public class TCUserRoutes {
         if (data != null) {
             return ResponseEntity.ok(data);
         } else {
-            return ResponseEntity.status(400).body(null);
+            return ResponseEntity.status(BAD_REQUEST).build();
         }
     }
 

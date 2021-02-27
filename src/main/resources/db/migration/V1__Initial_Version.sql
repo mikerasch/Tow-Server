@@ -1,8 +1,8 @@
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 CREATE TABLE public.users
 (
-    id           uuid DEFAULT uuid_generate_v4() NOT NULL,
+    id           uuid DEFAULT gen_random_uuid() NOT NULL,
     email        character varying(100) COLLATE pg_catalog."default",
     firstname    character varying(20) COLLATE pg_catalog."default",
     lastname     character varying(20) COLLATE pg_catalog."default",
@@ -21,7 +21,6 @@ CREATE TABLE public.users
 ) WITH (OIDS = FALSE)
   TABLESPACE pg_default;
 
+create index users_id on users (id);
+
 SET TIMEZONE = 'America/Chicago';
-
-
-

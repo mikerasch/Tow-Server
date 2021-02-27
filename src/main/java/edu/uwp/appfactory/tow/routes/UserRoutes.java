@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/users")
@@ -32,14 +34,14 @@ public class UserRoutes {
         if (data != null) {
             return ResponseEntity.ok(data);
         } else {
-            return ResponseEntity.status(400).body(null);
+            return ResponseEntity.status(BAD_REQUEST).build();
         }
     }
 
     @DeleteMapping("")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> delete(@RequestHeader("email") final String email) {
-        return userController.deleteByEmail(email) ? ResponseEntity.status(HttpStatus.NO_CONTENT).body(null) : ResponseEntity.status(400).body(null);
+        return userController.deleteByEmail(email) ? ResponseEntity.status(HttpStatus.NO_CONTENT).build() : ResponseEntity.status(400).body(null);
     }
 
     //todo: JWT AUTH
@@ -52,7 +54,7 @@ public class UserRoutes {
         if (data != null) {
             return ResponseEntity.ok(data);
         } else {
-            return ResponseEntity.status(400).body(null);
+            return ResponseEntity.status(BAD_REQUEST).build();
         }
     }
 }
