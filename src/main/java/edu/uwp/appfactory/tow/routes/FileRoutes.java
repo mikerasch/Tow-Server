@@ -41,7 +41,7 @@ public class FileRoutes {
 
     @GetMapping("")
     public ResponseEntity<?> get(@RequestHeader("Authorization") final String jwtToken) {
-        return ResponseEntity.ok(fileController.get(jwtToken).getData());
+        return ResponseEntity.ok(fileController.get(jwtToken));
     }
 }
 
