@@ -42,10 +42,7 @@ public class ImageRoutes {
 
     @GetMapping("/retrieve")
     public ResponseEntity<?> retrieveJwt(@RequestHeader("Authorization") final String jwtToken) {
-        Optional<FileDB> data = fileController.getFile(jwtToken);
-        return data.isPresent()
-                ? ResponseEntity.ok(data.get().getData())
-                : ResponseEntity.status(NOT_FOUND).build();
+        return ResponseEntity.ok(fileController.getFile(jwtToken).getData());
     }
 }
 

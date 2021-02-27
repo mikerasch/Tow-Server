@@ -36,7 +36,6 @@ public class FileController {
     }
 
     public void uploadMultipart(MultipartFile file, String jwtToken) throws InvalidExtensionException, IOException {
-        String test = file.getContentType();
         if (!allowedExtensions.contains(file.getContentType())) {
             throw new InvalidExtensionException("File Extension not allowed");
         }
@@ -49,9 +48,9 @@ public class FileController {
     }
 
 
-    public Optional<FileDB> getFile(String jwtToken) {
+    public FileDB getFile(String jwtToken) {
         String userUUID = jwtUtils.getUUIDFromJwtToken(jwtToken);
-        return fileDBRepository.findById(UUID.fromString(userUUID));
+        return fileDBRepository.findById(UUID.fromString(userUUID)).orElse( new FileDB());
     }
 
 }
