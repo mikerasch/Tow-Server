@@ -1,12 +1,16 @@
 package edu.uwp.appfactory.tow.controllers;
 
+import edu.uwp.appfactory.tow.WebSecurityConfig.security.jwt.JwtUtils;
 import edu.uwp.appfactory.tow.entities.FileDB;
+import edu.uwp.appfactory.tow.exceptions.InvalidExtensionException;
 import edu.uwp.appfactory.tow.repositories.FileDBRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -15,92 +19,39 @@ import java.util.UUID;
 public class FileController {
 
     private final FileDBRepository fileDBRepository;
+    private final JwtUtils jwtUtils;
+
+    private final List<String> allowedExtensions = new ArrayList<>() {
+        {
+            add("image/png");
+            add("image/jpg");
+            add("image/jpeg");
+        }
+    };
 
     @Autowired
-    public FileController(FileDBRepository fileDBRepository) {
+    public FileController(FileDBRepository fileDBRepository, JwtUtils jwtUtils) {
         this.fileDBRepository = fileDBRepository;
+        this.jwtUtils = jwtUtils;
+    }
+
+    public void uploadMultipart(MultipartFile file, String jwtToken) throws InvalidExtensionException, IOException {
+        if (!allowedExtensions.contains(file.getContentType())) {
+            throw new InvalidExtensionException("File Extension not allowed");
+        }
+        String userUUID = jwtUtils.getUUIDFromJwtToken(jwtToken);
+        FileDB fileDB = FileDB.builder()
+                .id(UUID.fromString(userUUID))
+                .data(file.getBytes())
+                .build();
+        fileDBRepository.save(fileDB);
     }
 
 
-    public FileDB findById(UUID Id) {
-
-        Optional<FileDB> fileDB = fileDBRepository.findById(Id);
-        return fileDB.orElse(null);
+    public FileDB getFile(String jwtToken) {
+        String userUUID = jwtUtils.getUUIDFromJwtToken(jwtToken);
+        return fileDBRepository.findById(UUID.fromString(userUUID)).orElse( new FileDB());
     }
-
-
-//    public ResponseEntity<?> findByIdJwt(UUID Id, String useruuid) {
-//        Optional<FileDB> fileDB = fileDBRepository.findById(Id);
-//
-//        if (fileDB.isPresent()) {
-//            if (!fileDB.get().getUserUUID().equals(useruuid)) {
-//                return ResponseEntity.status(400).body("NOT YO, PHO TO");
-//            } else {
-//                return ResponseEntity.ok(fileDB);
-//            }
-//        }else {
-//            return ResponseEntity.status(410).body(null);
-//        }
-//    }
-
-//    public FileDB findByIdJwt(UUID Id, String useruuid) {
-//        Optional<FileDB> fileDB = fileDBRepository.findById(Id);
-//
-//        if (fileDB.isPresent()) {
-//            if (!fileDB.get().getUserUUID().equals(useruuid)) {
-//                return null;
-//            } else {
-//                return fileDB.orElse(null);
-//            }
-//        }else {
-//            return null;
-//        }
-//    }
-
-
-    public FileDB Upload(byte[] data) throws IOException {
-
-        FileDB FileDB = new FileDB(data);
-
-        return fileDBRepository.save(FileDB);
-    }
-
-    public FileDB UploadFinished(byte[] data, UUID userUUID, String name, String type) throws IOException {
-
-        FileDB FileDB = new FileDB(data);
-
-        return fileDBRepository.save(FileDB);
-    }
-
-
-    public FileDB UploadMulti(MultipartFile file) throws IOException {
-
-
-        byte[] data = file.getBytes();
-        FileDB FileDB = new FileDB(data);
-
-        return fileDBRepository.save(FileDB);
-    }
-
-//    public FileDB Uploadjwt(byte[] data, String userUUID) throws IOException {
-//
-//        FileDB FileDB = new FileDB(data, userUUID);
-//
-//        return fileDBRepository.save(FileDB);
-//    }
-
-//    public <Multipartfile> FileDB UploadMultipart(Multipartfile file) throws IOException {
-
-//        byte[] data = file.getdada
-//        FileDB FileDB = new FileDB(data);
-//
-//        return fileDBRepository.save(FileDB);
-//    }
-
-
-//    public FileDB getFile(UUID id) {
-//        return fileDBRepository.findById(id).get();
-//    }
 
 }
 

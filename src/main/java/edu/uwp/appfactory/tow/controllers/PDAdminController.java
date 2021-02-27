@@ -17,6 +17,8 @@ import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+
 
 @Controller
 public class PDAdminController {
@@ -72,7 +74,7 @@ public class PDAdminController {
             TestVerifyResponse test = new TestVerifyResponse(pdAdmin.getVerifyToken());
             return ResponseEntity.ok(test);
         } else {
-            return ResponseEntity.status(400).body("Error");
+            return ResponseEntity.status(BAD_REQUEST).build();
         }
     }
 

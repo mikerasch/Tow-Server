@@ -16,6 +16,8 @@ import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+
 
 @Controller
 public class TCUserController {
@@ -68,7 +70,7 @@ public class TCUserController {
             TestVerifyResponse x = new TestVerifyResponse(tcuser.getVerifyToken());
             return ResponseEntity.ok(x);
         } else {
-            return ResponseEntity.status(400).body("Error");
+            return ResponseEntity.status(BAD_REQUEST).build();
         }
     }
 

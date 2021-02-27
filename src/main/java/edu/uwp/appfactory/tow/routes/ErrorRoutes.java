@@ -1,9 +1,12 @@
 package edu.uwp.appfactory.tow.routes;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 /**
  *
@@ -14,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ErrorRoutes {
 
     @GetMapping("/")
-    public String handleError() {
-        return "Error 404 not found BROOOOOO";
+    public HttpStatus handleError() {
+        return NOT_FOUND;
     }
 }

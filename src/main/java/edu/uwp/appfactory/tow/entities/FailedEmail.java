@@ -1,32 +1,22 @@
 package edu.uwp.appfactory.tow.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 
+import java.io.Serializable;
 import java.util.UUID;
 
-@NoArgsConstructor
+@Value
+@Builder
 @AllArgsConstructor
-@Data
-public class FailedEmail {
+public class FailedEmail implements Serializable {
 
     @Id
-    private UUID uuid;
-
-    private UUID user_uuid;
-    private String email;
-    private String firstname;
-    private String lastname;
-    private String verify_token;
-    private int retries;
-
-    public FailedEmail(String email, UUID user_uuid, String firstname, String lastname, String verify_token) {
-        this.email = email;
-        this.user_uuid = user_uuid;
-        this.firstname = firstname;
-        this.lastname = lastname;
-        this.verify_token = verify_token;
-    }
+    UUID uuid;
+    UUID user_uuid;
+    String email;
+    String firstname;
+    String lastname;
+    String verify_token;
+    int retries;
 }

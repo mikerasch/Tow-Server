@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/pdusers")
@@ -38,7 +40,7 @@ public class PDUserRoutes {
         if (data != null) {
             return ResponseEntity.ok(data);
         } else {
-            return ResponseEntity.status(400).body(null);
+            return ResponseEntity.status(BAD_REQUEST).build();
         }
     }
 
@@ -55,7 +57,7 @@ public class PDUserRoutes {
         if (data != null) {
             return ResponseEntity.ok(data);
         } else {
-            return ResponseEntity.status(400).body("Error");
+            return ResponseEntity.status(BAD_REQUEST).build();
         }
     }
 

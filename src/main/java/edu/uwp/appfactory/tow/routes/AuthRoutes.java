@@ -4,9 +4,10 @@ import edu.uwp.appfactory.tow.WebSecurityConfig.security.jwt.JwtUtils;
 import edu.uwp.appfactory.tow.controllers.AuthController;
 import edu.uwp.appfactory.tow.requestObjects.AdminRequest;
 import edu.uwp.appfactory.tow.requestObjects.LoginRequest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import static org.springframework.http.HttpStatus.*;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -22,12 +23,12 @@ public class AuthRoutes {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<?> refreshToken(@RequestHeader("Authorization") final String jwtToken) {
+    public ResponseEntity<String> refreshToken(@RequestHeader("Authorization") final String jwtToken) {
         String token = authController.refreshToken(jwtToken);
         if (token != null) {
             return ResponseEntity.ok(token);
         } else {
-            return ResponseEntity.status(400).body("Error");
+            return ResponseEntity.status(BAD_REQUEST).build();
         }
     }
 
@@ -39,18 +40,18 @@ public class AuthRoutes {
     @PostMapping("/admin")
     public ResponseEntity<?> registerAdmin(@RequestBody AdminRequest adminRequest) {
         return authController.registerAdmin(adminRequest)
-                ? ResponseEntity.status(HttpStatus.NO_CONTENT).body(null)
-                : ResponseEntity.status(400).body("Error");
+                ? ResponseEntity.status(NO_CONTENT).build()
+                : ResponseEntity.status(BAD_REQUEST).body("Error");
     }
 
     @GetMapping("/verification")
     public ResponseEntity<?> verification(@RequestParam("token") final String token) {
         int status = authController.verification(token);
         return switch (status) {
-            case 200 -> ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
-            case 410 -> ResponseEntity.status(410).body("User already verified");
-            case 403 -> ResponseEntity.status(403).body("Link expired, account deleted");
-            default -> ResponseEntity.status(404).body("Resource not found");
+            case 200 -> ResponseEntity.status(NO_CONTENT).build();
+            case 410 -> ResponseEntity.status(GONE).body("User already verified");
+            case 403 -> ResponseEntity.status(FORBIDDEN).body("Link expired, account deleted");
+            default -> ResponseEntity.status(NOT_FOUND).body("Resource not found");
         };
     }
 }
