@@ -13,7 +13,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class FileDB {
+public class File {
     @Id
     @Persistent
     private UUID id;

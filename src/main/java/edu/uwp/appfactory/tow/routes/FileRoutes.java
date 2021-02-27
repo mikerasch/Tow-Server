@@ -2,33 +2,32 @@ package edu.uwp.appfactory.tow.routes;
 
 
 import edu.uwp.appfactory.tow.controllers.FileController;
-import edu.uwp.appfactory.tow.entities.FileDB;
+import edu.uwp.appfactory.tow.entities.File;
 import edu.uwp.appfactory.tow.exceptions.InvalidExtensionException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Optional;
 
 import static org.springframework.http.HttpStatus.*;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/images")
-public class ImageRoutes {
+public class FileRoutes {
 
     private final FileController fileController;
 
-    public ImageRoutes(FileController fileController) {
+    public FileRoutes(FileController fileController) {
         this.fileController = fileController;
     }
 
-    @PostMapping("/upload-multipart")
-    public ResponseEntity<FileDB> uploadMultipart(@RequestHeader("Authorization") final String jwtToken,
-                                                  @RequestParam("file") MultipartFile file) {
+    @PostMapping("")
+    public ResponseEntity<File> upload(@RequestHeader("Authorization") final String jwtToken,
+                                       @RequestParam("file") MultipartFile file) {
         try {
-            fileController.uploadMultipart(file, jwtToken);
+            fileController.upload(file, jwtToken);
             return ResponseEntity
                     .status(OK)
                     .build();
@@ -40,9 +39,9 @@ public class ImageRoutes {
 
     }
 
-    @GetMapping("/retrieve")
-    public ResponseEntity<?> retrieveJwt(@RequestHeader("Authorization") final String jwtToken) {
-        return ResponseEntity.ok(fileController.getFile(jwtToken).getData());
+    @GetMapping("")
+    public ResponseEntity<?> get(@RequestHeader("Authorization") final String jwtToken) {
+        return ResponseEntity.ok(fileController.get(jwtToken).getData());
     }
 }
 
