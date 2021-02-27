@@ -1,6 +1,7 @@
 create table public.file_db
 (
     id   uuid NOT NULL,
+    type VARCHAR(255),
     data bytea
 )
     TABLESPACE pg_default;

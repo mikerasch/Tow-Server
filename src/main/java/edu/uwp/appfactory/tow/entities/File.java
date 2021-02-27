@@ -19,5 +19,6 @@ public class File {
     @Id
     @Persistent
     private UUID id;
+    private String type;
     private byte[] data;
 }
