@@ -68,7 +68,6 @@ public class PDUserController {
             PDUser pdUser = new PDUser(pdUserRequest.getEmail(),
                     frontID,
                     encoder.encode(password),
-
                     pdUserRequest.getFirstname(),
                     pdUserRequest.getLastname(),
                     "",
