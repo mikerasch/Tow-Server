@@ -20,7 +20,6 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
-import java.security.Principal;
 import java.util.UUID;
 
 @Configuration
@@ -67,7 +66,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 //                    Authentication authentication = converter.convert(jwt);
 
 
-                    accessor.setUser((Principal) authentication.getPrincipal());
+                    accessor.setUser(authentication);
                 }
                 return message;
             }

@@ -4,7 +4,7 @@ var vm = new Vue({
     el: "#app",
     mounted: function () {
         this.$nextTick(function () {
-            let socket = new SockJS("/api/tow-ws");
+            let socket = new SockJS("/api/ws");
             stompClient = Stomp.over(socket);
             stompClient.connect(
                 {},
