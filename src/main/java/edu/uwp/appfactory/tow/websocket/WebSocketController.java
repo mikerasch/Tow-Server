@@ -22,7 +22,7 @@ public class WebSocketController {
     @Scheduled(fixedDelay = 5000)
     public void sendWebSocketUpdate() throws JsonProcessingException {
         Hello hello = Hello.builder().name("John").message("Hello").build();
-        this.messageTemplate.convertAndSend("/info/values",
+        this.messageTemplate.convertAndSend("/queue",
                 mapper.writeValueAsString(hello));
     }
 
