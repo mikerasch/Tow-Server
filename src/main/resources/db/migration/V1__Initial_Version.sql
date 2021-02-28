@@ -21,6 +21,7 @@ CREATE TABLE public.users
 ) WITH (OIDS = FALSE)
   TABLESPACE pg_default;
 
-create index users_id on users (id);
+CREATE INDEX users_id ON users (id);
+CREATE INDEX users_email ON users (email);
 
 SET TIMEZONE = 'America/Chicago';

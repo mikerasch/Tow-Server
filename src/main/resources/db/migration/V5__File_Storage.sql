@@ -6,6 +6,8 @@ create table public.file_db
 )
     TABLESPACE pg_default;
 
+CREATE INDEX file_db_id ON file_db (id);
+
 -- Insert DB entry
 CREATE FUNCTION create_file_db_entry()
     RETURNS trigger AS
