@@ -51,24 +51,15 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
                     String userId = jwtUtils.getUUIDFromJwtToken(jwtToken);
 
-
                     UserDetails userDetails = userDetailsService.loadUserByUUID(UUID.fromString(userId));
 
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                            userDetails, null, userDetails.getAuthorities());
+                            userDetails,
+                            null,
+                            userDetails.getAuthorities()
+                    );
 
                     SecurityContextHolder.getContext().setAuthentication(authentication);
-
-
-//                    SecurityContextHolder.getContext().setAuthentication(authentication);
-//                    String jwt = jwtUtils.generateJwtToken(authentication);
-//                    UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-//
-//                    Optional<Users> usersOptional = usersRepository.findByUsername(loginRequest.getEmail());
-//                    // bullshit
-//                    Jwt jwt = jwtDecoder.decode(accessToken);
-//                    Authentication authentication = converter.convert(jwt);
-
 
                     accessor.setUser(authentication);
                 }

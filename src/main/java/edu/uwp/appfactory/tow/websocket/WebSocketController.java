@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 
 @Controller
@@ -19,7 +18,6 @@ public class WebSocketController {
         this.messageTemplate = messageTemplate;
     }
 
-    @Scheduled(fixedDelay = 5000)
     public void sendWebSocketUpdate() throws JsonProcessingException {
         Hello hello = Hello.builder().name("John").message("Hello").build();
         this.messageTemplate.convertAndSend("/queue",
