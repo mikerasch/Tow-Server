@@ -22,5 +22,7 @@ CREATE TABLE public.users
   TABLESPACE pg_default;
 
 create index users_id on users (id);
+create index users_email on users (email);
+create index users_username on users (username);
 
 SET TIMEZONE = 'America/Chicago';

@@ -4,6 +4,7 @@ import edu.uwp.appfactory.tow.WebSecurityConfig.security.jwt.JwtUtils;
 import edu.uwp.appfactory.tow.controllers.AuthController;
 import edu.uwp.appfactory.tow.requestObjects.AdminRequest;
 import edu.uwp.appfactory.tow.requestObjects.LoginRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,11 +47,11 @@ public class AuthRoutes {
 
     @GetMapping("/verification")
     public ResponseEntity<?> verification(@RequestParam("token") final String token) {
-        int status = authController.verification(token);
+        HttpStatus status = authController.verification(token);
         return switch (status) {
-            case 200 -> ResponseEntity.status(NO_CONTENT).build();
-            case 410 -> ResponseEntity.status(GONE).body("User already verified");
-            case 403 -> ResponseEntity.status(FORBIDDEN).body("Link expired, account deleted");
+            case OK -> ResponseEntity.status(NO_CONTENT).build();
+            case FORBIDDEN -> ResponseEntity.status(FORBIDDEN).body("Link expired, account deleted");
+            case GONE -> ResponseEntity.status(GONE).body("User already verified");
             default -> ResponseEntity.status(NOT_FOUND).body("Resource not found");
         };
     }

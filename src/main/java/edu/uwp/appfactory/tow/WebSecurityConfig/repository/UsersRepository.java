@@ -19,6 +19,8 @@ import java.util.UUID;
 public interface UsersRepository extends CrudRepository<Users, UUID> {
     Optional<Users> findByUsername(String username);
 
+    Optional<Users> findByEmail(String emailString);
+
     Optional<Users> findById(UUID id);
 
     Optional<Users> findByResetToken(int resetToken);
@@ -30,8 +32,6 @@ public interface UsersRepository extends CrudRepository<Users, UUID> {
     void deleteByEmail(String email);
 
     Boolean existsByEmail(String email);
-
-    Users findByEmail(String emailString);
 
     @Transactional
     @Modifying

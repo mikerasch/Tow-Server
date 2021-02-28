@@ -12,6 +12,7 @@ import edu.uwp.appfactory.tow.requestObjects.AdminRequest;
 import edu.uwp.appfactory.tow.requestObjects.LoginRequest;
 import edu.uwp.appfactory.tow.services.AsyncEmail;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,6 +24,13 @@ import org.springframework.stereotype.Controller;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.Optional;
+
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.GONE;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 @Controller
 public class AuthController {
@@ -62,7 +70,7 @@ public class AuthController {
         String jwt = jwtUtils.generateJwtToken(authentication);
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-        Optional<Users> usersOptional = usersRepository.findByUsername(loginRequest.getEmail());
+        Optional<Users> usersOptional = usersRepository.findByEmail(loginRequest.getEmail());
 
         //todo: when not testing, uncomment code
         if (userDetails.getRole().equals(loginRequest.getPlatform())) {
@@ -81,12 +89,12 @@ public class AuthController {
                         ResponseEntity.badRequest().body(new MessageResponse("User not verified"));
             } else {
                 return ResponseEntity
-                        .status(494)
+                        .status(BAD_REQUEST)
                         .body(new MessageResponse("User does not exist"));
             }
         } else {
             return ResponseEntity
-                    .status(401)
+                    .status(UNAUTHORIZED)
                     .body(new MessageResponse("User is not permitted to use this dashboard"));
         }
     }
@@ -109,7 +117,7 @@ public class AuthController {
         }
     }
 
-    public int verification(String token) {
+    public HttpStatus verification(String token) {
         Optional<Users> usersOptional = usersRepository.findByVerifyToken(token);
         if (usersOptional.isPresent()) {
 
@@ -120,16 +128,16 @@ public class AuthController {
             if (periodBetween.getDays() < 8) {
                 if (user.getVerifyToken().equals(token) && !user.getVerEnabled()) {
                     usersRepository.updateUserEmailVerifiedByUUID(user.getId(), true);
-                    return 200; // success
+                    return OK; // success
                 } else {
-                    return 410; // user already verified
+                    return GONE; // user already verified
                 }
             } else {
                 usersRepository.deleteByEmail(user.getEmail());
-                return 403; // expired, account deleted
+                return FORBIDDEN; // expired, account deleted
             }
         } else {
-            return 404; // token doesnt exist
+            return NOT_FOUND; // token doesnt exist
         }
     }
 }

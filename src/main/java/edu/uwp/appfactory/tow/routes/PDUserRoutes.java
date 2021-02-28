@@ -48,12 +48,11 @@ public class PDUserRoutes {
     /**
      * POST
      */
-    @PreAuthorize("hasRole('PDADMIN')")
     @PostMapping("")
+    @PreAuthorize("hasRole('PDADMIN')")
     public ResponseEntity<?> register(@RequestHeader("Authorization") final String jwtToken,
                                       @RequestBody PDUserRequest pdUserRequest) {
-        UUID adminUUID = UUID.fromString(jwtUtils.getUUIDFromJwtToken(jwtToken));
-        PDUAuthResponse data = pdUserController.register(pdUserRequest, adminUUID);
+        PDUAuthResponse data = pdUserController.register(pdUserRequest, jwtToken);
         if (data != null) {
             return ResponseEntity.ok(data);
         } else {

@@ -1,17 +1,21 @@
 package edu.uwp.appfactory.tow.WebSecurityConfig.security.jwt;
 
 import edu.uwp.appfactory.tow.WebSecurityConfig.security.services.UserDetailsImpl;
-import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
-import java.security.Key;
 import java.util.Date;
 import java.util.function.Function;
+
+import static io.jsonwebtoken.SignatureAlgorithm.HS256;
 
 /**
  * Java Web Tokens Utilities class, housing mostly all methods relating to JWT
@@ -21,13 +25,11 @@ public class JwtUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 
-    private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    @Value("${tow.app.jwtSecret}")
+    private String jwtSecret;
 
     @Value("${tow.app.jwtExpirationMs}")
     private int jwtExpirationMs;
-
-    @Value("${tow.app.jwtResetExpirationMs}")
-    private int jwtResetExpirationMs;
 
     /**
      * method that generates a JWT token
@@ -37,23 +39,23 @@ public class JwtUtils {
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
 
         return Jwts.builder()
-                .setSubject((userPrincipal.getId().toString()))
-                .setIssuedAt(new Date())
-                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
-                .signWith(key)
+                .setSubject(userPrincipal.getId().toString())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
+                .signWith(HS256, jwtSecret)
                 .compact();
     }
 
     /**
      * method to refresh a users JWT token
      */
-    public String refreshJwtToken(String UUID) {
+    public String refreshJwtToken(String userUUID) {
 
         return Jwts.builder()
-                .setSubject(UUID)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
-                .signWith(key)
+                .setSubject(userUUID)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
+                .signWith(HS256, jwtSecret)
                 .compact();
     }
 
@@ -62,45 +64,21 @@ public class JwtUtils {
      */
     public String getUUIDFromJwtToken(String token) {
         Function<Claims, String> claimsResolver = Claims::getSubject;
-        Claims parsedToken = Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build().parseClaimsJws(token)
+        Claims parsedToken = Jwts
+                .parser()
+                .setSigningKey(jwtSecret)
+                .parseClaimsJws(token)
                 .getBody();
         return claimsResolver.apply(parsedToken);
     }
-
-//    /**
-//     * not used, may use later
-//     */
-//    public String generateResetJwtToken(String UUID) {
-//
-//        return Jwts.builder()
-//                .setSubject(UUID)
-//                .setIssuedAt(new Date())
-//                .setExpiration(new Date((new Date()).getTime() + jwtResetExpirationMs))
-//                .signWith(SignatureAlgorithm.HS512, jwtSecret)
-//                .compact();
-//    }
-
-//    public String generateResetJwtDigit(String resetDigits) {
-//
-//        return Jwts.builder()
-//                .setSubject(resetDigits)
-//                .setIssuedAt(new Date())
-//                .setExpiration(new Date((new Date()).getTime() + jwtResetExpirationMs))
-//                .signWith(SignatureAlgorithm.HS512, jwtSecret)
-//                .compact();
-//    }
 
     /**
      * method to validate a JWT token
      */
     public boolean validateJwtToken(String authToken) {
         try {
-
-            Jwts.parserBuilder()
-                    .setSigningKey(key)
-                    .build()
+            Jwts.parser()
+                    .setSigningKey(jwtSecret)
                     .parseClaimsJws(authToken);
             return true;
         } catch (MalformedJwtException e) {
@@ -111,6 +89,8 @@ public class JwtUtils {
             logger.error("JWT token is unsupported: {}", e.getMessage());
         } catch (IllegalArgumentException e) {
             logger.error("JWT claims string is empty: {}", e.getMessage());
+        } catch (Exception e) {
+            logger.error("JWT exception: {}", e.getMessage());
         }
         return false;
     }

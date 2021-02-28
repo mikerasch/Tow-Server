@@ -2,6 +2,7 @@ package edu.uwp.appfactory.tow.controllers;
 
 import edu.uwp.appfactory.tow.WebSecurityConfig.models.ERole;
 import edu.uwp.appfactory.tow.WebSecurityConfig.repository.UsersRepository;
+import edu.uwp.appfactory.tow.WebSecurityConfig.security.jwt.JwtUtils;
 import edu.uwp.appfactory.tow.entities.PDAdmin;
 import edu.uwp.appfactory.tow.entities.PDUser;
 import edu.uwp.appfactory.tow.repositories.PDAdminRepository;
@@ -24,16 +25,18 @@ public class PDUserController {
     private final PDUserRepository pdUserRepository;
     private final PDAdminRepository pdAdminRepository;
     private final UsersRepository usersRepository;
-    private final AsyncEmail sendEmail;
     private final PasswordEncoder encoder;
+    private final AsyncEmail sendEmail;
+    private final JwtUtils jwtUtils;
 
 
     @Autowired
-    public PDUserController(PDUserRepository pdUserRepository, PDAdminRepository pdAdminRepository, UsersRepository usersRepository, AsyncEmail sendEmail, PasswordEncoder encoder) {
+    public PDUserController(PDUserRepository pdUserRepository, PDAdminRepository pdAdminRepository, UsersRepository usersRepository, AsyncEmail sendEmail, JwtUtils jwtUtils, PasswordEncoder encoder) {
         this.pdUserRepository = pdUserRepository;
         this.pdAdminRepository = pdAdminRepository;
         this.usersRepository = usersRepository;
         this.sendEmail = sendEmail;
+        this.jwtUtils = jwtUtils;
         this.encoder = encoder;
     }
 
@@ -49,8 +52,9 @@ public class PDUserController {
     /**
      * POST
      */
-    public PDUAuthResponse register(PDUserRequest pdUserRequest, UUID adminUUID) {
+    public PDUAuthResponse register(PDUserRequest pdUserRequest, String token) {
         if (!usersRepository.existsByEmail(pdUserRequest.getEmail())) {
+            UUID adminUUID = UUID.fromString(jwtUtils.getUUIDFromJwtToken(token));
 
             String frontID = "";
             String password = generatePDUserUUID();
