@@ -15,6 +15,7 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
@@ -50,10 +51,13 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
                     String userId = jwtUtils.getUUIDFromJwtToken(jwtToken);
 
+
                     UserDetails userDetails = userDetailsService.loadUserByUUID(UUID.fromString(userId));
 
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                             userDetails, null, userDetails.getAuthorities());
+
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
 
 
 //                    SecurityContextHolder.getContext().setAuthentication(authentication);
