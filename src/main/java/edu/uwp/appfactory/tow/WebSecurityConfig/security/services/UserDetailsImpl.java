@@ -30,12 +30,13 @@ public class UserDetailsImpl implements UserDetails {
     private final String role;
     private String firstname;
     private String lastname;
+    private final String phone;
 
     /**
      * constructor of a user details implementation
      */
     public UserDetailsImpl(UUID id, String username, String email, String password, String firstname, String lastname,
-                           String role) {
+                           String role, String phone) {
         this.id = id;
         this.username = username;
         this.email = email;
@@ -43,6 +44,7 @@ public class UserDetailsImpl implements UserDetails {
         this.firstname = firstname;
         this.lastname = lastname;
         this.role = role;
+        this.phone = phone;
     }
 
     /**
@@ -56,7 +58,8 @@ public class UserDetailsImpl implements UserDetails {
                 user.getPassword(),
                 user.getFirstname(),
                 user.getLastname(),
-                user.getRole());
+                user.getRole(),
+                user.getPhone());
     }
 
     public String getRole() {
@@ -125,6 +128,10 @@ public class UserDetailsImpl implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public String getPhone() {
+        return phone;
     }
 
     @Override

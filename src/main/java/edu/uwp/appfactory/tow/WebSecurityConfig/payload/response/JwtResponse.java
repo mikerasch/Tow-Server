@@ -23,12 +23,13 @@ public class JwtResponse {
     private String firstname;
     private String lastname;
     private String role;
+    private String phone;
 
     /**
      * constructor for a JWT response, used mostly with login
      */
     public JwtResponse(String accessToken, UUID id, String username, String email, String
-            firstname, String lastname, String role) {
+            firstname, String lastname, String role, String phone) {
         this.token = accessToken;
         this.id = id;
         this.username = username;
@@ -36,5 +37,6 @@ public class JwtResponse {
         this.firstname = firstname;
         this.lastname = lastname;
         this.role = role;
+        this.phone = phone;
     }
 }

@@ -25,12 +25,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.Optional;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.FORBIDDEN;
-import static org.springframework.http.HttpStatus.GONE;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.http.HttpStatus.OK;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+import static org.springframework.http.HttpStatus.*;
 
 @Controller
 public class AuthController {
@@ -84,7 +79,8 @@ public class AuthController {
                                 userDetails.getEmail(),
                                 userDetails.getFirstname(),
                                 userDetails.getLastname(),
-                                userDetails.getRole())
+                                userDetails.getRole(),
+                                userDetails.getPhone())
                         ) :
                         ResponseEntity.badRequest().body(new MessageResponse("User not verified"));
             } else {
