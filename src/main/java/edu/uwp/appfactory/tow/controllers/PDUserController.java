@@ -65,9 +65,10 @@ public class PDUserController {
                 frontID = admin.getDepartmentShort() + "-" + generatePDUserUUID();
             }
 
-            PDUser pdUser = new PDUser(pdUserRequest.getEmail(),
-                    frontID,
-                    encoder.encode(password),
+            PDUser pdUser = new PDUser(
+                    pdUserRequest.getEmail(),
+                    pdUserRequest.getEmail(),
+                    encoder.encode(pdUserRequest.getPassword()),
                     pdUserRequest.getFirstname(),
                     pdUserRequest.getLastname(),
                     "",

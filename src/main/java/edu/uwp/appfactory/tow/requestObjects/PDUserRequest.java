@@ -7,4 +7,5 @@ public class PDUserRequest {
     String firstname;
     String lastname;
     String email;
+    String password;
 }
