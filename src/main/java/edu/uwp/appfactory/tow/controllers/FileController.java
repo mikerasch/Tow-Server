@@ -1,11 +1,11 @@
 package edu.uwp.appfactory.tow.controllers;
 
-import edu.uwp.appfactory.tow.WebSecurityConfig.security.jwt.JwtUtils;
 import edu.uwp.appfactory.tow.entities.File;
 import edu.uwp.appfactory.tow.exceptions.InvalidExtensionException;
 import edu.uwp.appfactory.tow.mappers.FileMapper;
 import edu.uwp.appfactory.tow.repositories.FileRepository;
 import edu.uwp.appfactory.tow.responseObjects.FileResponse;
+import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.multipart.MultipartFile;

@@ -1,10 +1,10 @@
 package edu.uwp.appfactory.tow.routes;
 
-import edu.uwp.appfactory.tow.WebSecurityConfig.security.jwt.JwtUtils;
 import edu.uwp.appfactory.tow.controllers.TCUserController;
 import edu.uwp.appfactory.tow.controllers.UserController;
 import edu.uwp.appfactory.tow.entities.TCUser;
 import edu.uwp.appfactory.tow.requestObjects.TCUserRequest;
+import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;

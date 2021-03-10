@@ -1,16 +1,16 @@
 package edu.uwp.appfactory.tow.controllers;
 
-import edu.uwp.appfactory.tow.WebSecurityConfig.models.ERole;
-import edu.uwp.appfactory.tow.WebSecurityConfig.payload.response.JwtResponse;
-import edu.uwp.appfactory.tow.WebSecurityConfig.payload.response.MessageResponse;
-import edu.uwp.appfactory.tow.WebSecurityConfig.repository.UsersRepository;
-import edu.uwp.appfactory.tow.WebSecurityConfig.security.jwt.JwtUtils;
-import edu.uwp.appfactory.tow.WebSecurityConfig.security.services.UserDetailsImpl;
 import edu.uwp.appfactory.tow.entities.Users;
 import edu.uwp.appfactory.tow.repositories.PDAdminRepository;
 import edu.uwp.appfactory.tow.requestObjects.AdminRequest;
 import edu.uwp.appfactory.tow.requestObjects.LoginRequest;
 import edu.uwp.appfactory.tow.services.AsyncEmail;
+import edu.uwp.appfactory.tow.webSecurityConfig.models.ERole;
+import edu.uwp.appfactory.tow.webSecurityConfig.payload.response.JwtResponse;
+import edu.uwp.appfactory.tow.webSecurityConfig.payload.response.MessageResponse;
+import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
+import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
+import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

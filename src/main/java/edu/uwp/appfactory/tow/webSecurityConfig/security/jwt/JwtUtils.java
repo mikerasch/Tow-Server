@@ -1,11 +1,7 @@
-package edu.uwp.appfactory.tow.WebSecurityConfig.security.jwt;
+package edu.uwp.appfactory.tow.webSecurityConfig.security.jwt;
 
-import edu.uwp.appfactory.tow.WebSecurityConfig.security.services.UserDetailsImpl;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.UnsupportedJwtException;
+import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsImpl;
+import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;

@@ -1,12 +1,12 @@
 package edu.uwp.appfactory.tow.controllers;
 
-import edu.uwp.appfactory.tow.WebSecurityConfig.models.ERole;
-import edu.uwp.appfactory.tow.WebSecurityConfig.repository.UsersRepository;
 import edu.uwp.appfactory.tow.entities.TCUser;
 import edu.uwp.appfactory.tow.repositories.TCUserRepository;
 import edu.uwp.appfactory.tow.requestObjects.TCUserRequest;
 import edu.uwp.appfactory.tow.responseObjects.TestVerifyResponse;
 import edu.uwp.appfactory.tow.services.AsyncEmail;
+import edu.uwp.appfactory.tow.webSecurityConfig.models.ERole;
+import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;

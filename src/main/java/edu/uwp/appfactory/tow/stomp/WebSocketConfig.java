@@ -1,7 +1,7 @@
-package edu.uwp.appfactory.tow.websocket;
+package edu.uwp.appfactory.tow.stomp;
 
-import edu.uwp.appfactory.tow.WebSecurityConfig.security.jwt.JwtUtils;
-import edu.uwp.appfactory.tow.WebSecurityConfig.security.services.UserDetailsServiceImpl;
+import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
+import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -35,8 +35,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker("/chat", "/queue");
-        registry.setApplicationDestinationPrefixes("/app", "/user");
+        registry.enableSimpleBroker("/topic");
+        registry.setApplicationDestinationPrefixes("/app");
     }
 
     @Override
@@ -46,11 +46,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
             public Message<?> preSend(Message<?> message, MessageChannel channel) {
                 StompHeaderAccessor accessor =
                         MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
+
                 if (StompCommand.CONNECT.equals(accessor.getCommand())) {
+
                     String jwtToken = accessor.getFirstNativeHeader("Authorization");
-
                     String userId = jwtUtils.getUUIDFromJwtToken(jwtToken);
-
                     UserDetails userDetails = userDetailsService.loadUserByUUID(UUID.fromString(userId));
 
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
@@ -60,7 +60,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                     );
 
                     SecurityContextHolder.getContext().setAuthentication(authentication);
-
                     accessor.setUser(authentication);
                 }
                 return message;
@@ -70,6 +69,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws").setAllowedOriginPatterns("*").withSockJS();
+        registry.addEndpoint("/help").setAllowedOriginPatterns("*").withSockJS();
     }
 }

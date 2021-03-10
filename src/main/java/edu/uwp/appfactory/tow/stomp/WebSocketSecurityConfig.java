@@ -1,4 +1,4 @@
-package edu.uwp.appfactory.tow.websocket;
+package edu.uwp.appfactory.tow.stomp;
 
 
 import org.springframework.context.annotation.Configuration;

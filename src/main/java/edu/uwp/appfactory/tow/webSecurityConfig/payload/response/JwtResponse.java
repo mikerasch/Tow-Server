@@ -1,4 +1,4 @@
-package edu.uwp.appfactory.tow.WebSecurityConfig.payload.response;
+package edu.uwp.appfactory.tow.webSecurityConfig.payload.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

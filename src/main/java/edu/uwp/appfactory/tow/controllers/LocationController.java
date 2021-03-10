@@ -1,9 +1,9 @@
 package edu.uwp.appfactory.tow.controllers;
 
-import edu.uwp.appfactory.tow.WebSecurityConfig.security.jwt.JwtUtils;
 import edu.uwp.appfactory.tow.entities.TCUser;
 import edu.uwp.appfactory.tow.repositories.PDUserRepository;
 import edu.uwp.appfactory.tow.repositories.TCUserRepository;
+import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
 import org.springframework.stereotype.Controller;
 
 import java.util.Optional;

@@ -1,9 +1,9 @@
 package edu.uwp.appfactory.tow.routes;
 
-import edu.uwp.appfactory.tow.WebSecurityConfig.security.jwt.JwtUtils;
 import edu.uwp.appfactory.tow.controllers.UserController;
 import edu.uwp.appfactory.tow.entities.Users;
 import edu.uwp.appfactory.tow.requestObjects.UpdateRequest;
+import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

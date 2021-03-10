@@ -1,4 +1,4 @@
-package edu.uwp.appfactory.tow.WebSecurityConfig.repository;
+package edu.uwp.appfactory.tow.webSecurityConfig.repository;
 
 import edu.uwp.appfactory.tow.entities.Users;
 import org.springframework.data.jdbc.repository.query.Modifying;

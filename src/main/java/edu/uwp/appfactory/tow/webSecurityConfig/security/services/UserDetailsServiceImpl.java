@@ -1,7 +1,7 @@
-package edu.uwp.appfactory.tow.WebSecurityConfig.security.services;
+package edu.uwp.appfactory.tow.webSecurityConfig.security.services;
 
-import edu.uwp.appfactory.tow.WebSecurityConfig.repository.UsersRepository;
 import edu.uwp.appfactory.tow.entities.Users;
+import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

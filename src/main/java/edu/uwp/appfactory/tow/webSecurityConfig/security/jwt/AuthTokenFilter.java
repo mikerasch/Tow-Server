@@ -1,6 +1,6 @@
-package edu.uwp.appfactory.tow.WebSecurityConfig.security.jwt;
+package edu.uwp.appfactory.tow.webSecurityConfig.security.jwt;
 
-import edu.uwp.appfactory.tow.WebSecurityConfig.security.services.UserDetailsServiceImpl;
+import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

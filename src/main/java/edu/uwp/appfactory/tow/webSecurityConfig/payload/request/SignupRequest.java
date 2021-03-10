@@ -1,4 +1,4 @@
-package edu.uwp.appfactory.tow.WebSecurityConfig.payload.request;
+package edu.uwp.appfactory.tow.webSecurityConfig.payload.request;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;

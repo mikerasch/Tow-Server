@@ -1,4 +1,4 @@
-package edu.uwp.appfactory.tow.WebSecurityConfig.models;
+package edu.uwp.appfactory.tow.webSecurityConfig.models;
 
 /**
  *
