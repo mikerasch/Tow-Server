@@ -39,7 +39,6 @@ public class UserRoutes {
     }
 
     @DeleteMapping("")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> delete(@RequestHeader("email") final String email) {
         return userController.deleteByEmail(email) ? ResponseEntity.status(HttpStatus.NO_CONTENT).build() : ResponseEntity.status(400).body(null);
     }
