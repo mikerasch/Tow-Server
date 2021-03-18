@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -36,6 +37,21 @@ public class TCUserRoutes {
     public ResponseEntity<?> get(@RequestHeader("Authorization") final String jwtToken) {
         String userId = jwtUtils.getUUIDFromJwtToken(jwtToken);
         TCUser data = tcUserController.get(UUID.fromString(userId));
+        if (data != null) {
+            return ResponseEntity.ok(data);
+        } else {
+            return ResponseEntity.status(BAD_REQUEST).build();
+        }
+    }
+
+    /**
+     * GET ALL
+     */
+    @GetMapping("/all")
+    @PreAuthorize("hasRole('TCADMIN')")
+    public ResponseEntity<?> getAll(@RequestHeader("Authorization") final String jwtToken) {
+        UUID adminUUID = UUID.fromString(jwtUtils.getUUIDFromJwtToken(jwtToken));
+        List<TCUser> data = tcUserController.getAll(adminUUID);
         if (data != null) {
             return ResponseEntity.ok(data);
         } else {

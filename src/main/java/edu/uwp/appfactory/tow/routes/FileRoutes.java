@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -42,6 +43,12 @@ public class FileRoutes {
     @GetMapping("")
     public ResponseEntity<?> get(@RequestHeader("Authorization") final String jwtToken) {
         return ResponseEntity.ok(fileController.get(jwtToken));
+    }
+
+    @GetMapping("/tca")
+    public ResponseEntity<?> get(@RequestHeader("Authorization") final String jwtToken,
+                                 @RequestHeader("UUID") final UUID UUID) {
+        return ResponseEntity.ok(fileController.get(jwtToken, UUID));
     }
 }
 

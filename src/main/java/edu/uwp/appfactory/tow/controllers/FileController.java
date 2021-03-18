@@ -59,4 +59,10 @@ public class FileController {
         return file.map(fileMapper::map).orElse(null);
     }
 
+    public FileResponse get(String jwtToken, UUID uuid) {
+        String userUUID = jwtUtils.getUUIDFromJwtToken(jwtToken);
+        Optional<File> file = fileRepository.findById(uuid);
+        return file.map(fileMapper::map).orElse(null);
+    }
+
 }

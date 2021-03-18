@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -42,6 +43,13 @@ public class TCUserController {
     public TCUser get(UUID userId) {
         Optional<TCUser> user = tcUserRepository.findById(userId);
         return user.orElse(null);
+    }
+
+    /**
+     * GET ALL
+     */
+    public List<TCUser> getAll(UUID adminUUID) {
+        return tcUserRepository.findAllByAdminUUID(adminUUID);
     }
 
 
