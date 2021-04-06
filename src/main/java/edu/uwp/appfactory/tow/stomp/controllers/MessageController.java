@@ -7,18 +7,21 @@ import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.util.HtmlUtils;
 
-
+import java.security.Principal;
 
 
 @Controller
 public class MessageController {
     private final LocationController locationController;
     private final JwtUtils jwtUtils;
+
 
     public MessageController(LocationController locationController, JwtUtils jwtUtils) {
         this.locationController = locationController;
@@ -45,7 +48,7 @@ public class MessageController {
         return new MessageResponse("Driver connecting....");
     }
 
-    @PreAuthorize("hasRole('PDUSER')")
+    @PreAuthorize("hasRole('TCUSER')")
     @MessageMapping("/my-location")
     @SendTo("/topic/setlocation")
     public ResponseEntity<?> setlocation(TCULocationRequest setRequest) throws Exception {
@@ -70,4 +73,6 @@ public class MessageController {
     public MessageResponse handleExcpetion(Throwable exception) {
         return new MessageResponse(exception.getMessage());
     }
+
+
 }
