@@ -3,6 +3,7 @@
 //import edu.uwp.appfactory.tow.controllers.LocationController;
 //import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
 //import org.springframework.web.bind.annotation.CrossOrigin;
+//import org.springframework.web.bind.annotation.RequestBody;
 //import org.springframework.web.bind.annotation.RequestMapping;
 //import org.springframework.web.bind.annotation.RestController;
 //
@@ -32,14 +33,14 @@
 //
 ////    //todo: patch doesnt really align, but need in order to send body data
 ////    //todo: it needs to be 200 or something even if no drivers are returned
-////    @PreAuthorize("hasRole('PDUSER')")
-////    @PatchMapping("/driver-locations")
-////    public ResponseEntity<?> getLocations(@RequestBody DriversRequest driversRequest) {
-////        List<?> data = locationController.findByDistance(driversRequest.getLatitude(), driversRequest.getLongitude(), driversRequest.getRadius());
-////        if (data != null) {
-////            return ResponseEntity.ok(data);
-////        } else {
-////            return ResponseEntity.status(BAD_REQUEST).build();
-////        }
-////    }
+//    @PreAuthorize("hasRole('PDUSER')")
+//    @PatchMapping("/driver-locations")
+//    public ResponseEntity<?> getLocations(@RequestBody DriversRequest driversRequest) {
+//        List<?> data = locationController.findByDistance(driversRequest.getLatitude(), driversRequest.getLongitude(), driversRequest.getRadius());
+//        if (data != null) {
+//            return ResponseEntity.ok(data);
+//        } else {
+//            return ResponseEntity.status(BAD_REQUEST).build();
+//        }
+//    }
 //}
