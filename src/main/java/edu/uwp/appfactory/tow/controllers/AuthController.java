@@ -115,9 +115,9 @@ public class AuthController {
 
 
     /**
-     * Used for
-     * @param token
-     * @return
+     * Used by the verification route in the initial sign up email
+     * @param token the email users token
+     * @return returns a status code that will indicates success or failure
      */
     public HttpStatus verification(String token) {
         Optional<Users> usersOptional = usersRepository.findByVerifyToken(token);

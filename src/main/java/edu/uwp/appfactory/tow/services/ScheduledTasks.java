@@ -19,7 +19,8 @@ import java.time.Period;
 import java.util.List;
 
 /**
- *
+ * The chron services that will determine when a user needs to be reminded that they havent finished teh registration process.
+ * Also a custom garbage collection method that will redundantly garbage collect in case the built in method fails.
  */
 @Service
 public class ScheduledTasks {

@@ -16,7 +16,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-
+/**
+ * this class is responsible for storing and retrieving the files that come in through the file routes.
+ * It limtis the type of files and the size. The system automatically limits the number of files to one by
+ * replacing the current photo with the newest entry.
+ */
 @Controller
 public class FileController {
 
@@ -24,6 +28,10 @@ public class FileController {
     private final JwtUtils jwtUtils;
     private final FileMapper fileMapper;
 
+    /**
+     * Limits the type of file coming in this route to the list specified. otherwise pdfs, or any other file could
+     * be sent in a nd stored.
+     */
     private final List<String> allowedExtensions = new ArrayList<>() {
         {
             add("image/png");
@@ -32,6 +40,7 @@ public class FileController {
         }
     };
 
+
     @Autowired
     public FileController(FileRepository fileRepository, JwtUtils jwtUtils, FileMapper fileMapper) {
         this.fileRepository = fileRepository;
@@ -39,6 +48,14 @@ public class FileController {
         this.fileMapper = fileMapper;
     }
 
+    /**
+     * Method that stores the file into the postgres database in a binary array.  UUID is the primary key, its wrong so wrong
+     * please change to be less wrong in the future.
+     * @param file the multipart file being stored
+     * @param jwtToken the token of the sender, used to associate the file with a user in the table.
+     * @throws InvalidExtensionException if the filetype is not of the predetermined options
+     * @throws IOException there was an error storing the file.
+     */
     public void upload(MultipartFile file, String jwtToken) throws InvalidExtensionException, IOException {
         if (!allowedExtensions.contains(file.getContentType())) {
             throw new InvalidExtensionException("File Extension not allowed");
@@ -53,6 +70,11 @@ public class FileController {
     }
 
 
+    /**
+     * retrieve the file based on the UUID of the jwt requesting
+     * @param jwtToken used to extract the UUID primary key
+     * @return returns the multipart file that contains the image
+     */
     public FileResponse get(String jwtToken) {
         String userUUID = jwtUtils.getUUIDFromJwtToken(jwtToken);
         Optional<File> file = fileRepository.findById(UUID.fromString(userUUID));
