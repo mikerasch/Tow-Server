@@ -33,7 +33,8 @@ public class PDUserRoutes {
     }
 
     /**
-     * GET
+     * GET method that returns user based off of the UUID from the JWT token. Currently only
+     *     accessible by tc users, for gets with all auth options look at userroutes.
      */
     @GetMapping("")
     @PreAuthorize("hasRole('PDUSER')")
@@ -49,7 +50,8 @@ public class PDUserRoutes {
 
 
     /**
-     * POST
+     * POST method that uses the users jwt for the admin preauth and the pdUserRequest object that contains
+     * the information of a user.
      */
     @PostMapping("")
     @PreAuthorize("hasRole('PDADMIN')")
