@@ -55,10 +55,10 @@ public class MessageController {
 
     @MessageMapping("/greetings")
     @SendToUser("/queue/greetings")
-    public String reply( String message,
+    public String reply(@Payload String message,
                         Principal user) {
         System.out.println(message);
-        System.out.println(user + "kgfiygjkhfyglkiu");
+        System.out.println(user );
         return user.toString();
     }
 

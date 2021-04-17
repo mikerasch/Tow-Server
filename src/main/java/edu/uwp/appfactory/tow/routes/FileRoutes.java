@@ -12,6 +12,9 @@ import java.io.IOException;
 
 import static org.springframework.http.HttpStatus.*;
 
+/**
+ * This class contains routes that can take in and then send back file information when requested.
+ */
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/images")
@@ -23,6 +26,16 @@ public class FileRoutes {
         this.fileController = fileController;
     }
 
+
+    /**
+     *      * Takes in the users jwt token and a multipart file. The multipart file contains the image or file itself
+     *      * and various metadata regarding the image(you'll notice postgres knows what type of file is being stored).
+     *      * The token allows us to extract the users UUID which we use as a primary key and the photos own UUID. This should
+     *      * be changed to something less.... wrong if possible.
+     * @param jwtToken used to extract UUID for user association
+     * @param file multipart file that contains data and metadata
+     * @return a success or failure method
+     */
     @PostMapping("")
     public ResponseEntity<File> upload(@RequestHeader("Authorization") final String jwtToken,
                                        @RequestParam("file") MultipartFile file) {
@@ -39,6 +52,11 @@ public class FileRoutes {
 
     }
 
+    /**
+     * Get route that returns the photo based off of the UUID of the requester.
+     * @param jwtToken used to find the photo using the UUID
+     * @return the photo itself.
+     */
     @GetMapping("")
     public ResponseEntity<?> get(@RequestHeader("Authorization") final String jwtToken) {
         return ResponseEntity.ok(fileController.get(jwtToken));

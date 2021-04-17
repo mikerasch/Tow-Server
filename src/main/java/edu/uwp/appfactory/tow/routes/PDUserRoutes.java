@@ -14,6 +14,9 @@ import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
+/**
+ * this class is used by pd admins to register and maintain PD user accounts.
+ */
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/pdusers")

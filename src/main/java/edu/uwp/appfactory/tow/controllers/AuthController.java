@@ -113,6 +113,12 @@ public class AuthController {
         }
     }
 
+
+    /**
+     * Used for
+     * @param token
+     * @return
+     */
     public HttpStatus verification(String token) {
         Optional<Users> usersOptional = usersRepository.findByVerifyToken(token);
         if (usersOptional.isPresent()) {
