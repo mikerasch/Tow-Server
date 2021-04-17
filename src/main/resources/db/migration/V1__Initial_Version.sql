@@ -1,4 +1,10 @@
-CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+/*
+ Creates user tables that will be used to create later role tables
+ that will inherit these attributes. if its not happy make sure that youve connected the
+ files to a datasource. This may not be done even if the config and flyaway are as they should be.
+ */
+
+ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 CREATE TABLE public.users
 (

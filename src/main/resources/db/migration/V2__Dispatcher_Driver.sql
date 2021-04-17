@@ -1,3 +1,7 @@
+/*
+ Creates each subordinate table inheriting off of the main users table
+ */
+
 create table public.pd_admin
 (
     city             character varying(100),
