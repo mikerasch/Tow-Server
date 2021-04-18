@@ -55,7 +55,7 @@ public class LocationController {
     /**
      * used by the police officer users to return a list of tcusers that are both within range and currently available to tow.
      * @param latitude the latitude of the accident site
-     * @param longitude the longitude of the acident site
+     * @param longitude the longitude of the accident site
      * @param radius the radius of the search set by the pduser
      * @return returns a list of the tc users.
      */
