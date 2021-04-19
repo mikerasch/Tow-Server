@@ -9,4 +9,7 @@ public class TCUserRequest {
     String email;
     String password;
     String phone;
+    float latitude;
+    float longitude;
+    int radius;
 }

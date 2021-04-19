@@ -15,7 +15,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 /**
- *
+ * The async email class is responsible for sending the initial verification email and the password reset emails.
  */
 @Service
 public class AsyncEmail {
@@ -34,6 +34,11 @@ public class AsyncEmail {
         this.failedEmailRepository = failedEmailRepository;
     }
 
+    /**
+     * The sendEmailAsync method generates an email using the user info and the current dns config info
+     * that will be used to generate the bottom the user receive in the email to verify.
+     * @param user the user that is attempting to sign up for the tow service
+     */
     @Async
     public void sendEmailAsync(Users user) {
         try {
@@ -64,6 +69,12 @@ public class AsyncEmail {
         }
     }
 
+    /**
+     * Nearly identical to the sendemailasync method above but needs the users jwt token to
+     * know which account to begin the reset process with.
+     * @param user
+     * @param token
+     */
     @Async
     public void sendResetEmailAsync(Users user, int token) {
         try {

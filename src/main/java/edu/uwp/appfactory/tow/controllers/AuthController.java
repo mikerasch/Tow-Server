@@ -68,7 +68,7 @@ public class AuthController {
         Optional<Users> usersOptional = usersRepository.findByEmail(loginRequest.getEmail());
 
         //todo: when not testing, uncomment code
-        if (userDetails.getRole().equals(loginRequest.getPlatform())) {
+        if (userDetails.getRole().equals(loginRequest.getPlatform())) { // this line checks that the user attempting to log in is on the correct client app
             if (usersOptional.isPresent()) {
                 Users user = usersOptional.get();
                 return user.getVerEnabled() ?
@@ -113,6 +113,12 @@ public class AuthController {
         }
     }
 
+
+    /**
+     * Used by the verification route in the initial sign up email
+     * @param token the email users token
+     * @return returns a status code that will indicates success or failure
+     */
     public HttpStatus verification(String token) {
         Optional<Users> usersOptional = usersRepository.findByVerifyToken(token);
         if (usersOptional.isPresent()) {

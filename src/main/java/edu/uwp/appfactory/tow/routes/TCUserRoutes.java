@@ -14,6 +14,9 @@ import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
+/**
+ * this class is used by tc admins to register and maintain tc user accounts.
+ */
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/tcusers")
@@ -30,7 +33,8 @@ public class TCUserRoutes {
     }
 
     /**
-     * GET
+     * GET method that returns user based off of the UUID from the JWT token. Currently only
+     * accessible by tc users, for gets with all auth options look at userroutes.
      */
     @GetMapping("")
     @PreAuthorize("hasRole('TCUSER')")
@@ -61,7 +65,8 @@ public class TCUserRoutes {
 
 
     /**
-     * POST
+     * POST method that uses the users jwt for the admin preauth and the pdUserRequest object that contains
+     * the information of a user.
      */
     @PreAuthorize("hasRole('TCADMIN')")
     @PostMapping("")

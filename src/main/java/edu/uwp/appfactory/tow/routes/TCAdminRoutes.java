@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
-
+/**
+ * this class is responsible for registering and retrieving PD admin information.
+ */
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/tcadmins")
@@ -29,7 +31,9 @@ public class TCAdminRoutes {
     }
 
     /**
-     * GET
+     * This route retrieves information about a requested tow truck admin
+     * @param jwtToken the PDAdmins token so we can locate using the UUID
+     * @return returns an object that contains only the necessary information about the admin.
      */
     @GetMapping("")
     @PreAuthorize("hasRole('TCADMIN')")
@@ -44,7 +48,8 @@ public class TCAdminRoutes {
     }
 
     /**
-     * POST
+     * Registers a new tc admin in the system. Will need to be safeguarded in the future somehow. perhaps a godfather admin for
+     * both other types of admins.
      */
     @PostMapping("")
     public ResponseEntity<?> register(@RequestBody TCAdminRequest tcAdminRequest) {
