@@ -6,6 +6,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Driver;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,6 +17,10 @@ import java.util.UUID;
 public interface TCUserRepository extends CrudRepository<TCUser, UUID> {
     @Query(value = "select * from tc_user where admin_uuid = :uuid")
     List<TCUser> findAllByAdminUUID(@Param("uuid") UUID adminUUID);
+
+    @Query(value = "select * from tc_user as d where d.active = true AND (SELECT calculate_distance(:latitude, :longitude, d.latitude, d.longitude)) <= :radius")
+    List<TCUser> findByDistance(@Param("latitude") float latitude, @Param("longitude") float longitude, @Param("radius") int radius);
+
 }
 
 
