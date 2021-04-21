@@ -4,32 +4,32 @@
 *** or simply open an issue with the tag "enhancement".
 *** Thanks again!
 -->
-# Spring Boot Application Template/Starter-Project 
-<div align="center">
+
+[comment]: <> (# Highway Emergency Location Platform )
+<div align="center" spacing="5">
 <a href="https://imgur.com/o56PeaZ"><img src="https://i.imgur.com/o56PeaZ.png" title="source: imgur.com" /></a>
-
-
+</div>
+<div align="center">
+Highway Emergency Location Platform
 
 </div>
+
 
 <div align="center">
 
-[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen?logo=github)](CODE_OF_CONDUCT.md) [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Checkout+this+recipe+for+bootstrapping+a+%40springboot+based+monolithic+web+application&url=https://github.com/Spring-Boot-Framework/Spring-Boot-Application-Template&hashtags=SpringBoot) [![Twitter Follow](https://img.shields.io/twitter/follow/anantharajuc?label=follow%20me&style=social)](https://twitter.com/anantharajuc)
-</div>
+<br>
 
 <div align="center">
-  <sub>Built with ❤︎ by <a href="https://twitter.com/anantharajuc">Anantha Raju C</a> and <a href="https://github.com/Spring-Boot-Framework/Spring-Boot-Application-Template/graphs/contributors">contributors</a>
+  <sub>Built with ❤︎ by <a href="https://github.com/kayleqb">Quincy Kayle</a> and <a href="https://github.com/MattRank93">Matthew Rank</a>
 </div>
 
-</br>
+
 
 <p align="center">
-	<a href="https://github.com/Spring-Boot-Framework/Spring-Boot-Application-Template/blob/master/README.md#spring-boot-application-templatestarter-project-"><strong>Explore the docs »</strong></a>
+	<a href="https://documenter.getpostman.com/view/13688383/TVmLCyby#61200d8c-9d42-4cb3-9dc7-b96fa7dca8c2"><strong>Explore the docs »</strong></a>
 	<br />
 	<br />
-	<a href="https://github.com/Spring-Boot-Framework/Spring-Boot-Application-Template/issues">Report Bug</a>
-	·
-	<a href="https://github.com/Spring-Boot-Framework/Spring-Boot-Application-Template/issues">Request Feature</a>
+
 </p>
 
 <!-- PROJECT SHIELDS -->
@@ -38,20 +38,7 @@
 *** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
 -->
 
-|     Service     | Badge | Badge | Badge | Badge | Badge |
-|-----------------|-------|-------|-------|-------|-------|
-|  **GitHub**     |[![GitHub last commit](https://img.shields.io/github/last-commit/anantharajuc/Spring-Boot-Application-Template)](https://github.com/Spring-Boot-Framework/Spring-Boot-Application-Template/commits/master)|[![GitHub pull requests](https://img.shields.io/github/issues-pr-raw/Spring-Boot-Framework/Spring-Boot-Application-Template)](https://github.com/Spring-Boot-Framework/Spring-Boot-Application-Template/pulls)|[![GitHub issues](https://img.shields.io/github/issues/Spring-Boot-Framework/Spring-Boot-Application-Template)](https://github.com/Spring-Boot-Framework/Spring-Boot-Application-Template/issues)|[![GitHub forks](https://img.shields.io/github/forks/Spring-Boot-Framework/Spring-Boot-Application-Template)](https://github.com/Spring-Boot-Framework/Spring-Boot-Application-Template/network)|[![GitHub stars](https://img.shields.io/github/stars/Spring-Boot-Framework/Spring-Boot-Application-Template)](https://github.com/Spring-Boot-Framework/Spring-Boot-Application-Template/stargazers)|
-|  **GitHub**     |![GitHub repo size](https://img.shields.io/github/repo-size/Spring-Boot-Framework/Spring-Boot-Application-Template)|![GitHub top language](https://img.shields.io/github/languages/top/Spring-Boot-Framework/Spring-Boot-Application-Template.svg)|![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/Spring-Boot-Framework/Spring-Boot-Application-Template)|![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/Spring-Boot-Framework/Spring-Boot-Application-Template.svg)|![GitHub language count](https://img.shields.io/github/languages/count/Spring-Boot-Framework/Spring-Boot-Application-Template)|
-|**Build/Quality**|[![Spring-Boot-Framework](https://circleci.com/gh/Spring-Boot-Framework/Spring-Boot-Application-Template.svg?style=svg)](https://circleci.com/gh/Spring-Boot-Framework/Spring-Boot-Application-Template)|[![BCH compliance](https://bettercodehub.com/edge/badge/Spring-Boot-Framework/Spring-Boot-Application-Template?branch=master)](https://bettercodehub.com/)|[![Codacy Badge](https://app.codacy.com/project/badge/Grade/4bc5385252064f0e908f445b1eba184b)](https://www.codacy.com/gh/Spring-Boot-Framework/Spring-Boot-Application-Template?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Spring-Boot-Framework/Spring-Boot-Application-Template&amp;utm_campaign=Badge_Grade)|[![codecov](https://codecov.io/gh/Spring-Boot-Framework/Spring-Boot-Application-Template/branch/master/graph/badge.svg)](https://codecov.io/gh/Spring-Boot-Framework/Spring-Boot-Application-Template)|[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Spring-Boot-Framework_Spring-Boot-Application-Template&metric=alert_status)](https://sonarcloud.io/dashboard?id=Spring-Boot-Framework_Spring-Boot-Application-Template)|
-|  **Others**     |[![Open Source Helpers](https://www.codetriage.com/spring-boot-framework/spring-boot-application-template/badges/users.svg)](https://www.codetriage.com/spring-boot-framework/spring-boot-application-template)|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/485bb945b088c6fd471e)|[![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/Spring-Boot-Framework/Spring-Boot-Application-Template)|[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FSpring-Boot-Framework%2FSpring-Boot-Application-Template.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FSpring-Boot-Framework%2FSpring-Boot-Application-Template?ref=badge_shield)|[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](code_of_conduct.md)|
-|    **Tech**     |![License](https://img.shields.io/badge/license-MIT-blue.svg)|![Material](https://img.shields.io/badge/Material%20Design-UI-orange.svg)|![Bootstrap](https://img.shields.io/badge/Bootstrap-v4.0.0-yellowgreen.svg)|![Java](https://img.shields.io/badge/Java-v1.8-orange.svg)|[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/Spring-Boot-Framework/Spring-Boot-Application-Template.svg)](http://isitmaintained.com/project/Spring-Boot-Framework/Spring-Boot-Application-Template "Average time to resolve an issue")|
-|    **lgtm**     |[![lgtm-languages](https://badgen.net/lgtm/langs/g/Spring-Boot-Framework/Spring-Boot-Application-Template)](https://lgtm.com/projects/g/Spring-Boot-Framework/Spring-Boot-Application-Template?mode=list)|[![lgtm-alerts](https://badgen.net/lgtm/alerts/g/Spring-Boot-Framework/Spring-Boot-Application-Template)](https://lgtm.com/projects/g/Spring-Boot-Framework/Spring-Boot-Application-Template?mode=list)|[![lgtm-lines](https://badgen.net/lgtm/lines/g/Spring-Boot-Framework/Spring-Boot-Application-Template)](https://lgtm.com/projects/g/Spring-Boot-Framework/Spring-Boot-Application-Template?mode=list)|[![lgtm-lines-java](https://badgen.net/lgtm/lines/g/Spring-Boot-Framework/Spring-Boot-Application-Template/java)](https://lgtm.com/projects/g/Spring-Boot-Framework/Spring-Boot-Application-Template?mode=list)|[![lgtm-grade](https://badgen.net/lgtm/grade/g/Spring-Boot-Framework/Spring-Boot-Application-Template)](https://lgtm.com/projects/g/Spring-Boot-Framework/Spring-Boot-Application-Template?mode=list)|
-| **Docker**      |![Docker](https://img.shields.io/badge/Docker-v19-yellowgreen.svg)|[![](https://images.microbadger.com/badges/image/anantha/spring-boot-application-template.svg)](https://microbadger.com/images/anantha/spring-boot-application-template)|[![](https://images.microbadger.com/badges/version/anantha/spring-boot-application-template.svg)](https://microbadger.com/images/anantha/spring-boot-application-template)|![Docker Image Size (latest by date)](https://img.shields.io/docker/image-size/anantha/spring-boot-application-template)|[![](https://images.microbadger.com/badges/commit/anantha/spring-boot-application-template.svg)](https://microbadger.com/images/anantha/spring-boot-application-template)|
-| **Security**    |[![DepShield Badge](https://depshield.sonatype.org/badges/Spring-Boot-Framework/Spring-Boot-Application-Template/depshield.svg)](https://github.com/Spring-Boot-Framework/Spring-Boot-Application-Template/issues)|[![Known Vulnerabilities](https://snyk.io/test/github/Spring-Boot-Framework/Spring-Boot-Application-Template/badge.svg)](https://snyk.io/test/github/Spring-Boot-Framework/Spring-Boot-Application-Template)|
-
-
-
-## Important Note: This project's new milestone is to release version 1, so stay tuned.
+## Important Note: This app in not yet complete, expect MVP soon
 
 <!-- TABLE OF CONTENTS -->
 ## Table of Contents
@@ -131,22 +118,16 @@
    </ul>
 </details>
 
-<!-- APPLICATION SCREENSHOTS -->
-## Application screenshots
 
-[![Home](documents/images/app-ui/home.PNG)](documents/images/app-ui/home.PNG)
-
-**More [Screenshots](documents/SCREENSHOTS.md)**
 
 ## Technology stack & other Open-source libraries
-
-### Data
+### Database
 
 <details open="open">
    <ul>
       <li><a href="https://flywaydb.org/">Flyway</a> - Version control for database</li>
-      <li><a href="https://www.mysql.com/">MySQL</a> - Open-Source Relational Database Management System</li>
-      <li><a href="https://www.h2database.com/html/main.html">H2 Database Engine</a> - Java SQL database. Embedded and server modes; in-memory databases</li>
+      <li><a href="https://www.postgresql.org//">postgresql</a> - Open-Source Relational Database Management System</li>
+      <li><a href="https://docs.oracle.com/javase/tutorial/jdbc/basics/index.html">JDBC</a> - Java SQL database. Embedded and server modes; in-memory databases</li>
    </ul>
 </details>
 
