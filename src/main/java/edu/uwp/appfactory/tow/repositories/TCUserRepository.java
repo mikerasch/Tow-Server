@@ -19,6 +19,9 @@ public interface TCUserRepository extends CrudRepository<TCUser, UUID> {
     List<TCUser> findByDistance(@Param("latitude") float latitude, @Param("longitude") float longitude, @Param("radius") int radius);
 
 
+    @Query(value = "select * from tc_user where admin_uuid = :uuid")
+    List<TCUser> findAllByAdminUUID(@Param("uuid") UUID adminUUID);
+
 }
 
 
