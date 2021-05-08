@@ -19,13 +19,13 @@ public interface TCAdminRepository extends CrudRepository<TCAdmin, UUID> {
 
 }
 
-/**
- * A dispatcher repo that may be needed in the future but currently does nothing.
- */
-@Repository
-interface DispatcherRepository extends CrudRepository<Driver, String> {
-
-}
+///**
+// * A dispatcher repo that may be needed in the future but currently does nothing.
+// */
+//@Repository
+//interface DispatcherRepository extends CrudRepository<Driver, String> {
+//
+//}
 
 
 
