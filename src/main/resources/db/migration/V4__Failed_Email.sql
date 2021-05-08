@@ -1,3 +1,7 @@
+/*
+ creates a table for the un verified emails that are enter in order
+ to perform chron jobs and eventually time the accounts out(delete them).
+ */
 create table failed_email
 (
     uuid         uuid        NOT NULL,

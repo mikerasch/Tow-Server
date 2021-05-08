@@ -1,3 +1,7 @@
+/*
+ SQL function that will return a distance between two UTM points
+ */
+
 -- lat1 = officer location
 -- lat2 = driver location
 CREATE OR REPLACE FUNCTION calculate_distance(lat1 float, lon1 float, lat2 float, lon2 float)

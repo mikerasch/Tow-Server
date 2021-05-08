@@ -6,10 +6,13 @@ import edu.uwp.appfactory.tow.repositories.TCUserRepository;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
 import org.springframework.stereotype.Controller;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-
+/**
+ * This class is used by both TC and PD user in  order to store and the find by geodata.
+ */
 @Controller
 public class LocationController {
 
@@ -23,6 +26,14 @@ public class LocationController {
         this.pdUserRepository = pdUserRepository;
     }
 
+    /**
+     * Method used by the tow truck users in order to continuously set their location.
+     * @param latitude the latitude of the tcuser
+     * @param longitude the longitude of the tcuser
+     * @param active a boolean that we need to set true when they are available for a tow and false when they are not.
+     * @param userUUID the uuid od the user
+     * @return
+     */
     public boolean setLocation(float latitude, float longitude, boolean active, String userUUID) {
         Optional<TCUser> tcUserOptional = tcUserRepository.findById(UUID.fromString(userUUID));
 
@@ -41,12 +52,19 @@ public class LocationController {
         }
     }
 
-//    public List<PDUser> findByDistance(float latitude, float longitude, int radius) {
-//        List<PDUser> drivers = pdUserRepository.findByDistance(latitude, longitude, radius);
-//        if (drivers.size() != 0) {
-//            return drivers;
-//        } else {
-//            return null;
-//        }
-//    }
+    /**
+     * used by the police officer users to return a list of tcusers that are both within range and currently available to tow.
+     * @param latitude the latitude of the accident site
+     * @param longitude the longitude of the accident site
+     * @param radius the radius of the search set by the pduser
+     * @return returns a list of the tc users.
+     */
+    public List<TCUser> findByDistance(float latitude, float longitude, int radius) {
+        List<TCUser> drivers = tcUserRepository.findByDistance(latitude, longitude, radius);
+        if (drivers.size() != 0) {
+            return drivers;
+        } else {
+            return null;
+        }
+    }
 }

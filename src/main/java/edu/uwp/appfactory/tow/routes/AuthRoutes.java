@@ -1,5 +1,5 @@
-package edu.uwp.appfactory.tow.routes;
 
+package edu.uwp.appfactory.tow.routes;
 import edu.uwp.appfactory.tow.controllers.AuthController;
 import edu.uwp.appfactory.tow.requestObjects.AdminRequest;
 import edu.uwp.appfactory.tow.requestObjects.LoginRequest;
@@ -10,6 +10,10 @@ import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.http.HttpStatus.*;
 
+/**
+ * This class contains the Routes responsible for authorization. All are relatively self explanatory except verification.
+ * verification is the route that is hooked to a button the user receives by email in order to activate their account the first time..
+ */
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/auth")
@@ -23,6 +27,7 @@ public class AuthRoutes {
         this.jwtUtils = jwtUtils;
     }
 
+
     @PostMapping("/refresh")
     public ResponseEntity<String> refreshToken(@RequestHeader("Authorization") final String jwtToken) {
         String token = authController.refreshToken(jwtToken);
@@ -32,6 +37,7 @@ public class AuthRoutes {
             return ResponseEntity.status(BAD_REQUEST).build();
         }
     }
+
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
@@ -45,6 +51,9 @@ public class AuthRoutes {
                 : ResponseEntity.status(BAD_REQUEST).body("Error");
     }
 
+    /**
+     * uses the token sent to the users email in order to verify they have access to the desired email address.
+     */
     @GetMapping("/verification")
     public ResponseEntity<?> verification(@RequestParam("token") final String token) {
         HttpStatus status = authController.verification(token);
@@ -58,11 +67,5 @@ public class AuthRoutes {
 }
 
 
-// TODO: The stuff below
-// sign up, schedule an appointment by checking a calender and finding an open slot (30m/hour)
-// up to 5 people can be schedule if 5 people have that time slot open
 
-// worked on, no design, auth done, but no pieces come together
-// when applicants arrive, they want to track people by 'checking them in'
-// to generate metrics
 

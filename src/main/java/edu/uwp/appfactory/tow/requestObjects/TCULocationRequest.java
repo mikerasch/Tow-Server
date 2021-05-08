@@ -7,4 +7,5 @@ public class TCULocationRequest {
     float latitude;
     float longitude;
     boolean active;
+    String jwtToken;
 }

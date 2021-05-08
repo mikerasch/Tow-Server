@@ -1,3 +1,7 @@
+/*
+ Creates a very basic file storage table that will overwrite the previous image when a new one is entered.
+ */
+
 create table public.file_db
 (
     id   uuid NOT NULL,

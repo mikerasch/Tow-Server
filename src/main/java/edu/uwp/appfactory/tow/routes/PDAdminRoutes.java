@@ -13,6 +13,9 @@ import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
+/**
+ * this class is responsible for registering and retrieving PD admin information.
+ */
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/pdadmins")
@@ -29,7 +32,9 @@ public class PDAdminRoutes {
     }
 
     /**
-     * GET
+     * This route retrieves information about a requested police department admin
+     * @param jwtToken the PDAdmins token so we can locate using the UUID
+     * @return returns an object that contains only the necessary information about the admin.
      */
     @GetMapping("")
     @PreAuthorize("hasRole('PDADMIN')")
@@ -45,7 +50,8 @@ public class PDAdminRoutes {
 
 
     /**
-     * POST
+     * Registers a new admin in the system. Will need to be safeguarded in the future somehow. perhaps a godfather admin for
+     * both other types of admins.
      */
     @PostMapping("")
     public ResponseEntity<?> register(@RequestBody PDAdminRequest pdAdminRequest) {
@@ -53,12 +59,4 @@ public class PDAdminRoutes {
     }
 
 
-    /**
-     * PATCH
-     */
-
-
-    /**
-     * DELETE
-     */
 }
