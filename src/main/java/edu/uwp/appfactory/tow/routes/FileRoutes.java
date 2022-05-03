@@ -21,6 +21,7 @@ import static org.springframework.http.HttpStatus.*;
 @RequestMapping("/images")
 public class FileRoutes {
 
+
     private final FileController fileController;
 
     public FileRoutes(FileController fileController) {
@@ -40,6 +41,11 @@ public class FileRoutes {
     @PostMapping("")
     public ResponseEntity<File> upload(@RequestHeader("Authorization") final String jwtToken,
                                        @RequestParam("file") MultipartFile file) {
+        if(file.isEmpty()){
+            return ResponseEntity.status(BAD_REQUEST).build();
+
+        }
+
         try {
             fileController.upload(file, jwtToken);
             return ResponseEntity
@@ -53,27 +59,27 @@ public class FileRoutes {
 
     }
 
-    /**
-     * Get route that returns the photo based off of the UUID of the requester.
-     * @param jwtToken used to find the photo using the UUID
-     * @return the photo itself.
-     */
-    @GetMapping("")
-    public ResponseEntity<?> get(@RequestHeader("Authorization") final String jwtToken) {
-        return ResponseEntity.ok(fileController.get(jwtToken));
-    }
-
-
-    /**
-     * At one point sent in the uuid from mobile as well. may change back
-     * @param jwtToken
-     * @param UUID
-     * @return
-     */
-    @GetMapping("/tca")
-    public ResponseEntity<?> get(@RequestHeader("Authorization") final String jwtToken,
-                                 @RequestHeader("UUID") final UUID UUID) {
-        return ResponseEntity.ok(fileController.get(jwtToken));
-    }
+//    /**
+//     * Get route that returns the photo based off of the UUID of the requester.
+//     * @param jwtToken used to find the photo using the UUID
+//     * @return the photo itself.
+//     */
+//    @GetMapping("")
+//    public ResponseEntity<?> get(@RequestHeader("Authorization") final String jwtToken) {
+//        return ResponseEntity.ok(fileController.get(jwtToken));
+//    }
+//
+//
+//    /**
+//     * At one point sent in the uuid from mobile as well. may change back
+//     * @param jwtToken
+//     * @param UUID
+//     * @return
+//     */
+//    @GetMapping("/tca")
+//    public ResponseEntity<?> get(@RequestHeader("Authorization") final String jwtToken,
+//                                 @RequestHeader("UUID") final UUID UUID) {
+//        return ResponseEntity.ok(fileController.get(jwtToken));
+//    }
 }
 

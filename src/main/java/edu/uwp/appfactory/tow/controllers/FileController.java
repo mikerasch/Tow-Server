@@ -1,10 +1,11 @@
 package edu.uwp.appfactory.tow.controllers;
 
-import edu.uwp.appfactory.tow.entities.File;
+//import edu.uwp.appfactory.tow.entities.File;
 import edu.uwp.appfactory.tow.exceptions.InvalidExtensionException;
 import edu.uwp.appfactory.tow.mappers.FileMapper;
 import edu.uwp.appfactory.tow.repositories.FileRepository;
 import edu.uwp.appfactory.tow.responseObjects.FileResponse;
+import edu.uwp.appfactory.tow.services.StorageService;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,10 +13,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -32,14 +35,25 @@ public class FileController {
     @Value("${upload.path}")
     private String uploadPath;
 
-//    @PostConstruct
-    public void init() {
-        try {
-            Files.createDirectories(Paths.get(uploadPath));
-        } catch (IOException e) {
-            throw new RuntimeException("Could not create upload folder!");
+    @PostConstruct
+    public void init(){
+        String base_path = uploadPath;
+        File pathAsFile = new File(base_path);
+
+        if (!Files.exists(Paths.get(base_path))) {
+            pathAsFile.mkdir();
         }
     }
+
+    public void init(String jwtToken){
+        String base_path = uploadPath;
+        File pathAsFile = new File(base_path);
+
+        if (!Files.exists(Paths.get(base_path))) {
+            pathAsFile.mkdir();
+        }
+    }
+
 
     private final FileRepository fileRepository;
     private final JwtUtils jwtUtils;
@@ -59,7 +73,7 @@ public class FileController {
 
 
     @Autowired
-    public FileController(FileRepository fileRepository, JwtUtils jwtUtils, FileMapper fileMapper) {
+    public FileController( FileRepository fileRepository, JwtUtils jwtUtils, FileMapper fileMapper) {
         this.fileRepository = fileRepository;
         this.jwtUtils = jwtUtils;
         this.fileMapper = fileMapper;
@@ -77,33 +91,39 @@ public class FileController {
 //        if (!allowedExtensions.contains(file.getContentType())) {
 //            throw new InvalidExtensionException("File Extension not allowed");
 //        }
+//        new File("./uploads/" + jwtToken + "/").mkdirs();
+
+
+
         try {
-            Path root = Paths.get(uploadPath);
-            if (!Files.exists(root)) {
-                init();
-            }
-            Files.copy(file.getInputStream(), root.resolve(file.getOriginalFilename()));
+            byte[] bytes = file.getBytes();
+            Path path = Paths.get(uploadPath + file.getOriginalFilename());
+            Files.write(path, bytes);
+
         } catch (Exception e) {
             throw new RuntimeException("Could not store the file. Error: " + e.getMessage());
         }
+
+
+
     }
 
 
-    /**
-     * retrieve the file based on the UUID of the jwt requesting
-     * @param jwtToken used to extract the UUID primary key
-     * @return returns the multipart file that contains the image
-     */
-    public FileResponse get(String jwtToken) {
-        String userUUID = jwtUtils.getUUIDFromJwtToken(jwtToken);
-        Optional<File> file = fileRepository.findById(UUID.fromString(userUUID));
-        return file.map(fileMapper::map).orElse(null);
-    }
-
-    public FileResponse get(String jwtToken, String uuid) {
-        String userUUID = jwtUtils.getUUIDFromJwtToken(jwtToken);
-        Optional<File> file = fileRepository.findById(UUID.fromString(userUUID));
-        return file.map(fileMapper::map).orElse(null);
-    }
+//    /**
+//     * retrieve the file based on the UUID of the jwt requesting
+//     * @param jwtToken used to extract the UUID primary key
+//     * @return returns the multipart file that contains the image
+//     */
+//    public FileResponse get(String jwtToken) {
+//        String userUUID = jwtUtils.getUUIDFromJwtToken(jwtToken);
+//        Optional<File> file = fileRepository.findById(UUID.fromString(userUUID));
+//        return file.map(fileMapper::map).orElse(null);
+//    }
+//
+//    public FileResponse get(String jwtToken, String uuid) {
+//        String userUUID = jwtUtils.getUUIDFromJwtToken(jwtToken);
+//        Optional<File> file = fileRepository.findById(UUID.fromString(userUUID));
+//        return file.map(fileMapper::map).orElse(null);
+//    }
 
 }
