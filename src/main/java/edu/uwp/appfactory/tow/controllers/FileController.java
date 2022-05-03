@@ -7,10 +7,15 @@ import edu.uwp.appfactory.tow.repositories.FileRepository;
 import edu.uwp.appfactory.tow.responseObjects.FileResponse;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +28,18 @@ import java.util.UUID;
  */
 @Controller
 public class FileController {
+
+    @Value("${upload.path}")
+    private String uploadPath;
+
+//    @PostConstruct
+    public void init() {
+        try {
+            Files.createDirectories(Paths.get(uploadPath));
+        } catch (IOException e) {
+            throw new RuntimeException("Could not create upload folder!");
+        }
+    }
 
     private final FileRepository fileRepository;
     private final JwtUtils jwtUtils;
@@ -57,16 +74,18 @@ public class FileController {
      * @throws IOException there was an error storing the file.
      */
     public void upload(MultipartFile file, String jwtToken) throws InvalidExtensionException, IOException {
-        if (!allowedExtensions.contains(file.getContentType())) {
-            throw new InvalidExtensionException("File Extension not allowed");
+//        if (!allowedExtensions.contains(file.getContentType())) {
+//            throw new InvalidExtensionException("File Extension not allowed");
+//        }
+        try {
+            Path root = Paths.get(uploadPath);
+            if (!Files.exists(root)) {
+                init();
+            }
+            Files.copy(file.getInputStream(), root.resolve(file.getOriginalFilename()));
+        } catch (Exception e) {
+            throw new RuntimeException("Could not store the file. Error: " + e.getMessage());
         }
-        String userUUID = jwtUtils.getUUIDFromJwtToken(jwtToken);
-        File fileDB = File.builder()
-                .id(UUID.fromString(userUUID))
-                .type(file.getContentType())
-                .data(file.getBytes())
-                .build();
-        fileRepository.save(fileDB);
     }
 
 
@@ -81,9 +100,9 @@ public class FileController {
         return file.map(fileMapper::map).orElse(null);
     }
 
-    public FileResponse get(String jwtToken, UUID uuid) {
+    public FileResponse get(String jwtToken, String uuid) {
         String userUUID = jwtUtils.getUUIDFromJwtToken(jwtToken);
-        Optional<File> file = fileRepository.findById(uuid);
+        Optional<File> file = fileRepository.findById(UUID.fromString(userUUID));
         return file.map(fileMapper::map).orElse(null);
     }
 

@@ -63,10 +63,17 @@ public class FileRoutes {
         return ResponseEntity.ok(fileController.get(jwtToken));
     }
 
+
+    /**
+     * At one point sent in the uuid from mobile as well. may change back
+     * @param jwtToken
+     * @param UUID
+     * @return
+     */
     @GetMapping("/tca")
     public ResponseEntity<?> get(@RequestHeader("Authorization") final String jwtToken,
                                  @RequestHeader("UUID") final UUID UUID) {
-        return ResponseEntity.ok(fileController.get(jwtToken, UUID));
+        return ResponseEntity.ok(fileController.get(jwtToken));
     }
 }
 
