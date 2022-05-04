@@ -22,7 +22,8 @@ build/
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
-
+/uploads/
+Dockerfile
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/

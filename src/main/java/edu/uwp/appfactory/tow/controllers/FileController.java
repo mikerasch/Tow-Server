@@ -92,12 +92,20 @@ public class FileController {
 //            throw new InvalidExtensionException("File Extension not allowed");
 //        }
 //        new File("./uploads/" + jwtToken + "/").mkdirs();
+        String userUUID = jwtUtils.getUUIDFromJwtToken(jwtToken);
 
+        String base_path = uploadPath;
+        File pathAsFile = new File(base_path + "/" + userUUID);
+
+        pathAsFile.mkdir();
+//        if (!Files.exists(Paths.get(pathAsFile))) {
+//            pathAsFile.mkdir();
+//        }
 
 
         try {
             byte[] bytes = file.getBytes();
-            Path path = Paths.get(uploadPath + file.getOriginalFilename());
+            Path path = Paths.get(uploadPath  + userUUID + "/" + file.getOriginalFilename());
             Files.write(path, bytes);
 
         } catch (Exception e) {
