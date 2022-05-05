@@ -4,11 +4,15 @@ package edu.uwp.appfactory.tow.routes;
 import edu.uwp.appfactory.tow.controllers.FileController;
 import edu.uwp.appfactory.tow.entities.File;
 import edu.uwp.appfactory.tow.exceptions.InvalidExtensionException;
+import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.*;
@@ -59,15 +63,18 @@ public class FileRoutes {
 
     }
 
-//    /**
-//     * Get route that returns the photo based off of the UUID of the requester.
-//     * @param jwtToken used to find the photo using the UUID
-//     * @return the photo itself.
-//     */
-//    @GetMapping("")
-//    public ResponseEntity<?> get(@RequestHeader("Authorization") final String jwtToken) {
-//        return ResponseEntity.ok(fileController.get(jwtToken));
-//    }
+    /**
+     * Get route that returns the photo based off of the UUID of the requester.
+     * @param jwtToken used to find the photo using the UUID
+     * @return the photo itself.
+     */
+    @GetMapping("")
+    public ResponseEntity<Optional<MultipartFile>> get(@RequestHeader("Authorization") final String jwtToken,
+                                        @RequestParam("file_name") String filename) throws FileNotFoundException {
+        return ResponseEntity.ok(fileController.get(jwtToken, filename));
+    }
+
+
 //
 //
 //    /**

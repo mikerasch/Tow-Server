@@ -4,25 +4,23 @@ package edu.uwp.appfactory.tow.controllers;
 import edu.uwp.appfactory.tow.exceptions.InvalidExtensionException;
 import edu.uwp.appfactory.tow.mappers.FileMapper;
 import edu.uwp.appfactory.tow.repositories.FileRepository;
-import edu.uwp.appfactory.tow.responseObjects.FileResponse;
-import edu.uwp.appfactory.tow.services.StorageService;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 /**
  * this class is responsible for storing and retrieving the files that come in through the file routes.
@@ -35,24 +33,7 @@ public class FileController {
     @Value("${upload.path}")
     private String uploadPath;
 
-    @PostConstruct
-    public void init(){
-        String base_path = uploadPath;
-        File pathAsFile = new File(base_path);
 
-        if (!Files.exists(Paths.get(base_path))) {
-            pathAsFile.mkdir();
-        }
-    }
-
-    public void init(String jwtToken){
-        String base_path = uploadPath;
-        File pathAsFile = new File(base_path);
-
-        if (!Files.exists(Paths.get(base_path))) {
-            pathAsFile.mkdir();
-        }
-    }
 
 
     private final FileRepository fileRepository;
@@ -91,7 +72,6 @@ public class FileController {
 //        if (!allowedExtensions.contains(file.getContentType())) {
 //            throw new InvalidExtensionException("File Extension not allowed");
 //        }
-//        new File("./uploads/" + jwtToken + "/").mkdirs();
         String userUUID = jwtUtils.getUUIDFromJwtToken(jwtToken);
 
         String base_path = uploadPath;
@@ -117,16 +97,27 @@ public class FileController {
     }
 
 
-//    /**
-//     * retrieve the file based on the UUID of the jwt requesting
-//     * @param jwtToken used to extract the UUID primary key
-//     * @return returns the multipart file that contains the image
-//     */
-//    public FileResponse get(String jwtToken) {
-//        String userUUID = jwtUtils.getUUIDFromJwtToken(jwtToken);
-//        Optional<File> file = fileRepository.findById(UUID.fromString(userUUID));
-//        return file.map(fileMapper::map).orElse(null);
-//    }
+    /**
+     * retrieve the file based on the UUID of the jwt requesting
+     * @param jwtToken used to extract the UUID primary key
+     * @return returns the multipart file that contains the image
+     */
+    public Optional<MultipartFile> get(String jwtToken, String filename) throws FileNotFoundException {
+        String userUUID = jwtUtils.getUUIDFromJwtToken(jwtToken);
+        String base_path = uploadPath;
+
+        try {
+            String pathAsFile = base_path + "/" + userUUID + "/" + filename;
+//            FileOutputStream out = new FileOutputStream(pathAsFile);
+//            File in = new File(pathAsFile);
+            byte[] bytes = Files.readAllBytes(Paths.get(pathAsFile));
+            Optional<MultipartFile> multipartFile = Optional.of(new MockMultipartFile(filename, bytes));
+            return multipartFile;
+        } catch (Exception e) {
+            throw new RuntimeException("Could not retrieve the file. Error: " + e.getMessage());
+        }
+
+    }
 //
 //    public FileResponse get(String jwtToken, String uuid) {
 //        String userUUID = jwtUtils.getUUIDFromJwtToken(jwtToken);
