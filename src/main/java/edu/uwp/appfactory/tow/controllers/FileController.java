@@ -7,7 +7,9 @@ import edu.uwp.appfactory.tow.repositories.FileRepository;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -78,9 +80,7 @@ public class FileController {
         File pathAsFile = new File(base_path + "/" + userUUID);
 
         pathAsFile.mkdir();
-//        if (!Files.exists(Paths.get(pathAsFile))) {
-//            pathAsFile.mkdir();
-//        }
+
 
 
         try {
@@ -102,17 +102,14 @@ public class FileController {
      * @param jwtToken used to extract the UUID primary key
      * @return returns the multipart file that contains the image
      */
-    public Optional<MultipartFile> get(String jwtToken, String filename) throws FileNotFoundException {
+    public byte[] get(String jwtToken, String filename) throws FileNotFoundException {
         String userUUID = jwtUtils.getUUIDFromJwtToken(jwtToken);
         String base_path = uploadPath;
 
         try {
             String pathAsFile = base_path + "/" + userUUID + "/" + filename;
-//            FileOutputStream out = new FileOutputStream(pathAsFile);
-//            File in = new File(pathAsFile);
-            byte[] bytes = Files.readAllBytes(Paths.get(pathAsFile));
-            Optional<MultipartFile> multipartFile = Optional.of(new MockMultipartFile(filename, bytes));
-            return multipartFile;
+            byte[] fileBytes = Files.readAllBytes(Paths.get(pathAsFile));
+            return fileBytes;
         } catch (Exception e) {
             throw new RuntimeException("Could not retrieve the file. Error: " + e.getMessage());
         }

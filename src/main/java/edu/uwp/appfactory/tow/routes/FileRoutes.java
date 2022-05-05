@@ -43,7 +43,7 @@ public class FileRoutes {
      * @return a success or failure method
      */
     @PostMapping("")
-    public ResponseEntity<File> upload(@RequestHeader("Authorization") final String jwtToken,
+    public ResponseEntity<?> upload(@RequestHeader("Authorization") final String jwtToken,
                                        @RequestParam("file") MultipartFile file) {
         if(file.isEmpty()){
             return ResponseEntity.status(BAD_REQUEST).build();
@@ -69,24 +69,10 @@ public class FileRoutes {
      * @return the photo itself.
      */
     @GetMapping("")
-    public ResponseEntity<Optional<MultipartFile>> get(@RequestHeader("Authorization") final String jwtToken,
+    public ResponseEntity<byte[]> get(@RequestHeader("Authorization") final String jwtToken,
                                         @RequestParam("file_name") String filename) throws FileNotFoundException {
         return ResponseEntity.ok(fileController.get(jwtToken, filename));
     }
 
-
-//
-//
-//    /**
-//     * At one point sent in the uuid from mobile as well. may change back
-//     * @param jwtToken
-//     * @param UUID
-//     * @return
-//     */
-//    @GetMapping("/tca")
-//    public ResponseEntity<?> get(@RequestHeader("Authorization") final String jwtToken,
-//                                 @RequestHeader("UUID") final UUID UUID) {
-//        return ResponseEntity.ok(fileController.get(jwtToken));
-//    }
 }
 
