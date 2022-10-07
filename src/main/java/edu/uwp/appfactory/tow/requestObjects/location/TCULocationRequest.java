@@ -1,4 +1,4 @@
-package edu.uwp.appfactory.tow.requestObjects;
+package edu.uwp.appfactory.tow.requestObjects.location;
 
 import lombok.Value;
 

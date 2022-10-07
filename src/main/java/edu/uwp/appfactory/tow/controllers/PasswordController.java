@@ -1,83 +1,62 @@
 package edu.uwp.appfactory.tow.controllers;
 
-import edu.uwp.appfactory.tow.entities.Users;
 import edu.uwp.appfactory.tow.requestObjects.password.ForgotPassRequest;
-import edu.uwp.appfactory.tow.services.AsyncEmail;
-import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Controller;
+import edu.uwp.appfactory.tow.requestObjects.password.ResetPassRequest;
+import edu.uwp.appfactory.tow.requestObjects.password.VerifyPassRequest;
+import edu.uwp.appfactory.tow.services.roles.PasswordService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.time.Period;
-import java.util.Optional;
-import java.util.Random;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 
-
-@Controller
+/**
+ * Password reset routes
+ */
+@CrossOrigin(origins = "*", maxAge = 3600)
+@RestController
+@RequestMapping("/password")
 public class PasswordController {
 
-    private final UsersRepository usersRepository;
-    private final PasswordEncoder encoder;
-    private final AsyncEmail sender;
+    private final PasswordService passwordService;
 
-    @Autowired
-    public PasswordController(UsersRepository usersRepository, PasswordEncoder encoder, AsyncEmail sender) {
-        this.usersRepository = usersRepository;
-        this.encoder = encoder;
-        this.sender = sender;
+    public PasswordController(PasswordService passwordService) {
+        this.passwordService = passwordService;
     }
 
-    public boolean forgot(ForgotPassRequest forgotPassRequest) {
-        System.out.println(forgotPassRequest.getEmail());
-        Optional<Users> usersOptional = usersRepository.findByUsername(forgotPassRequest.getEmail());
-        if (usersOptional.isPresent()) {
-            Users user = usersOptional.get();
-
-            // generate random 6 digit token
-            Random rnd = new Random();
-            int number = rnd.nextInt(999999);
-            String tokenString = String.format("%06d", number);
-            int token = Integer.parseInt(tokenString);
-
-            user.setResetToken(token);
-            user.setResetDate(String.valueOf(LocalDate.now()));
-            usersRepository.save(user);
-            sender.sendResetEmailAsync(user, token);
-            return true;
-        } else {
-            return false;
-        }
+    /**
+     * launches an email used to start the password reset process
+     * @param forgotPassRequest
+     * @return
+     */
+    @PatchMapping("/forgot")
+    public ResponseEntity<?> forgot(@RequestBody ForgotPassRequest forgotPassRequest) {
+        return passwordService.forgot(forgotPassRequest)
+                ? ResponseEntity.status(NO_CONTENT).build()
+                : ResponseEntity.status(BAD_REQUEST).build();
     }
 
-    public boolean verify(String email, int token) {
-        Optional<Users> usersOptional = usersRepository.findByUsername(email);
-        if (usersOptional.isPresent()) {
-            Users user = usersOptional.get();
-            LocalDate userResetDate = LocalDate.parse(user.getResetDate());
-            Period periodBetween = Period.between(userResetDate, LocalDate.now());
-            return periodBetween.getDays() < 8 && user.getResetToken() == token;
-        } else {
-            return false;
-        }
+    /**
+     * Route that is hit by the button in the email users receive upon requesting a reset
+     * @param verifyRequest contains the email and token of the requester
+     * @return returns the response code to let the user know if it worked or not
+     */
+    @PatchMapping("/verify")
+    public ResponseEntity<?> verify(@RequestBody VerifyPassRequest verifyRequest) {
+        return passwordService.verify(verifyRequest.getEmail(), verifyRequest.getToken())
+                ? ResponseEntity.status(NO_CONTENT).build()
+                : ResponseEntity.status(400).body("Token expired or no associated user");
     }
 
-    public boolean reset(String email, int token, String password) {
-        Optional<Users> usersOptional = usersRepository.findByUsername(email);
-        if (usersOptional.isPresent()) {
-            Users user = usersOptional.get();
-            LocalDate userResetDate = LocalDate.parse(user.getResetDate());
-            Period periodBetween = Period.between(userResetDate, LocalDate.now());
-
-            if (periodBetween.getDays() < 8 && user.getResetToken() == token) {
-                user.setPassword(encoder.encode(password));
-                usersRepository.save(user);
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
+    /**
+     * Route used to update the password.
+     * @param resetRequest the email token and new password to be set.
+     * @return success or failure code
+     */
+    @PatchMapping("/reset")
+    public ResponseEntity<?> reset(@RequestBody ResetPassRequest resetRequest) {
+        return passwordService.reset(resetRequest.getEmail(), resetRequest.getToken(), resetRequest.getPassword())
+                ? ResponseEntity.status(NO_CONTENT).build()
+                : ResponseEntity.status(BAD_REQUEST).build();
     }
 }

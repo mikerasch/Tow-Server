@@ -1,7 +1,7 @@
 package edu.uwp.appfactory.tow.stomp.controllers;
-import edu.uwp.appfactory.tow.controllers.LocationController;
-import edu.uwp.appfactory.tow.requestObjects.TCULocationRequest;
-import edu.uwp.appfactory.tow.requestObjects.TCUserRequest;
+import edu.uwp.appfactory.tow.services.locator.LocationService;
+import edu.uwp.appfactory.tow.requestObjects.location.TCULocationRequest;
+import edu.uwp.appfactory.tow.requestObjects.rolerequest.TCUserRequest;
 import edu.uwp.appfactory.tow.stomp.models.MessageRequest;
 import edu.uwp.appfactory.tow.stomp.models.MessageResponse;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
@@ -24,12 +24,12 @@ import java.util.List;
 public class MessageController {
 
 
-    private final LocationController locationController;
+    private final LocationService locationService;
 
     private final JwtUtils jwtUtils;
 
-    public MessageController(LocationController locationController, JwtUtils jwtUtils) {
-        this.locationController = locationController;
+    public MessageController(LocationService locationService, JwtUtils jwtUtils) {
+        this.locationService = locationService;
         this.jwtUtils = jwtUtils;
     }
 
@@ -68,7 +68,7 @@ public class MessageController {
     public ResponseEntity<?> setlocation(TCULocationRequest setRequest) throws Exception {
         String userUUID = jwtUtils.getUUIDFromJwtToken(setRequest.getJwtToken());
         System.out.println("lat: " + setRequest.getLatitude() + " long: " + setRequest.getLongitude() + " active: " + setRequest.isActive());
-        return locationController.setLocation(setRequest.getLatitude(), setRequest.getLongitude(), setRequest.isActive(), userUUID)
+        return locationService.setLocation(setRequest.getLatitude(), setRequest.getLongitude(), setRequest.isActive(), userUUID)
                 ? ResponseEntity.status(204).body(null)
                 : ResponseEntity.status(400).build();
     }
@@ -80,7 +80,7 @@ public class MessageController {
     public ResponseEntity<?> getLocations(@RequestBody TCUserRequest driversRequest) {
         System.out.println("lat: " + driversRequest.getLatitude() + " long: " + driversRequest.getLongitude() + " Radius: " + driversRequest.getRadius());
 
-        List<?> data = locationController.findByDistance(driversRequest.getLatitude(), driversRequest.getLongitude(), driversRequest.getRadius());
+        List<?> data = locationService.findByDistance(driversRequest.getLatitude(), driversRequest.getLongitude(), driversRequest.getRadius());
 
         if (data != null) {
             return ResponseEntity.ok(data);

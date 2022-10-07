@@ -1,76 +1,62 @@
 package edu.uwp.appfactory.tow.controllers;
 
-import edu.uwp.appfactory.tow.entities.TCAdmin;
-import edu.uwp.appfactory.tow.mappers.TCMapper;
-import edu.uwp.appfactory.tow.repositories.TCAdminRepository;
-import edu.uwp.appfactory.tow.requestObjects.TCAdminRequest;
+import edu.uwp.appfactory.tow.services.roles.TCAdminService;
+import edu.uwp.appfactory.tow.services.roles.UserService;
+import edu.uwp.appfactory.tow.requestObjects.rolerequest.TCAdminRequest;
 import edu.uwp.appfactory.tow.responseObjects.TCAdminResponse;
-import edu.uwp.appfactory.tow.responseObjects.TestVerifyResponse;
-import edu.uwp.appfactory.tow.services.AsyncEmail;
-import edu.uwp.appfactory.tow.webSecurityConfig.models.ERole;
-import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Controller;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.util.Optional;
 import java.util.UUID;
 
-@Controller
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+/**
+ * this class is responsible for registering and retrieving PD admin information.
+ */
+@CrossOrigin(origins = "*", maxAge = 3600)
+@RestController
+@RequestMapping("/tcadmins")
 public class TCAdminController {
 
-    private final TCAdminRepository tcAdminRepository;
-    private final UsersRepository usersRepository;
-    private final AsyncEmail sendEmail;
-    private final PasswordEncoder encoder;
-    private final TCMapper tcMapper;
+    private final UserService userService;
+    private final JwtUtils jwtUtils;
+    private final TCAdminService tcAdminService;
 
-
-    @Autowired
-    public TCAdminController(TCAdminRepository tcAdminRepository, UsersRepository usersRepository, AsyncEmail sendEmail, PasswordEncoder encoder, TCMapper tcMapper) {
-        this.tcAdminRepository = tcAdminRepository;
-        this.usersRepository = usersRepository;
-        this.sendEmail = sendEmail;
-        this.encoder = encoder;
-        this.tcMapper = tcMapper;
+    public TCAdminController(UserService userService, JwtUtils jwtUtils, TCAdminService tcAdminService) {
+        this.userService = userService;
+        this.jwtUtils = jwtUtils;
+        this.tcAdminService = tcAdminService;
     }
 
     /**
-     * GET
+     * This route retrieves information about a requested tow truck admin
+     * @param jwtToken the PDAdmins token so we can locate using the UUID
+     * @return returns an object that contains only the necessary information about the admin.
      */
-    public TCAdminResponse get(UUID userId) {
-        Optional<TCAdmin> user = tcAdminRepository.findById(userId);
-        return user.map(tcMapper::map).orElse(null);
-    }
-
-
-    /**
-     * POST
-     */
-    public ResponseEntity<?> register(TCAdminRequest tcAdminRequest) {
-        if (!usersRepository.existsByEmail(tcAdminRequest.getEmail())) {
-            TCAdmin tcAdmin = new TCAdmin(tcAdminRequest.getEmail(),
-                    tcAdminRequest.getEmail(),
-                    encoder.encode(tcAdminRequest.getPassword()),
-                    tcAdminRequest.getFirstname(),
-                    tcAdminRequest.getLastname(),
-                    tcAdminRequest.getPhone(),
-                    ERole.ROLE_TCADMIN.name(),
-                    tcAdminRequest.getCompany());
-
-            tcAdmin.setVerifyToken(generateEmailUUID());
-            tcAdmin.setVerifyDate(String.valueOf(LocalDate.now()));
-            tcAdmin.setVerEnabled(false);
-            usersRepository.save(tcAdmin);
-            sendEmail.sendEmailAsync(tcAdmin);
-            TestVerifyResponse x = new TestVerifyResponse(tcAdmin.getVerifyToken());
-            return ResponseEntity.ok(x);
+    @GetMapping("")
+    @PreAuthorize("hasRole('TCADMIN')")
+    public ResponseEntity<?> get(@RequestHeader("Authorization") final String jwtToken) {
+        String userId = jwtUtils.getUUIDFromJwtToken(jwtToken);
+        TCAdminResponse data = tcAdminService.get(UUID.fromString(userId));
+        if (data != null) {
+            return ResponseEntity.ok(data);
         } else {
-            return ResponseEntity.status(400).build(); //TODO:Not sure if .build is correct
+            return ResponseEntity.status(BAD_REQUEST).build();
         }
     }
+
+    /**
+     * Registers a new tc admin in the system. Will need to be safeguarded in the future somehow. perhaps a godfather admin for
+     * both other types of admins.
+     */
+    @PostMapping("")
+    public ResponseEntity<?> register(@RequestBody TCAdminRequest tcAdminRequest) {
+        return tcAdminService.register(tcAdminRequest);
+
+    }
+
 
     /**
      * PATCH
@@ -80,9 +66,4 @@ public class TCAdminController {
     /**
      * DELETE
      */
-
-
-    private String generateEmailUUID() {
-        return UUID.randomUUID().toString().replace("-", "");
-    }
 }

@@ -1,4 +1,4 @@
-package edu.uwp.appfactory.tow.services;
+package edu.uwp.appfactory.tow.services.email;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,11 +9,11 @@ import org.thymeleaf.context.Context;
  * This class is responsible for constructing the emails contents that asyncemail will send to the user.
  */
 @Service
-public class ContentBuilder {
+public class ContentBuilderService {
     private final TemplateEngine templateEngine;
 
     @Autowired
-    public ContentBuilder(TemplateEngine templateEngine) {
+    public ContentBuilderService(TemplateEngine templateEngine) {
         this.templateEngine = templateEngine;
     }
 

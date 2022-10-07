@@ -31,7 +31,7 @@ public interface UsersRepository extends CrudRepository<Users, UUID> {
     @Modifying
     void deleteByEmail(String email);
 
-    Boolean existsByEmail(String email);
+    boolean existsByEmail(String email);
 
     @Transactional
     @Modifying

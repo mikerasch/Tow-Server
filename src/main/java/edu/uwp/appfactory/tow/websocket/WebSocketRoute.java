@@ -1,25 +1,6 @@
 package edu.uwp.appfactory.tow.websocket;
 
-import edu.uwp.appfactory.tow.controllers.FileController;
-import edu.uwp.appfactory.tow.entities.File;
-import edu.uwp.appfactory.tow.exceptions.InvalidExtensionException;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import edu.uwp.appfactory.tow.controllers.FileController;
-import edu.uwp.appfactory.tow.entities.File;
-import edu.uwp.appfactory.tow.exceptions.InvalidExtensionException;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-
-import static org.springframework.http.HttpStatus.*;
-
-import java.io.IOException;
-
-import static org.springframework.http.HttpStatus.*;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController

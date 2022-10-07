@@ -1,90 +1,70 @@
 package edu.uwp.appfactory.tow.controllers;
 
-import edu.uwp.appfactory.tow.entities.PDAdmin;
+import edu.uwp.appfactory.tow.services.roles.PDUserService;
+import edu.uwp.appfactory.tow.services.roles.UserService;
 import edu.uwp.appfactory.tow.entities.PDUser;
-import edu.uwp.appfactory.tow.repositories.PDAdminRepository;
-import edu.uwp.appfactory.tow.repositories.PDUserRepository;
-import edu.uwp.appfactory.tow.requestObjects.PDUserRequest;
+import edu.uwp.appfactory.tow.requestObjects.rolerequest.PDUserRequest;
 import edu.uwp.appfactory.tow.responseObjects.PDUAuthResponse;
-import edu.uwp.appfactory.tow.services.AsyncEmail;
-import edu.uwp.appfactory.tow.webSecurityConfig.models.ERole;
-import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.util.Optional;
 import java.util.UUID;
 
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
-@Controller
+/**
+ * this class is used by pd admins to register and maintain PD user accounts.
+ */
+@CrossOrigin(origins = "*", maxAge = 3600)
+@RestController
+@RequestMapping("/pdusers")
 public class PDUserController {
 
-    private final PDUserRepository pdUserRepository;
-    private final PDAdminRepository pdAdminRepository;
-    private final UsersRepository usersRepository;
-    private final PasswordEncoder encoder;
-    private final AsyncEmail sendEmail;
+    private final UserService userService;
     private final JwtUtils jwtUtils;
+    private final PDUserService pdUserService;
 
-
-    @Autowired
-    public PDUserController(PDUserRepository pdUserRepository, PDAdminRepository pdAdminRepository, UsersRepository usersRepository, AsyncEmail sendEmail, JwtUtils jwtUtils, PasswordEncoder encoder) {
-        this.pdUserRepository = pdUserRepository;
-        this.pdAdminRepository = pdAdminRepository;
-        this.usersRepository = usersRepository;
-        this.sendEmail = sendEmail;
+    public PDUserController(UserService userService, JwtUtils jwtUtils, PDUserService pdUserService) {
+        this.userService = userService;
         this.jwtUtils = jwtUtils;
-        this.encoder = encoder;
+        this.pdUserService = pdUserService;
     }
 
     /**
-     * GET
+     * GET method that returns user based off of the UUID from the JWT token. Currently only
+     *     accessible by tc users, for gets with all auth options look at userroutes.
      */
-    public PDUser get(UUID userId) {
-        Optional<PDUser> user = pdUserRepository.findById(userId);
-        return user.orElse(null);
-    }
-
-
-    /**
-     * POST
-     */
-    public PDUAuthResponse register(PDUserRequest pdUserRequest, String token) {
-        if (!usersRepository.existsByEmail(pdUserRequest.getEmail())) {
-            UUID adminUUID = UUID.fromString(jwtUtils.getUUIDFromJwtToken(token));
-
-            String frontID = "";
-            String password = generatePDUserUUID();
-
-            Optional<PDAdmin> adminsOptional = pdAdminRepository.findById(adminUUID);
-            if (adminsOptional.isPresent()) {
-                PDAdmin admin = adminsOptional.get();
-                frontID = admin.getDepartmentShort() + "-" + generatePDUserUUID();
-            }
-
-            PDUser pdUser = new PDUser(
-                    pdUserRequest.getEmail(),
-                    pdUserRequest.getEmail(),
-                    encoder.encode(pdUserRequest.getPassword()),
-                    pdUserRequest.getFirstname(),
-                    pdUserRequest.getLastname(),
-                    "",
-                    ERole.ROLE_PDUSER.name(),
-                    frontID,
-                    adminUUID);
-
-            pdUser.setVerifyToken("");
-            pdUser.setVerifyDate(String.valueOf(LocalDate.now()));
-            pdUser.setVerEnabled(true);
-            usersRepository.save(pdUser);
-            return new PDUAuthResponse(frontID, password);
+    @GetMapping("")
+    @PreAuthorize("hasRole('PDUSER')")
+    public ResponseEntity<?> get(@RequestHeader("Authorization") final String jwtToken) {
+        String userId = jwtUtils.getUUIDFromJwtToken(jwtToken);
+        PDUser data = pdUserService.get(UUID.fromString(userId));
+        if (data != null) {
+            return ResponseEntity.ok(data);
         } else {
-            return null;
+            return ResponseEntity.status(BAD_REQUEST).build();
         }
     }
+
+
+    /**
+     * POST method that uses the users jwt for the admin preauth and the pdUserRequest object that contains
+     * the information of a user.
+     */
+    @PostMapping("")
+    @PreAuthorize("hasRole('PDADMIN')")
+    public ResponseEntity<?> register(@RequestHeader("Authorization") final String jwtToken,
+                                      @RequestBody PDUserRequest pdUserRequest) {
+        PDUAuthResponse data = pdUserService.register(pdUserRequest, jwtToken);
+        if (data != null) {
+            return ResponseEntity.ok(data);
+        } else {
+            return ResponseEntity.status(BAD_REQUEST).build();
+        }
+    }
+
 
     /**
      * PATCH
@@ -94,8 +74,4 @@ public class PDUserController {
     /**
      * DELETE
      */
-
-    private String generatePDUserUUID() {
-        return UUID.randomUUID().toString().replace("-", "").substring(0, 6);
-    }
 }

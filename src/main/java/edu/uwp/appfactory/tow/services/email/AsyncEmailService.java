@@ -1,4 +1,4 @@
-package edu.uwp.appfactory.tow.services;
+package edu.uwp.appfactory.tow.services.email;
 
 import edu.uwp.appfactory.tow.entities.FailedEmail;
 import edu.uwp.appfactory.tow.entities.Users;
@@ -18,19 +18,19 @@ import org.springframework.stereotype.Service;
  * The async email class is responsible for sending the initial verification email and the password reset emails.
  */
 @Service
-public class AsyncEmail {
+public class AsyncEmailService {
 
     private final JavaMailSender javaMailSender;
-    private final ContentBuilder contentBuilder;
+    private final ContentBuilderService contentBuilderService;
     private final FailedEmailRepository failedEmailRepository;
-    private final Logger logger = LoggerFactory.getLogger(AsyncEmail.class);
+    private final Logger logger = LoggerFactory.getLogger(AsyncEmailService.class);
     @Value("${SPRING_DNS}")
     private String dns;
 
     @Autowired
-    public AsyncEmail(JavaMailSender javaMailSender, ContentBuilder contentBuilder, FailedEmailRepository failedEmailRepository) {
+    public AsyncEmailService(JavaMailSender javaMailSender, ContentBuilderService contentBuilderService, FailedEmailRepository failedEmailRepository) {
         this.javaMailSender = javaMailSender;
-        this.contentBuilder = contentBuilder;
+        this.contentBuilderService = contentBuilderService;
         this.failedEmailRepository = failedEmailRepository;
     }
 
@@ -44,7 +44,7 @@ public class AsyncEmail {
         try {
             String userName = "Hi, " + user.getFirstname() + " " + user.getLastname();
             String verifyLink = dns + "api/auth/verification?token=" + user.getVerifyToken();
-            String message = contentBuilder.buildVerifyEmail(userName, verifyLink);
+            String message = contentBuilderService.buildVerifyEmail(userName, verifyLink);
 
             MimeMessagePreparator messagePreparation = mimeMessage -> {
                 MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
@@ -79,7 +79,7 @@ public class AsyncEmail {
     public void sendResetEmailAsync(Users user, int token) {
         try {
             String userName = "Hi, " + user.getFirstname() + " " + user.getLastname();
-            String message = contentBuilder.buildPasswordEmail(userName, token);
+            String message = contentBuilderService.buildPasswordEmail(userName, token);
 
             MimeMessagePreparator messagePreparation = mimeMessage -> {
                 MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);

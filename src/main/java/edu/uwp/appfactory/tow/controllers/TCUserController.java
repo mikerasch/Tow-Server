@@ -1,86 +1,81 @@
 package edu.uwp.appfactory.tow.controllers;
 
+import edu.uwp.appfactory.tow.services.roles.TCUserService;
+import edu.uwp.appfactory.tow.services.roles.UserService;
 import edu.uwp.appfactory.tow.entities.TCUser;
-import edu.uwp.appfactory.tow.repositories.TCUserRepository;
-import edu.uwp.appfactory.tow.requestObjects.TCUserRequest;
-import edu.uwp.appfactory.tow.responseObjects.TestVerifyResponse;
-import edu.uwp.appfactory.tow.services.AsyncEmail;
-import edu.uwp.appfactory.tow.webSecurityConfig.models.ERole;
-import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import edu.uwp.appfactory.tow.requestObjects.rolerequest.TCUserRequest;
+import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Controller;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
-
-@Controller
+/**
+ * this class is used by tc admins to register and maintain tc user accounts.
+ */
+@CrossOrigin(origins = "*", maxAge = 3600)
+@RestController
+@RequestMapping("/tcusers")
 public class TCUserController {
 
-    private final TCUserRepository tcUserRepository;
-    private final UsersRepository usersRepository;
-    private final AsyncEmail sendEmail;
-    private final PasswordEncoder encoder;
+    private final UserService userService;
+    private final JwtUtils jwtUtils;
+    private final TCUserService tcUserService;
 
-
-    @Autowired
-    public TCUserController(TCUserRepository tcUserRepository, UsersRepository usersRepository, AsyncEmail sendEmail, PasswordEncoder encoder) {
-        this.tcUserRepository = tcUserRepository;
-        this.usersRepository = usersRepository;
-        this.sendEmail = sendEmail;
-        this.encoder = encoder;
+    public TCUserController(UserService userService, JwtUtils jwtUtils, TCUserService tcUserService) {
+        this.userService = userService;
+        this.jwtUtils = jwtUtils;
+        this.tcUserService = tcUserService;
     }
 
     /**
-     * GET
+     * GET method that returns user based off of the UUID from the JWT token. Currently only
+     * accessible by tc users, for gets with all auth options look at userroutes.
      */
-    public TCUser get(UUID userId) {
-        Optional<TCUser> user = tcUserRepository.findById(userId);
-        return user.orElse(null);
+    @GetMapping("")
+    @PreAuthorize("hasRole('TCUSER')")
+    public ResponseEntity<?> get(@RequestHeader("Authorization") final String jwtToken) {
+        String userId = jwtUtils.getUUIDFromJwtToken(jwtToken);
+        TCUser data = tcUserService.get(UUID.fromString(userId));
+        if (data != null) {
+            return ResponseEntity.ok(data);
+        } else {
+            return ResponseEntity.status(BAD_REQUEST).build();
+        }
     }
 
     /**
      * GET ALL
      */
-    public List<TCUser> getAll(UUID adminUUID) {
-        return tcUserRepository.findAllByAdminUUID(adminUUID);
-    }
-
-
-    /**
-     * POST
-     */
-    public ResponseEntity<?> register(TCUserRequest tcUserRequest, UUID adminUUID) {
-        if (!usersRepository.existsByEmail(tcUserRequest.getEmail())) {
-            TCUser tcuser = new TCUser(tcUserRequest.getEmail(),
-                    tcUserRequest.getEmail(),
-                    encoder.encode(tcUserRequest.getPassword()),
-                    tcUserRequest.getFirstname(),
-                    tcUserRequest.getLastname(),
-                    tcUserRequest.getPhone(),
-                    ERole.ROLE_TCUSER.name(),
-                    0.0f,
-                    0.0f,
-                    false,
-                    adminUUID);
-
-            tcuser.setVerifyToken(generateEmailUUID());
-            tcuser.setVerifyDate(String.valueOf(LocalDate.now()));
-            tcuser.setVerEnabled(false);
-            usersRepository.save(tcuser);
-            sendEmail.sendEmailAsync(tcuser);
-            TestVerifyResponse x = new TestVerifyResponse(tcuser.getVerifyToken());
-            return ResponseEntity.ok(x);
+    @GetMapping("/all")
+    @PreAuthorize("hasRole('TCADMIN')")
+    public ResponseEntity<?> getAll(@RequestHeader("Authorization") final String jwtToken) {
+        UUID adminUUID = UUID.fromString(jwtUtils.getUUIDFromJwtToken(jwtToken));
+        List<TCUser> data = tcUserService.getAll(adminUUID);
+        if (data != null) {
+            return ResponseEntity.ok(data);
         } else {
             return ResponseEntity.status(BAD_REQUEST).build();
         }
     }
+
+
+    /**
+     * POST method that uses the users jwt for the admin preauth and the pdUserRequest object that contains
+     * the information of a user.
+     */
+    @PreAuthorize("hasRole('TCADMIN')")
+    @PostMapping("")
+    public ResponseEntity<?> register(@RequestHeader("Authorization") final String jwtToken,
+                                      @RequestBody TCUserRequest tcUserRequest) {
+        UUID adminUUID = UUID.fromString(jwtUtils.getUUIDFromJwtToken(jwtToken));
+        return tcUserService.register(tcUserRequest, adminUUID);
+    }
+
 
     /**
      * PATCH
@@ -90,9 +85,4 @@ public class TCUserController {
     /**
      * DELETE
      */
-
-
-    private String generateEmailUUID() {
-        return UUID.randomUUID().toString().replace("-", "");
-    }
 }
