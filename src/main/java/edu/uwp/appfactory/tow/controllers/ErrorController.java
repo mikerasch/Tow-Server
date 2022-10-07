@@ -1,4 +1,4 @@
-package edu.uwp.appfactory.tow.routes;
+package edu.uwp.appfactory.tow.controllers;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -15,7 +15,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/error")
-public class ErrorRoutes {
+public class ErrorController {
 
     @GetMapping("/")
     public HttpStatus handleError() {

@@ -1,54 +1,81 @@
 package edu.uwp.appfactory.tow.controllers;
 
 import edu.uwp.appfactory.tow.entities.Users;
-import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import edu.uwp.appfactory.tow.requestObjects.rolerequest.UpdateRequest;
+import edu.uwp.appfactory.tow.services.roles.UserService;
+import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
 import java.util.UUID;
 
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
-@Controller
+/**
+ * This class contains the routes that arent role specific.
+ */
+@CrossOrigin(origins = "*", maxAge = 3600)
+@RestController
+@RequestMapping("/users")
 public class UserController {
-    private final UsersRepository usersRepository;
 
-    @Autowired
-    public UserController(UsersRepository usersRepository) {
-        this.usersRepository = usersRepository;
+    private final UserService userService;
+    private final JwtUtils jwtUtils;
+
+    public UserController(UserService userService, JwtUtils jwtUtils) {
+        this.userService = userService;
+        this.jwtUtils = jwtUtils;
     }
 
-    public Users findById(UUID userId) {
-        Optional<Users> user = usersRepository.findById(userId);
-        return user.orElse(null);
-    }
-
-    //todo: do not lock people out if they haven't verified, give them like a week to do it, then lock or delete
-    //todo: ask client / zaid
-    public Users updateByUUID(UUID userId, String firstname, String lastname, String email, String phone) {
-        //todo: get user by uuid
-        Optional<Users> usersOptional = usersRepository.findById(userId);
-
-        if (usersOptional.isPresent()) {
-            Users user = usersOptional.get();
-            user.setFirstname(firstname);
-            user.setLastname(lastname);
-            user.setEmail(email);
-            user.setPhone(phone);
-            usersRepository.save(user);
-            return user;
-        } else
-            return null;
-    }
-
-    public boolean deleteByEmail(String email) {
-        Optional<Users> userOpt = usersRepository.findByUsername(email);
-        if (userOpt.isPresent()) {
-            Users user = userOpt.get();
-            usersRepository.delete(user);
-            return true;
+    /**
+     * Retrieves the account based on the UUID of the incoming JWT token.
+     * @param jwtToken token of the requesting entity.
+     * @return user object containing only the necessary information.
+     */
+    @GetMapping("")
+    @PreAuthorize("hasRole('PDADMIN') or hasRole('PDUSER') or hasRole('TCADMIN') or hasRole('TCUSER')")
+    public ResponseEntity<?> get(@RequestHeader("Authorization") final String jwtToken) {
+        String userId = jwtUtils.getUUIDFromJwtToken(jwtToken);
+        Users data = userService.findById(UUID.fromString(userId));
+        if (data != null) {
+            return ResponseEntity.ok(data);
         } else {
-            return false;
+            return ResponseEntity.status(BAD_REQUEST).build();
+        }
+    }
+
+    /**
+     * retrieves the user based on the users email. Only accessible by the admins.
+     * perhaps in the future check that the user being deleted is a sub of the admin requesting the delete.
+     * @param email email of the user to be deleted.
+     * @return returns response message regarding the completion of the delete.
+     */
+    @DeleteMapping("")
+    public ResponseEntity<?> delete(@RequestHeader("email") final String email) {
+        return userService.deleteByEmail(email) ? ResponseEntity.status(HttpStatus.NO_CONTENT).build() : ResponseEntity.status(400).body(null);
+    }
+
+    /**
+     * a Patch method that updates subordinate accounts using the update object for the users info
+     * and the jwt to ensure the entity has authorization to edit this users info. whether
+     * it is the user or their admin.
+     * @param jwtToken
+     * @param updateRequest
+     * @return
+     */
+    //todo: JWT AUTH
+    @PatchMapping(value = "")
+    @PreAuthorize("hasRole('PDADMIN') or hasRole('PDUSER') or hasRole('TCADMIN') or hasRole('TCUSER')")
+    public ResponseEntity<?> update(@RequestHeader("Authorization") final String jwtToken,
+                                    @RequestBody UpdateRequest updateRequest) {
+        String userId = jwtUtils.getUUIDFromJwtToken(jwtToken);
+        Users data = userService.updateByUUID(UUID.fromString(userId), updateRequest.getFirstname(), updateRequest.getLastname(), updateRequest.getEmail(), updateRequest.getPhone());
+        if (data != null) {
+            return ResponseEntity.ok(data);
+        } else {
+            return ResponseEntity.status(BAD_REQUEST).build();
         }
     }
 }

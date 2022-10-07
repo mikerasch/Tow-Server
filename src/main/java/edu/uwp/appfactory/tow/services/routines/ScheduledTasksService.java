@@ -1,8 +1,9 @@
-package edu.uwp.appfactory.tow.services;
+package edu.uwp.appfactory.tow.services.routines;
 
 import edu.uwp.appfactory.tow.entities.FailedEmail;
 import edu.uwp.appfactory.tow.entities.Users;
 import edu.uwp.appfactory.tow.repositories.FailedEmailRepository;
+import edu.uwp.appfactory.tow.services.email.ContentBuilderService;
 import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,40 +21,33 @@ import java.util.List;
 
 /**
  * The chron services that will determine when a user needs to be reminded that they havent finished teh registration process.
- * Also a custom garbage collection method that will redundantly garbage collect in case the built in method fails.
  */
 @Service
-public class ScheduledTasks {
+public class ScheduledTasksService {
     private final FailedEmailRepository failedEmailRepository;
     private final UsersRepository usersRepository;
-    private final ContentBuilder contentBuilder;
+    private final ContentBuilderService contentBuilderService;
     private final JavaMailSender javaMailSender;
-    private final Logger logger = LoggerFactory.getLogger(ScheduledTasks.class);
+    private final Logger logger = LoggerFactory.getLogger(ScheduledTasksService.class);
     @Value("${SPRING_DNS}")
     private String dns;
 
-    public ScheduledTasks(FailedEmailRepository failedEmailRepository, UsersRepository usersRepository, ContentBuilder contentBuilder, JavaMailSender javaMailSender) {
+    public ScheduledTasksService(FailedEmailRepository failedEmailRepository, UsersRepository usersRepository, ContentBuilderService contentBuilderService, JavaMailSender javaMailSender) {
         this.failedEmailRepository = failedEmailRepository;
         this.usersRepository = usersRepository;
-        this.contentBuilder = contentBuilder;
+        this.contentBuilderService = contentBuilderService;
         this.javaMailSender = javaMailSender;
     }
 
-    @Scheduled(cron = "0 */20 * * * *")
-    public void GarbageCollection() {
-        System.gc();
-    }
-
-    //@Scheduled(cron = "1 34 15 * * *")
     @Scheduled(cron = "0 0 0 * * *")
-    public void CheckFailedEmail() {
+    public void checkFailedEmail() {
         Iterable<FailedEmail> failedEmails = failedEmailRepository.findAll();
         failedEmails.forEach(entity -> {
             try {
                 String userName = "Hi, " + entity.getFirstname() + " " + entity.getLastname();
                 String verifyLink = dns + "api/users/verification?token=" + entity.getVerify_token();
 
-                String message = contentBuilder.buildVerifyEmail(userName, verifyLink);
+                String message = contentBuilderService.buildVerifyEmail(userName, verifyLink);
 
                 MimeMessagePreparator messagePreparation = mimeMessage -> {
                     MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
@@ -73,7 +67,7 @@ public class ScheduledTasks {
     }
 
     @Scheduled(cron = "0 0 1 * * *")
-    private void CheckVerifyStatus() {
+    private void checkVerifyStatus() {
         List<Users> nonVerifiedUsers = usersRepository.findAllNonVerified();
         if (nonVerifiedUsers.isEmpty()) {
             return;
@@ -88,7 +82,7 @@ public class ScheduledTasks {
                     String userName = "Hi, " + entity.getFirstname() + " " + entity.getLastname();
                     String verifyLink = dns + "api/users/verification?token=" + entity.getVerifyToken();
 
-                    String message = contentBuilder.buildReminderEmail(userName, verifyLink);
+                    String message = contentBuilderService.buildReminderEmail(userName, verifyLink);
 
                     MimeMessagePreparator messagePreparation = mimeMessage -> {
                         MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
