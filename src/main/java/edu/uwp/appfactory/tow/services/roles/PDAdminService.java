@@ -52,30 +52,29 @@ public class PDAdminService {
      * POST
      */
     public ResponseEntity<?> register(PDAdminRequest pdAdminRequest) {
-        if (usersRepository.existsByEmail(pdAdminRequest.getEmail())) {
-            PDAdmin pdAdmin = new PDAdmin(pdAdminRequest.getEmail(),
-                    pdAdminRequest.getEmail(),
-                    encoder.encode(pdAdminRequest.getPassword()),
-                    pdAdminRequest.getFirstname(),
-                    pdAdminRequest.getLastname(),
-                    pdAdminRequest.getPhone(),
-                    ERole.ROLE_PDADMIN.name(),
-                    pdAdminRequest.getCity(),
-                    pdAdminRequest.getAddressNumber(),
-                    pdAdminRequest.getDepartment(),
-                    pdAdminRequest.getDepartmentShort()
-            );
-
-            pdAdmin.setVerifyToken(generateEmailUUID());
-            pdAdmin.setVerifyDate(String.valueOf(LocalDate.now()));
-            pdAdmin.setVerEnabled(false);
-            usersRepository.save(pdAdmin);
-            sendEmail.sendEmailAsync(pdAdmin);
-            TestVerifyResponse test = new TestVerifyResponse(pdAdmin.getVerifyToken());
-            return ResponseEntity.ok(test);
-        } else {
+        if(usersRepository.existsByEmail(pdAdminRequest.getEmail())){
             return ResponseEntity.status(BAD_REQUEST).build();
         }
+        PDAdmin pdAdmin = new PDAdmin(
+                pdAdminRequest.getEmail(),
+                pdAdminRequest.getEmail(),
+                encoder.encode(pdAdminRequest.getPassword()),
+                pdAdminRequest.getFirstname(),
+                pdAdminRequest.getLastname(),
+                pdAdminRequest.getPhone(),
+                ERole.ROLE_PDADMIN.name(),
+                pdAdminRequest.getCity(),
+                pdAdminRequest.getAddressNumber(),
+                pdAdminRequest.getDepartment(),
+                pdAdminRequest.getDepartmentShort()
+        );
+        pdAdmin.setVerifyToken(generateEmailUUID());
+        pdAdmin.setVerifyDate(String.valueOf(LocalDate.now()));
+        pdAdmin.setVerEnabled(false);
+        usersRepository.save(pdAdmin);
+        sendEmail.sendEmailAsync(pdAdmin);
+        TestVerifyResponse test = new TestVerifyResponse(pdAdmin.getVerifyToken());
+        return ResponseEntity.ok(test);
     }
 
     /**

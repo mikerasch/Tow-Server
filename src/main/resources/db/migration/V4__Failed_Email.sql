@@ -4,8 +4,8 @@
  */
 create table failed_email
 (
-    uuid         uuid        NOT NULL,
-    user_uuid    uuid        NOT NULL,
+    uuid         uuid DEFAULT gen_random_uuid() NOT NULL,
+    user_uuid    uuid DEFAULT gen_random_uuid() NOT NULL,
     email        varchar(50) NOT NULL,
     firstname    varchar(20) NOT NULL,
     lastname     varchar(20) NOT NULL,
