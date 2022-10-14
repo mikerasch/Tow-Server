@@ -10,6 +10,7 @@ import edu.uwp.appfactory.tow.services.email.AsyncEmailService;
 import edu.uwp.appfactory.tow.webSecurityConfig.models.ERole;
 import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -68,7 +69,7 @@ public class TCAdminService {
             TestVerifyResponse x = new TestVerifyResponse(tcAdmin.getVerifyToken());
             return ResponseEntity.ok(x);
         } else {
-            return ResponseEntity.status(400).build(); //TODO:Not sure if .build is correct
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
 

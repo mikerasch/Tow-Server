@@ -9,8 +9,9 @@ import org.springframework.web.bind.annotation.RestController;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 /**
- * Basic middleware error handling. Add missing section to application.properties in order to enable this functionality.
+ *  Error handling controller for redirecting request to /error/*
  *  The handleError class can be expanded on to include custom error response messages.
+ *  Add missing section to application.properties in order to enable this functionality
  */
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController

@@ -14,7 +14,7 @@ import java.util.UUID;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 /**
- * This class contains the routes that arent role specific.
+ * Routes which can be used by any role.
  */
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -24,6 +24,11 @@ public class UserController {
     private final UserService userService;
     private final JwtUtils jwtUtils;
 
+    /**
+     * Parameterized constructor for creating a new UserController.
+     * @param userService useful information for managing all users
+     * @param jwtUtils - handling management of JWT tokens for security
+     */
     public UserController(UserService userService, JwtUtils jwtUtils) {
         this.userService = userService;
         this.jwtUtils = jwtUtils;
