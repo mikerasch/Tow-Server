@@ -1,7 +1,6 @@
 package edu.uwp.appfactory.tow.controllers;
 
 import edu.uwp.appfactory.tow.services.roles.PDUserService;
-import edu.uwp.appfactory.tow.services.roles.UserService;
 import edu.uwp.appfactory.tow.entities.PDUser;
 import edu.uwp.appfactory.tow.requestObjects.rolerequest.PDUserRequest;
 import edu.uwp.appfactory.tow.responseObjects.PDUAuthResponse;
@@ -21,19 +20,15 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 @RestController
 @RequestMapping("/pdusers")
 public class PDUserController {
-
-    private final UserService userService;
     private final JwtUtils jwtUtils;
     private final PDUserService pdUserService;
 
     /**
      * Parameterized constructor for creating a new PdUserController.
-     * @param userService - service to access/provide useful user logic
      * @param jwtUtils - handling management of JWT tokens for security
      * @param pdUserService - service to access/provide useful police department USER logic
      */
-    public PDUserController(UserService userService, JwtUtils jwtUtils, PDUserService pdUserService) {
-        this.userService = userService;
+    public PDUserController(JwtUtils jwtUtils, PDUserService pdUserService) {
         this.jwtUtils = jwtUtils;
         this.pdUserService = pdUserService;
     }
@@ -76,14 +71,5 @@ public class PDUserController {
             return ResponseEntity.status(BAD_REQUEST).build();
         }
     }
-
-
-    /**
-     * PATCH
-     */
-
-
-    /**
-     * DELETE
-     */
+    //todo add Patch and Delete
 }

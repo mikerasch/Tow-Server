@@ -1,7 +1,6 @@
 package edu.uwp.appfactory.tow.controllers;
 
 import edu.uwp.appfactory.tow.services.roles.TCUserService;
-import edu.uwp.appfactory.tow.services.roles.UserService;
 import edu.uwp.appfactory.tow.entities.TCUser;
 import edu.uwp.appfactory.tow.requestObjects.rolerequest.TCUserRequest;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
@@ -21,19 +20,15 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 @RestController
 @RequestMapping("/tcusers")
 public class TCUserController {
-
-    private final UserService userService;
     private final JwtUtils jwtUtils;
     private final TCUserService tcUserService;
 
     /**
      * Parameterized constructor for creating a new TCUserController.
-     * @param userService - service to access user repository and pdAdmin repository
      * @param jwtUtils - handling management of JWT tokens for security
      * @param tcUserService - service to handle registration and maintenance of tow company users.
      */
-    public TCUserController(UserService userService, JwtUtils jwtUtils, TCUserService tcUserService) {
-        this.userService = userService;
+    public TCUserController(JwtUtils jwtUtils, TCUserService tcUserService) {
         this.jwtUtils = jwtUtils;
         this.tcUserService = tcUserService;
     }
@@ -93,14 +88,5 @@ public class TCUserController {
         UUID adminUUID = UUID.fromString(jwtUtils.getUUIDFromJwtToken(jwtToken));
         return tcUserService.register(tcUserRequest, adminUUID);
     }
-
-
-    /**
-     * PATCH
-     */
-
-
-    /**
-     * DELETE
-     */
+    //todo add Patch and Delete
 }

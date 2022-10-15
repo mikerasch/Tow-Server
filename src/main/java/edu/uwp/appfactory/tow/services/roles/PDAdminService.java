@@ -27,16 +27,13 @@ public class PDAdminService {
     private final UsersRepository usersRepository;
     private final AsyncEmailService sendEmail;
     private final PasswordEncoder encoder;
-    private final PDMapper pdMapper;
-
 
     @Autowired
-    public PDAdminService(PDAdminRepository pdAdminRepository, UsersRepository usersRepository, AsyncEmailService sendEmail, PasswordEncoder encoder, PDMapper pdMapper) {
+    public PDAdminService(PDAdminRepository pdAdminRepository, UsersRepository usersRepository, AsyncEmailService sendEmail, PasswordEncoder encoder) {
         this.pdAdminRepository = pdAdminRepository;
         this.usersRepository = usersRepository;
         this.sendEmail = sendEmail;
         this.encoder = encoder;
-        this.pdMapper = pdMapper;
     }
 
     /**
@@ -81,19 +78,12 @@ public class PDAdminService {
     }
 
     /**
-     * PATCH
-     */
-
-
-    /**
-     * DELETE
-     */
-
-    /**
      * Generates a random UUID without "-".
      * @return UUID converted to a String
      */
     private String generateEmailUUID() {
         return UUID.randomUUID().toString().replace("-", "");
     }
+
+    //todo add Patch and Delete
 }

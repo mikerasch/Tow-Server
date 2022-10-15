@@ -59,6 +59,7 @@ public class JwtUtils {
      * method to get UUID from a JWT token
      */
     public String getUUIDFromJwtToken(String token) {
+        token = truncateBearerTag(token);
         Function<Claims, String> claimsResolver = Claims::getSubject;
         Claims parsedToken = Jwts
                 .parser()
@@ -66,6 +67,15 @@ public class JwtUtils {
                 .parseClaimsJws(token)
                 .getBody();
         return claimsResolver.apply(parsedToken);
+    }
+
+    /**
+     * Replaces the JWT token if it contains Bearer heading.
+     * @param token - JWT token
+     * @return - JWT token with no funny business
+     */
+    private String truncateBearerTag(String token) {
+        return token.replace("Bearer","");
     }
 
     /**

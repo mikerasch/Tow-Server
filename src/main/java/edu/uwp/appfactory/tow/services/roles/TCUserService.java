@@ -79,19 +79,9 @@ public class TCUserService {
             sendEmail.sendEmailAsync(tcuser);
             TestVerifyResponse x = new TestVerifyResponse(tcuser.getVerifyToken());
             return ResponseEntity.ok(x);
-        } else {
-            return ResponseEntity.status(BAD_REQUEST).build();
         }
+        return ResponseEntity.status(BAD_REQUEST).build();
     }
-
-    /**
-     * PATCH
-     */
-
-
-    /**
-     * DELETE
-     */
 
     /**
      * Generates a random 6 character length UUID.
@@ -100,4 +90,6 @@ public class TCUserService {
     private String generateEmailUUID() {
         return UUID.randomUUID().toString().replace("-", "");
     }
+
+    //todo add Patch and Delete
 }

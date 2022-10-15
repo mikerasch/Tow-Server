@@ -6,7 +6,6 @@ import edu.uwp.appfactory.tow.repositories.PDAdminRepository;
 import edu.uwp.appfactory.tow.repositories.PDUserRepository;
 import edu.uwp.appfactory.tow.requestObjects.rolerequest.PDUserRequest;
 import edu.uwp.appfactory.tow.responseObjects.PDUAuthResponse;
-import edu.uwp.appfactory.tow.services.email.AsyncEmailService;
 import edu.uwp.appfactory.tow.webSecurityConfig.models.ERole;
 import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
@@ -26,16 +25,14 @@ public class PDUserService {
     private final PDAdminRepository pdAdminRepository;
     private final UsersRepository usersRepository;
     private final PasswordEncoder encoder;
-    private final AsyncEmailService sendEmail;
     private final JwtUtils jwtUtils;
 
 
     @Autowired
-    public PDUserService(PDUserRepository pdUserRepository, PDAdminRepository pdAdminRepository, UsersRepository usersRepository, AsyncEmailService sendEmail, JwtUtils jwtUtils, PasswordEncoder encoder) {
+    public PDUserService(PDUserRepository pdUserRepository, PDAdminRepository pdAdminRepository, UsersRepository usersRepository, JwtUtils jwtUtils, PasswordEncoder encoder) {
         this.pdUserRepository = pdUserRepository;
         this.pdAdminRepository = pdAdminRepository;
         this.usersRepository = usersRepository;
-        this.sendEmail = sendEmail;
         this.jwtUtils = jwtUtils;
         this.encoder = encoder;
     }
@@ -85,9 +82,8 @@ public class PDUserService {
             pdUser.setVerEnabled(true);
             usersRepository.save(pdUser);
             return new PDUAuthResponse(frontID, password);
-        } else {
-            return null;
         }
+        return null;
     }
 
     /**

@@ -3,7 +3,6 @@ package edu.uwp.appfactory.tow.controllers;
 import edu.uwp.appfactory.tow.requestObjects.rolerequest.AdminRequest;
 import edu.uwp.appfactory.tow.requestObjects.rolerequest.LoginRequest;
 import edu.uwp.appfactory.tow.services.roles.AuthService;
-import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,16 +23,13 @@ import static org.springframework.http.HttpStatus.*;
 public class AuthController {
 
     private final AuthService authService;
-    private final JwtUtils jwtUtils;
 
     /**
      * Parameterized constructor for creating a new AuthController.
      * @param authService - service to access user repository and pdAdmin repository
-     * @param jwtUtils - handling management of JWT tokens for security
      */
-    public AuthController(AuthService authService, JwtUtils jwtUtils) {
+    public AuthController(AuthService authService) {
         this.authService = authService;
-        this.jwtUtils = jwtUtils;
     }
 
     /**

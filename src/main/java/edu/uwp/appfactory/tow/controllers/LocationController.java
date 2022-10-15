@@ -52,7 +52,7 @@ public class LocationController {
                 : ResponseEntity.status(BAD_REQUEST).build();
     }
 
-    //todo: patch doesnt really align, but need in order to send body data
+    //todo: patch doesn't really align, but need in order to send body data
     //todo: it needs to be 200 or something even if no drivers are returned
     //todo: previous thoughts: @PatchMapping("/driver-locations")
 
@@ -65,10 +65,9 @@ public class LocationController {
     @GetMapping("/driver-locations")
     public ResponseEntity<?> getLocations(@RequestBody DriversRadiusRequest driversRequest) {
         List<?> data = locationService.findByDistance(driversRequest.getLatitude(), driversRequest.getLongitude(), driversRequest.getRadius());
-        if (data != null) {
-            return ResponseEntity.ok(data);
-        } else {
+        if(data.isEmpty()){
             return ResponseEntity.status(BAD_REQUEST).build();
         }
+        return ResponseEntity.ok(data);
     }
 }

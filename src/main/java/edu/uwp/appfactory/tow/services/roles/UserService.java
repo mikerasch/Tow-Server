@@ -33,17 +33,16 @@ public class UserService {
     public Users updateByUUID(UUID userId, String firstname, String lastname, String email, String phone) {
         //todo: get user by uuid
         Optional<Users> usersOptional = usersRepository.findById(userId);
-
-        if (usersOptional.isPresent()) {
-            Users user = usersOptional.get();
-            user.setFirstname(firstname);
-            user.setLastname(lastname);
-            user.setEmail(email);
-            user.setPhone(phone);
-            usersRepository.save(user);
-            return user;
-        } else
+        if(usersOptional.isEmpty()){
             return null;
+        }
+        Users user = usersOptional.get();
+        user.setFirstname(firstname);
+        user.setLastname(lastname);
+        user.setEmail(email);
+        user.setPhone(phone);
+        usersRepository.save(user);
+        return user;
     }
 
     /**
@@ -53,12 +52,11 @@ public class UserService {
      */
     public boolean deleteByEmail(String email) {
         Optional<Users> userOpt = usersRepository.findByUsername(email);
-        if (userOpt.isPresent()) {
-            Users user = userOpt.get();
-            usersRepository.delete(user);
-            return true;
-        } else {
+        if(userOpt.isEmpty()){
             return false;
         }
+        Users user = userOpt.get();
+        usersRepository.delete(user);
+        return true;
     }
 }
