@@ -28,6 +28,11 @@ public class PasswordService {
         this.sender = sender;
     }
 
+    /**
+     * Handles the event where a user forgets their password.
+     * @param forgotPassRequest - user information to send email to
+     * @return - true if user exists, false otherwise
+     */
     public boolean forgot(ForgotPassRequest forgotPassRequest) {
         System.out.println(forgotPassRequest.getEmail());
         Optional<Users> usersOptional = usersRepository.findByUsername(forgotPassRequest.getEmail());
@@ -50,6 +55,12 @@ public class PasswordService {
         }
     }
 
+    /**
+     * Verifies if a link is still valid to be registered on.
+     * @param email - email to search the database
+     * @param token - token to verify it is valid
+     * @return true if link and user token is still valid, false otherwise
+     */
     public boolean verify(String email, int token) {
         Optional<Users> usersOptional = usersRepository.findByUsername(email);
         if (usersOptional.isPresent()) {
@@ -62,6 +73,14 @@ public class PasswordService {
         }
     }
 
+    /**
+     * Handles resetting a user's password.
+     * The user must provide a valid email, token, and password.
+     * @param email - email to find account
+     * @param token - token to verify session is valid
+     * @param password - password verification to ensure user owns account
+     * @return - true if user could be found and verified, false otherwise
+     */
     public boolean reset(String email, int token, String password) {
         Optional<Users> usersOptional = usersRepository.findByUsername(email);
         if (usersOptional.isPresent()) {

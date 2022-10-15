@@ -10,6 +10,7 @@ import edu.uwp.appfactory.tow.services.email.AsyncEmailService;
 import edu.uwp.appfactory.tow.webSecurityConfig.models.ERole;
 import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -38,16 +39,19 @@ public class TCAdminService {
     }
 
     /**
-     * GET
+     * Retrieves the TCAdmin using a UUID.
+     * @param userId - UUID of TCAdmin to retrieve
+     * @return user if UUID is present in database, otherwise null
      */
     public TCAdminResponse get(UUID userId) {
         Optional<TCAdmin> user = tcAdminRepository.findById(userId);
         return user.map(tcMapper::map).orElse(null);
     }
 
-
     /**
-     * POST
+     * Registers a new TCAdmin.
+     * @param tcAdminRequest - TCAdmin information to create a new account
+     * @return token response of newly created account, otherwise 400 error
      */
     public ResponseEntity<?> register(TCAdminRequest tcAdminRequest) {
         if (usersRepository.existsByEmail(tcAdminRequest.getEmail())) {
@@ -68,7 +72,7 @@ public class TCAdminService {
             TestVerifyResponse x = new TestVerifyResponse(tcAdmin.getVerifyToken());
             return ResponseEntity.ok(x);
         } else {
-            return ResponseEntity.status(400).build(); //TODO:Not sure if .build is correct
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
 
@@ -81,7 +85,10 @@ public class TCAdminService {
      * DELETE
      */
 
-
+    /**
+     * Generates a random 6 character length UUID.
+     * @return UUID converted to a String
+     */
     private String generateEmailUUID() {
         return UUID.randomUUID().toString().replace("-", "");
     }

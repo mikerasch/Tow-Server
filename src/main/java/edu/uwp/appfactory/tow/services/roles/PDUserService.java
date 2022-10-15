@@ -41,16 +41,20 @@ public class PDUserService {
     }
 
     /**
-     * GET
+     * Retrieves the User using a UUID.
+     * @param userId - UUID of user to retrieve
+     * @return user if UUID is present in database, otherwise null
      */
     public PDUser get(UUID userId) {
         Optional<PDUser> user = pdUserRepository.findById(userId);
         return user.orElse(null);
     }
 
-
     /**
-     * POST
+     * Registers a new PD user.
+     * @param pdUserRequest - PD user information to be added.
+     * @param token - token to ensure request is authorized
+     * @return information of new PD user if successful, else null
      */
     public PDUAuthResponse register(PDUserRequest pdUserRequest, String token) {
         if (usersRepository.existsByEmail(pdUserRequest.getEmail())) {
@@ -95,6 +99,10 @@ public class PDUserService {
      * DELETE
      */
 
+    /**
+     * Generates a random 6 character length UUID.
+     * @return UUID converted to a String
+     */
     private String generatePDUserUUID() {
         return UUID.randomUUID().toString().replace("-", "").substring(0, 6);
     }

@@ -4,6 +4,7 @@ import edu.uwp.appfactory.tow.requestObjects.password.ForgotPassRequest;
 import edu.uwp.appfactory.tow.requestObjects.password.ResetPassRequest;
 import edu.uwp.appfactory.tow.requestObjects.password.VerifyPassRequest;
 import edu.uwp.appfactory.tow.services.roles.PasswordService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,7 +12,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 /**
- * Password reset routes
+ * Password reset end points.
  */
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -20,17 +21,21 @@ public class PasswordController {
 
     private final PasswordService passwordService;
 
+    /**
+     * Parameterized constructor for creating a new PasswordController instance
+     * @param passwordService - service to handle verify/reset/forget requests
+     */
     public PasswordController(PasswordService passwordService) {
         this.passwordService = passwordService;
     }
 
     /**
-     * launches an email used to start the password reset process
-     * @param forgotPassRequest
-     * @return
+     * Sends an email used to start the password reset process.
+     * @param forgotPassRequest user information for password reset
+     * @return ResponseEntity HttpStatus, 204 if successful, else 400
      */
     @PatchMapping("/forgot")
-    public ResponseEntity<?> forgot(@RequestBody ForgotPassRequest forgotPassRequest) {
+    public ResponseEntity<HttpStatus> forgot(@RequestBody ForgotPassRequest forgotPassRequest) {
         return passwordService.forgot(forgotPassRequest)
                 ? ResponseEntity.status(NO_CONTENT).build()
                 : ResponseEntity.status(BAD_REQUEST).build();

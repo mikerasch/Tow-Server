@@ -14,7 +14,7 @@ import java.util.UUID;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 /**
- * this class is responsible for registering and retrieving PD admin information.
+ * Responsible for registering and retrieving PD admin information.
  */
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -25,6 +25,12 @@ public class PDAdminController {
     private final JwtUtils jwtUtils;
     private final PDAdminService pdAdminService;
 
+    /**
+     * Parameterized constructor for creating a new PDAdminController instance.
+     * @param userService - service to access/provide useful user logic
+     * @param jwtUtils - handling management of JWT tokens for security
+     * @param pdAdminService - service to access/provide useful police department logic
+     */
     public PDAdminController(UserService userService, JwtUtils jwtUtils, PDAdminService pdAdminService) {
         this.userService = userService;
         this.jwtUtils = jwtUtils;
@@ -48,10 +54,11 @@ public class PDAdminController {
         }
     }
 
-
+    //todo Safeguard in the future.
     /**
-     * Registers a new admin in the system. Will need to be safeguarded in the future somehow. perhaps a godfather admin for
-     * both other types of admins.
+     * Registers a new admin in the system.
+     * @param pdAdminRequest - police department admin account information
+     * @return verification token if successful, else 400
      */
     @PostMapping("")
     public ResponseEntity<?> register(@RequestBody PDAdminRequest pdAdminRequest) {

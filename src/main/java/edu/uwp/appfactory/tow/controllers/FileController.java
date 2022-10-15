@@ -14,8 +14,9 @@ import java.io.IOException;
 import static org.springframework.http.HttpStatus.*;
 
 /**
- * This class contains routes that can take in and then send back file information when requested.
+ * Handles end points which can take in or send back file information.
  */
+/// TODO: 10/14/2022 Everything here looks incomplete, as the comments suggest
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/images")
@@ -24,6 +25,10 @@ public class FileController {
 
     private final HandleFileService handleFileService;
 
+    /**
+     * Parameterized constructor for creating a new FileController instance.
+     * @param handleFileService
+     */
     public FileController(HandleFileService handleFileService) {
         this.handleFileService = handleFileService;
     }

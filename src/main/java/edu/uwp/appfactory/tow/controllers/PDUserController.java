@@ -15,7 +15,7 @@ import java.util.UUID;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 /**
- * this class is used by pd admins to register and maintain PD user accounts.
+ * Used to create police department user accounts requiring a PD admin to register.
  */
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -26,6 +26,12 @@ public class PDUserController {
     private final JwtUtils jwtUtils;
     private final PDUserService pdUserService;
 
+    /**
+     * Parameterized constructor for creating a new PdUserController.
+     * @param userService - service to access/provide useful user logic
+     * @param jwtUtils - handling management of JWT tokens for security
+     * @param pdUserService - service to access/provide useful police department USER logic
+     */
     public PDUserController(UserService userService, JwtUtils jwtUtils, PDUserService pdUserService) {
         this.userService = userService;
         this.jwtUtils = jwtUtils;
@@ -33,8 +39,12 @@ public class PDUserController {
     }
 
     /**
-     * GET method that returns user based off of the UUID from the JWT token. Currently only
-     *     accessible by tc users, for gets with all auth options look at userroutes.
+     * Returns user based off the UUID from the JWT token. Only usable currently by TC users.
+     * For all other authentication options view the link below.
+     * @param jwtToken - jwt token to be used for further authorization, needs to be valid see below to refresh
+     * @return UUID information if successful, 400 otherwise
+     * @see edu.uwp.appfactory.tow.controllers.UserController
+     * @see edu.uwp.appfactory.tow.controllers.AuthController#refreshToken(String)
      */
     @GetMapping("")
     @PreAuthorize("hasRole('PDUSER')")
@@ -48,10 +58,12 @@ public class PDUserController {
         }
     }
 
-
     /**
-     * POST method that uses the users jwt for the admin preauth and the pdUserRequest object that contains
-     * the information of a user.
+     * Registers a new PD user using the PD admins jwt for further authentication.
+     * @param jwtToken - jwt token to be used for further authorization, needs to be valid see below to refresh
+     * @param pdUserRequest - contains the information of a user
+     * @return information relating to the newly created PD user, 400 otherwise
+     * @see edu.uwp.appfactory.tow.controllers.AuthController#refreshToken(String)
      */
     @PostMapping("")
     @PreAuthorize("hasRole('PDADMIN')")

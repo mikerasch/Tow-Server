@@ -18,6 +18,11 @@ public class UserService {
         this.usersRepository = usersRepository;
     }
 
+    /**
+     * Find a user by their ID.
+     * @param userId - UUID to search for.
+     * @return User if UUID exists, null otherwise
+     */
     public Users findById(UUID userId) {
         Optional<Users> user = usersRepository.findById(userId);
         return user.orElse(null);
@@ -41,6 +46,11 @@ public class UserService {
             return null;
     }
 
+    /**
+     * Delete a user from the database given there email.
+     * @param email - email address of user to delete
+     * @return true if delete was successful, false otherwise
+     */
     public boolean deleteByEmail(String email) {
         Optional<Users> userOpt = usersRepository.findByUsername(email);
         if (userOpt.isPresent()) {

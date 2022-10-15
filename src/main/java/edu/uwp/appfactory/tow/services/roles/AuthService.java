@@ -21,6 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.mail.Message;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.Optional;
@@ -53,10 +54,22 @@ public class AuthService {
         this.sendEmail = sendEmail;
     }
 
+    /**
+     * Used to refresh a jwtToken.
+     * @param jwtToken - jwtToken to be refreshed.
+     * @return - new jwt Token
+     */
     public String refreshToken(String jwtToken) {
         return jwtUtils.refreshJwtToken(jwtUtils.getUUIDFromJwtToken(jwtToken));
     }
 
+    /**
+     * Used for authentication a user.
+     * There are four possibilities: user does not exist in DB, user is not permitted, user not verified, or
+     * successfully authenticated.
+     * @param loginRequest - login user information to authenticate.
+     * @return Response Entity of user information if success, else BAD_REQUEST or UNAUTHORIZED
+     */
     public ResponseEntity<?> authenticateUser(LoginRequest loginRequest) {
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
@@ -95,6 +108,11 @@ public class AuthService {
         }
     }
 
+    /**
+     * Registration of a new Admin.
+     * @param adminRequest - admin information to begin authorization process
+     * @return - true if successfully registered, false otherwise
+     */
     public boolean registerAdmin(AdminRequest adminRequest) {
         if (usersRepository.existsByEmail(adminRequest.getEmail())) {
             Users user = new Users(adminRequest.getEmail(),

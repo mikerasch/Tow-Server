@@ -17,6 +17,12 @@ public class ContentBuilderService {
         this.templateEngine = templateEngine;
     }
 
+    /**
+     * Builds the password template to be used in sending an email.
+     * @param userName username to be processed in the email
+     * @param token token to be processed in the email
+     * @return result of the template with username and the token
+     */
     public String buildPasswordEmail(String userName, int token) {
         Context context = new Context();
         context.setVariable("userName", userName);
@@ -24,6 +30,12 @@ public class ContentBuilderService {
         return templateEngine.process("mailTemplatePassword", context);
     }
 
+    /**
+     * Builds the email tempalte to be used in sending an email
+     * @param userName username to be processed in the email
+     * @param verifyLink link to be processed in the email
+     * @return result of the template with username and verification link
+     */
     public String buildVerifyEmail(String userName, String verifyLink) {
         Context context = new Context();
         context.setVariable("userName", userName);
@@ -38,6 +50,13 @@ public class ContentBuilderService {
      * @param userName name of the user that needs reminding
      * @param verifyLink generated link that will route a user to the password reset page
      * @return returns the generated email
+     */
+    /**
+     * Contructs the email used by the chron job to send a user who has not completed
+     * the registration process.
+     * @param userName - name of the user that needs reminding
+     * @param verifyLink - generated link that will route a user to the password reset page
+     * @return returns the generated template with the username and verification link
      */
     public String buildReminderEmail(String userName, String verifyLink) {
         Context context = new Context();

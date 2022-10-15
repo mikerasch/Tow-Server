@@ -40,16 +40,19 @@ public class PDAdminService {
     }
 
     /**
-     * GET
+     * Retrieves a PDAdmin given the users UUID.
+     * @param userId - UUID of user to be retrieved.
+     * @return - PdAdmin if UUID exists in database, null otherwise
      */
     public PDAdmin get(UUID userId) {
         Optional<PDAdmin> user = pdAdminRepository.findById(userId);
         return user.orElse(null);
     }
 
-
     /**
-     * POST
+     * Registers a new PD Admin. Only allows one unique email address per PD admin.
+     * @param pdAdminRequest - PD admin account information
+     * @return verification token if successful, otherwise, error 400
      */
     public ResponseEntity<?> register(PDAdminRequest pdAdminRequest) {
         if(usersRepository.existsByEmail(pdAdminRequest.getEmail())){
@@ -86,7 +89,10 @@ public class PDAdminService {
      * DELETE
      */
 
-
+    /**
+     * Generates a random UUID without "-".
+     * @return UUID converted to a String
+     */
     private String generateEmailUUID() {
         return UUID.randomUUID().toString().replace("-", "");
     }

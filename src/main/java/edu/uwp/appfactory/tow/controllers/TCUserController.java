@@ -15,7 +15,7 @@ import java.util.UUID;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 /**
- * this class is used by tc admins to register and maintain tc user accounts.
+ * Register and maintain tc user accounts. Only TC Admins can access these routes.
  */
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -26,6 +26,12 @@ public class TCUserController {
     private final JwtUtils jwtUtils;
     private final TCUserService tcUserService;
 
+    /**
+     * Parameterized constructor for creating a new TCUserController.
+     * @param userService - service to access user repository and pdAdmin repository
+     * @param jwtUtils - handling management of JWT tokens for security
+     * @param tcUserService - service to handle registration and maintenance of tow company users.
+     */
     public TCUserController(UserService userService, JwtUtils jwtUtils, TCUserService tcUserService) {
         this.userService = userService;
         this.jwtUtils = jwtUtils;
@@ -33,8 +39,11 @@ public class TCUserController {
     }
 
     /**
-     * GET method that returns user based off of the UUID from the JWT token. Currently only
-     * accessible by tc users, for gets with all auth options look at userroutes.
+     * Retrieves user based off the UUID from the JWT token.
+     * Only usable by tc users, for other auth options, see below.
+     * @param jwtToken jwt token of tc user
+     * @return UUID information of TC user, else 400
+     * @see edu.uwp.appfactory.tow.controllers.UserController
      */
     @GetMapping("")
     @PreAuthorize("hasRole('TCUSER')")
@@ -49,7 +58,10 @@ public class TCUserController {
     }
 
     /**
-     * GET ALL
+     * Retrieves all user based off the UUID from the JWT token.
+     * @param jwtToken Only usable by TC admins, for other auth options, see below
+     * @return list of all tow company users, else 400
+     * @see edu.uwp.appfactory.tow.controllers.UserController
      */
     @GetMapping("/all")
     @PreAuthorize("hasRole('TCADMIN')")
@@ -67,6 +79,12 @@ public class TCUserController {
     /**
      * POST method that uses the users jwt for the admin preauth and the pdUserRequest object that contains
      * the information of a user.
+     */
+    /**
+     * Registers a new tow company user.
+     * @param jwtToken - jwt token of tc administrator
+     * @param tcUserRequest contains information of new tow company user to be added
+     * @return new tow company users token, else 400
      */
     @PreAuthorize("hasRole('TCADMIN')")
     @PostMapping("")
