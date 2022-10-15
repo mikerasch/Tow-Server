@@ -1,9 +1,8 @@
 package edu.uwp.appfactory.tow.services.locator;
 
 import edu.uwp.appfactory.tow.entities.TCUser;
-import edu.uwp.appfactory.tow.repositories.PDUserRepository;
 import edu.uwp.appfactory.tow.repositories.TCUserRepository;
-import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
+import java.util.Collections;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
@@ -15,21 +14,14 @@ import java.util.UUID;
  */
 @Controller
 public class LocationService {
-
-    private final JwtUtils jwtUtils;
     private final TCUserRepository tcUserRepository;
-    private final PDUserRepository pdUserRepository;
 
     /**
      * Parameterized constructor for creating a new LocationService.
-     * @param jwtUtils - handling management of JWT tokens for security
      * @param tcUserRepository - tow company user repository for management purposes
-     * @param pdUserRepository - police department user repository for management purposes
      */
-    public LocationService(JwtUtils jwtUtils, TCUserRepository tcUserRepository, PDUserRepository pdUserRepository) {
-        this.jwtUtils = jwtUtils;
+    public LocationService(TCUserRepository tcUserRepository) {
         this.tcUserRepository = tcUserRepository;
-        this.pdUserRepository = pdUserRepository;
     }
 
     /**
@@ -42,20 +34,15 @@ public class LocationService {
      */
     public boolean setLocation(float latitude, float longitude, boolean active, String userUUID) {
         Optional<TCUser> tcUserOptional = tcUserRepository.findById(UUID.fromString(userUUID));
-
-        if (tcUserOptional.isPresent()) {
-            TCUser tcUser = tcUserOptional.get();
-            System.out.println(tcUser);
-            tcUser.setLongitude(longitude);
-            System.out.println(tcUser.getLongitude());
-            tcUser.setLatitude(latitude);
-            tcUser.setActive(active);
-            System.out.println(tcUser.getActive());
-            tcUserRepository.save(tcUser);
-            return true;
-        } else {
+        if(tcUserOptional.isEmpty()){
             return false;
         }
+        TCUser tcUser = tcUserOptional.get();
+        tcUser.setLongitude(longitude);
+        tcUser.setLatitude(latitude);
+        tcUser.setActive(active);
+        tcUserRepository.save(tcUser);
+        return true;
     }
 
     /**
@@ -67,10 +54,9 @@ public class LocationService {
      */
     public List<TCUser> findByDistance(float latitude, float longitude, int radius) {
         List<TCUser> drivers = tcUserRepository.findByDistance(latitude, longitude, radius);
-        if (drivers.size() != 0) {
+        if (!drivers.isEmpty()) {
             return drivers;
-        } else {
-            return null;
         }
+        return Collections.emptyList();
     }
 }

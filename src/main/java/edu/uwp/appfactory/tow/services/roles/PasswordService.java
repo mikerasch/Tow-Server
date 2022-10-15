@@ -20,12 +20,13 @@ public class PasswordService {
     private final UsersRepository usersRepository;
     private final PasswordEncoder encoder;
     private final AsyncEmailService sender;
-
+    private final Random random;
     @Autowired
     public PasswordService(UsersRepository usersRepository, PasswordEncoder encoder, AsyncEmailService sender) {
         this.usersRepository = usersRepository;
         this.encoder = encoder;
         this.sender = sender;
+        random = new Random();
     }
 
     /**
@@ -34,25 +35,25 @@ public class PasswordService {
      * @return - true if user exists, false otherwise
      */
     public boolean forgot(ForgotPassRequest forgotPassRequest) {
-        System.out.println(forgotPassRequest.getEmail());
         Optional<Users> usersOptional = usersRepository.findByUsername(forgotPassRequest.getEmail());
-        if (usersOptional.isPresent()) {
-            Users user = usersOptional.get();
-
-            // generate random 6 digit token
-            Random rnd = new Random();
-            int number = rnd.nextInt(999999);
-            String tokenString = String.format("%06d", number);
-            int token = Integer.parseInt(tokenString);
-
-            user.setResetToken(token);
-            user.setResetDate(String.valueOf(LocalDate.now()));
-            usersRepository.save(user);
-            sender.sendResetEmailAsync(user, token);
-            return true;
-        } else {
+        if(usersOptional.isEmpty()){
             return false;
         }
+        Users user = usersOptional.get();
+        int token = generateRandomToken();
+        user.setResetToken(token);
+        user.setResetDate(String.valueOf(LocalDate.now()));
+        usersRepository.save(user);
+        sender.sendResetEmailAsync(user, token);
+        return true;
+    }
+
+    /**
+     * Generates a random 6 digit token.
+     * @return 6 digit token
+     */
+    private int generateRandomToken() {
+        return random.nextInt(900000) + 100000;
     }
 
     /**
@@ -63,14 +64,13 @@ public class PasswordService {
      */
     public boolean verify(String email, int token) {
         Optional<Users> usersOptional = usersRepository.findByUsername(email);
-        if (usersOptional.isPresent()) {
-            Users user = usersOptional.get();
-            LocalDate userResetDate = LocalDate.parse(user.getResetDate());
-            Period periodBetween = Period.between(userResetDate, LocalDate.now());
-            return periodBetween.getDays() < 8 && user.getResetToken() == token;
-        } else {
+        if(usersOptional.isEmpty()){
             return false;
         }
+        Users user = usersOptional.get();
+        LocalDate userResetDate = LocalDate.parse(user.getResetDate());
+        Period periodBetween = Period.between(userResetDate, LocalDate.now());
+        return periodBetween.getDays() < 8 && user.getResetToken() == token;
     }
 
     /**
@@ -83,20 +83,17 @@ public class PasswordService {
      */
     public boolean reset(String email, int token, String password) {
         Optional<Users> usersOptional = usersRepository.findByUsername(email);
-        if (usersOptional.isPresent()) {
-            Users user = usersOptional.get();
-            LocalDate userResetDate = LocalDate.parse(user.getResetDate());
-            Period periodBetween = Period.between(userResetDate, LocalDate.now());
-
-            if (periodBetween.getDays() < 8 && user.getResetToken() == token) {
-                user.setPassword(encoder.encode(password));
-                usersRepository.save(user);
-                return true;
-            } else {
-                return false;
-            }
-        } else {
+        if(usersOptional.isEmpty()){
             return false;
         }
+        Users user = usersOptional.get();
+        LocalDate userResetDate = LocalDate.parse(user.getResetDate());
+        Period periodBetween = Period.between(userResetDate, LocalDate.now());
+        if(periodBetween.getDays() < 8 && user.getResetToken().equals(token)){
+            user.setPassword(encoder.encode(password));
+            usersRepository.save(user);
+            return true;
+        }
+        return false;
     }
 }

@@ -54,7 +54,7 @@ public class TCAdminService {
      * @return token response of newly created account, otherwise 400 error
      */
     public ResponseEntity<?> register(TCAdminRequest tcAdminRequest) {
-        if (usersRepository.existsByEmail(tcAdminRequest.getEmail())) {
+        if (!usersRepository.existsByEmail(tcAdminRequest.getEmail())) {
             TCAdmin tcAdmin = new TCAdmin(tcAdminRequest.getEmail(),
                     tcAdminRequest.getEmail(),
                     encoder.encode(tcAdminRequest.getPassword()),
@@ -71,19 +71,9 @@ public class TCAdminService {
             sendEmail.sendEmailAsync(tcAdmin);
             TestVerifyResponse x = new TestVerifyResponse(tcAdmin.getVerifyToken());
             return ResponseEntity.ok(x);
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
-
-    /**
-     * PATCH
-     */
-
-
-    /**
-     * DELETE
-     */
 
     /**
      * Generates a random 6 character length UUID.
@@ -92,4 +82,6 @@ public class TCAdminService {
     private String generateEmailUUID() {
         return UUID.randomUUID().toString().replace("-", "");
     }
+
+    //todo add Patch and Delete
 }

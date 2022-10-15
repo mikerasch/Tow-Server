@@ -5,6 +5,7 @@ import edu.uwp.appfactory.tow.requestObjects.rolerequest.TCUserRequest;
 import edu.uwp.appfactory.tow.stomp.models.MessageRequest;
 import edu.uwp.appfactory.tow.stomp.models.MessageResponse;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -35,21 +36,20 @@ public class MessageController {
 
     @MessageMapping("/guestchat")  // here
     @SendTo("/topic/guestchats")  // here
-    public MessageResponse handleMessaging(MessageRequest message) throws Exception {
+    public MessageResponse handleMessaging(MessageRequest message) throws InterruptedException {
         Thread.sleep(1000); // simulated delay for actual server behavior
         return new MessageResponse(HtmlUtils.htmlEscape(message.getMessage()));
     }
 
     @MessageMapping("/guestupdate")
     @SendTo("/topic/guestupdates")
-    public MessageResponse handleUserTyping(MessageRequest message) throws Exception {
+    public MessageResponse handleUserTyping(MessageRequest message){
         return new MessageResponse("Someone is typing...");
     }
 
     @MessageMapping("/driverconnect")
     @SendTo("/topic/driverconnected")
-    public MessageResponse handleconnectionrequest(MessageRequest message) throws Exception {
-
+    public MessageResponse handleConnectionRequest(MessageRequest message){
         return new MessageResponse("Driver connecting....");
     }
 
@@ -57,17 +57,14 @@ public class MessageController {
     @SendToUser("/queue/greetings")
     public String reply(@Payload String message,
                         Principal user) {
-        System.out.println(message);
-        System.out.println(user );
         return user.toString();
     }
 
     @PreAuthorize("hasRole('TCUSER')")
     @MessageMapping("/my-location")
     //@SendTo("/topic/setlocation")
-    public ResponseEntity<?> setlocation(TCULocationRequest setRequest) throws Exception {
+    public ResponseEntity<?> setlocation(TCULocationRequest setRequest){
         String userUUID = jwtUtils.getUUIDFromJwtToken(setRequest.getJwtToken());
-        System.out.println("lat: " + setRequest.getLatitude() + " long: " + setRequest.getLongitude() + " active: " + setRequest.isActive());
         return locationService.setLocation(setRequest.getLatitude(), setRequest.getLongitude(), setRequest.isActive(), userUUID)
                 ? ResponseEntity.status(204).body(null)
                 : ResponseEntity.status(400).build();
@@ -78,23 +75,18 @@ public class MessageController {
     @PreAuthorize("hasRole('PDUSER')")
     @MessageMapping("/driver-locations")
     public ResponseEntity<?> getLocations(@RequestBody TCUserRequest driversRequest) {
-        System.out.println("lat: " + driversRequest.getLatitude() + " long: " + driversRequest.getLongitude() + " Radius: " + driversRequest.getRadius());
-
         List<?> data = locationService.findByDistance(driversRequest.getLatitude(), driversRequest.getLongitude(), driversRequest.getRadius());
-
-        if (data != null) {
-            return ResponseEntity.ok(data);
-        } else {
-            return ResponseEntity.status(400).build();
+        if(data.isEmpty()){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
+        return ResponseEntity.ok(data);
     }
 
 
 
     @MessageMapping("/guestjoin")
     @SendTo("/topic/guestnames")
-    public MessageResponse handleMemberJoins(String string) throws Exception {
-        System.out.println(string);
+    public MessageResponse handleMemberJoins(String string){
         return new MessageResponse(string);
     }
 

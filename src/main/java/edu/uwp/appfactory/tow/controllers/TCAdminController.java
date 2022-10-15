@@ -1,7 +1,6 @@
 package edu.uwp.appfactory.tow.controllers;
 
 import edu.uwp.appfactory.tow.services.roles.TCAdminService;
-import edu.uwp.appfactory.tow.services.roles.UserService;
 import edu.uwp.appfactory.tow.requestObjects.rolerequest.TCAdminRequest;
 import edu.uwp.appfactory.tow.responseObjects.TCAdminResponse;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
@@ -19,19 +18,15 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 @RestController
 @RequestMapping("/tcadmins")
 public class TCAdminController {
-
-    private final UserService userService;
     private final JwtUtils jwtUtils;
     private final TCAdminService tcAdminService;
 
     /**
      * Parameterized constructor for creating a new TCAdminController.
-     * @param userService - service to access/provide useful user logic
      * @param jwtUtils - handling management of JWT tokens for security
      * @param tcAdminService - service to access/provide useful tow company ADMIN logic
      */
-    public TCAdminController(UserService userService, JwtUtils jwtUtils, TCAdminService tcAdminService) {
-        this.userService = userService;
+    public TCAdminController(JwtUtils jwtUtils, TCAdminService tcAdminService) {
         this.jwtUtils = jwtUtils;
         this.tcAdminService = tcAdminService;
     }
@@ -55,9 +50,6 @@ public class TCAdminController {
 
     //todo safeguard in the future
     /**
-     * Registers a new tc admin in the system.
-     */
-    /**
      * Registers a new tc admin.
      * @param tcAdminRequest - tow company admin account information
      * @return token of newly created tc admin, 400 otherwise
@@ -67,13 +59,5 @@ public class TCAdminController {
         return tcAdminService.register(tcAdminRequest);
 
     }
-
-    /**
-     * PATCH
-     */
-
-
-    /**
-     * DELETE
-     */
+    //todo add Patch and Delete
 }

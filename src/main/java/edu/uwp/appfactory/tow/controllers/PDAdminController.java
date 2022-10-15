@@ -1,7 +1,6 @@
 package edu.uwp.appfactory.tow.controllers;
 
 import edu.uwp.appfactory.tow.services.roles.PDAdminService;
-import edu.uwp.appfactory.tow.services.roles.UserService;
 import edu.uwp.appfactory.tow.entities.PDAdmin;
 import edu.uwp.appfactory.tow.requestObjects.rolerequest.PDAdminRequest;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
@@ -20,19 +19,15 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 @RestController
 @RequestMapping("/pdadmins")
 public class PDAdminController {
-
-    private final UserService userService;
     private final JwtUtils jwtUtils;
     private final PDAdminService pdAdminService;
 
     /**
      * Parameterized constructor for creating a new PDAdminController instance.
-     * @param userService - service to access/provide useful user logic
      * @param jwtUtils - handling management of JWT tokens for security
      * @param pdAdminService - service to access/provide useful police department logic
      */
-    public PDAdminController(UserService userService, JwtUtils jwtUtils, PDAdminService pdAdminService) {
-        this.userService = userService;
+    public PDAdminController(JwtUtils jwtUtils, PDAdminService pdAdminService) {
         this.jwtUtils = jwtUtils;
         this.pdAdminService = pdAdminService;
     }

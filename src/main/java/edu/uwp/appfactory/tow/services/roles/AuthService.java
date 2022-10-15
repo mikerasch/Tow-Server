@@ -1,10 +1,8 @@
 package edu.uwp.appfactory.tow.services.roles;
 
 import edu.uwp.appfactory.tow.entities.Users;
-import edu.uwp.appfactory.tow.repositories.PDAdminRepository;
 import edu.uwp.appfactory.tow.requestObjects.rolerequest.AdminRequest;
 import edu.uwp.appfactory.tow.requestObjects.rolerequest.LoginRequest;
-import edu.uwp.appfactory.tow.services.email.AsyncEmailService;
 import edu.uwp.appfactory.tow.webSecurityConfig.models.ERole;
 import edu.uwp.appfactory.tow.webSecurityConfig.payload.response.JwtResponse;
 import edu.uwp.appfactory.tow.webSecurityConfig.payload.response.MessageResponse;
@@ -20,8 +18,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import javax.mail.Message;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.Optional;
@@ -39,19 +35,15 @@ public class AuthService {
 
     private final AuthenticationManager authenticationManager;
     private final UsersRepository usersRepository;
-    private final PDAdminRepository pdAdminRepository;
     private final PasswordEncoder encoder;
     private final JwtUtils jwtUtils;
-    private final AsyncEmailService sendEmail;
 
     @Autowired
-    public AuthService(AuthenticationManager authenticationManager, UsersRepository usersRepository, PDAdminRepository pdAdminRepository, PasswordEncoder encoder, JwtUtils jwtUtils, AsyncEmailService sendEmail) {
+    public AuthService(AuthenticationManager authenticationManager, UsersRepository usersRepository,PasswordEncoder encoder, JwtUtils jwtUtils) {
         this.authenticationManager = authenticationManager;
         this.usersRepository = usersRepository;
-        this.pdAdminRepository = pdAdminRepository;
         this.encoder = encoder;
         this.jwtUtils = jwtUtils;
-        this.sendEmail = sendEmail;
     }
 
     /**

@@ -29,6 +29,7 @@ public class ScheduledTasksService {
     private final ContentBuilderService contentBuilderService;
     private final JavaMailSender javaMailSender;
     private final Logger logger = LoggerFactory.getLogger(ScheduledTasksService.class);
+    private static final String DONOTREPLY = "DoNotReply";
     @Value("${SPRING_DNS}")
     private String dns;
 
@@ -51,7 +52,7 @@ public class ScheduledTasksService {
 
                 MimeMessagePreparator messagePreparation = mimeMessage -> {
                     MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
-                    messageHelper.setFrom("DoNotReply", "DoNotReply");
+                    messageHelper.setFrom(DONOTREPLY, DONOTREPLY);
                     messageHelper.setTo(entity.getEmail());
                     messageHelper.setSubject("Email Verification");
                     messageHelper.setText(message, true);
@@ -86,7 +87,7 @@ public class ScheduledTasksService {
 
                     MimeMessagePreparator messagePreparation = mimeMessage -> {
                         MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
-                        messageHelper.setFrom("DoNotReply", "DoNotReply");
+                        messageHelper.setFrom(DONOTREPLY, DONOTREPLY);
                         messageHelper.setTo(entity.getEmail());
                         messageHelper.setSubject("Email Verification Reminder");
                         messageHelper.setText(message, true);

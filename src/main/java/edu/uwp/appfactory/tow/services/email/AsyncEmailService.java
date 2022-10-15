@@ -24,6 +24,7 @@ public class AsyncEmailService {
     private final ContentBuilderService contentBuilderService;
     private final FailedEmailRepository failedEmailRepository;
     private final Logger logger = LoggerFactory.getLogger(AsyncEmailService.class);
+    private static final String DONOTREPLY = "DoNotReply";
     @Value("${SPRING_DNS}")
     private String dns;
 
@@ -48,7 +49,7 @@ public class AsyncEmailService {
 
             MimeMessagePreparator messagePreparation = mimeMessage -> {
                 MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
-                messageHelper.setFrom("DoNotReply", "DoNotReply");
+                messageHelper.setFrom(DONOTREPLY, DONOTREPLY);
                 messageHelper.setTo(user.getEmail());
                 messageHelper.setSubject("Email Verification");
                 messageHelper.setText(message, true);
@@ -83,7 +84,7 @@ public class AsyncEmailService {
 
             MimeMessagePreparator messagePreparation = mimeMessage -> {
                 MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
-                messageHelper.setFrom("DoNotReply", "DoNotReply");
+                messageHelper.setFrom(DONOTREPLY, DONOTREPLY);
                 messageHelper.setTo(user.getEmail());
                 messageHelper.setSubject("Password Reset");
                 messageHelper.setText(message, true);
