@@ -25,6 +25,8 @@ import java.util.List;
  * It limtis the type of files and the size. The system automatically limits the number of files to one by
  * replacing the current photo with the newest entry.
  */
+
+//todo fix this class
 @Controller
 public class HandleFileService {
 

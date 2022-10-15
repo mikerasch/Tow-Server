@@ -39,16 +39,19 @@ public class TCAdminService {
     }
 
     /**
-     * GET
+     * Retrieves the TCAdmin using a UUID.
+     * @param userId - UUID of TCAdmin to retrieve
+     * @return user if UUID is present in database, otherwise null
      */
     public TCAdminResponse get(UUID userId) {
         Optional<TCAdmin> user = tcAdminRepository.findById(userId);
         return user.map(tcMapper::map).orElse(null);
     }
 
-
     /**
-     * POST
+     * Registers a new TCAdmin.
+     * @param tcAdminRequest - TCAdmin information to create a new account
+     * @return token response of newly created account, otherwise 400 error
      */
     public ResponseEntity<?> register(TCAdminRequest tcAdminRequest) {
         if (usersRepository.existsByEmail(tcAdminRequest.getEmail())) {
@@ -82,7 +85,10 @@ public class TCAdminService {
      * DELETE
      */
 
-
+    /**
+     * Generates a random 6 character length UUID.
+     * @return UUID converted to a String
+     */
     private String generateEmailUUID() {
         return UUID.randomUUID().toString().replace("-", "");
     }

@@ -11,7 +11,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * This class is used by both TC and PD user in  order to store and the find by geodata.
+ * This class is used by both TC and PD user in order to store and the find by geodata.
  */
 @Controller
 public class LocationService {
@@ -20,6 +20,12 @@ public class LocationService {
     private final TCUserRepository tcUserRepository;
     private final PDUserRepository pdUserRepository;
 
+    /**
+     * Parameterized constructor for creating a new LocationService.
+     * @param jwtUtils - handling management of JWT tokens for security
+     * @param tcUserRepository - tow company user repository for management purposes
+     * @param pdUserRepository - police department user repository for management purposes
+     */
     public LocationService(JwtUtils jwtUtils, TCUserRepository tcUserRepository, PDUserRepository pdUserRepository) {
         this.jwtUtils = jwtUtils;
         this.tcUserRepository = tcUserRepository;
@@ -32,7 +38,7 @@ public class LocationService {
      * @param longitude the longitude of the tcuser
      * @param active a boolean that we need to set true when they are available for a tow and false when they are not.
      * @param userUUID the uuid od the user
-     * @return
+     * @return true if userUUID could be found, false otherwise
      */
     public boolean setLocation(float latitude, float longitude, boolean active, String userUUID) {
         Optional<TCUser> tcUserOptional = tcUserRepository.findById(UUID.fromString(userUUID));

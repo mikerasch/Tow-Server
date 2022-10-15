@@ -15,7 +15,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 /**
- * The async email class is responsible for sending the initial verification email and the password reset emails.
+ * Responsible for sending the initial verification email and the password reset email.
  */
 @Service
 public class AsyncEmailService {
@@ -72,8 +72,8 @@ public class AsyncEmailService {
     /**
      * Nearly identical to the sendemailasync method above but needs the users jwt token to
      * know which account to begin the reset process with.
-     * @param user
-     * @param token
+     * @param user user that is requesting a reset
+     * @param token token of the user for authentication purposes
      */
     @Async
     public void sendResetEmailAsync(Users user, int token) {

@@ -38,23 +38,25 @@ public class TCUserService {
     }
 
     /**
-     * GET
+     * Retrieves the TCUser using a UUID.
+     * @param userId - UUID of TCUser to retrieve.
+     * @return user if UUID is present in database, otherwise null
      */
     public TCUser get(UUID userId) {
         Optional<TCUser> user = tcUserRepository.findById(userId);
         return user.orElse(null);
     }
 
-    /**
-     * GET ALL
-     */
+    //todo look into what this does and why it's called findAllAdmin in a USER service
     public List<TCUser> getAll(UUID adminUUID) {
         return tcUserRepository.findAllByAdminUUID(adminUUID);
     }
 
-
     /**
-     * POST
+     * Registers a new TCUser.
+     * @param tcUserRequest - TCUser information to create a new account
+     * @param adminUUID - AdminUUID to map to the user it will create.
+     * @return token of newly created account if successful, otherwise 400 error
      */
     public ResponseEntity<?> register(TCUserRequest tcUserRequest, UUID adminUUID) {
         if (usersRepository.existsByEmail(tcUserRequest.getEmail())) {
@@ -91,7 +93,10 @@ public class TCUserService {
      * DELETE
      */
 
-
+    /**
+     * Generates a random 6 character length UUID.
+     * @return UUID converted to a String
+     */
     private String generateEmailUUID() {
         return UUID.randomUUID().toString().replace("-", "");
     }
