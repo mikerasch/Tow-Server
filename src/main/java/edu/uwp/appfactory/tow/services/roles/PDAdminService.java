@@ -51,7 +51,7 @@ public class PDAdminService {
      * @param pdAdminRequest - PD admin account information
      * @return verification token if successful, otherwise, error 400
      */
-    public ResponseEntity<?> register(PDAdminRequest pdAdminRequest) {
+    public ResponseEntity<TestVerifyResponse> register(PDAdminRequest pdAdminRequest) {
         if(usersRepository.existsByEmail(pdAdminRequest.getEmail())){
             return ResponseEntity.status(BAD_REQUEST).build();
         }

@@ -41,7 +41,7 @@ public class UserController {
      */
     @GetMapping("")
     @PreAuthorize("hasRole('PDADMIN') or hasRole('PDUSER') or hasRole('TCADMIN') or hasRole('TCUSER')")
-    public ResponseEntity<?> get(@RequestHeader("Authorization") final String jwtToken) {
+    public ResponseEntity<Users> get(@RequestHeader("Authorization") final String jwtToken) {
         String userId = jwtUtils.getUUIDFromJwtToken(jwtToken);
         Users data = userService.findById(UUID.fromString(userId));
         if (data != null) {
@@ -58,8 +58,8 @@ public class UserController {
      * @return returns response message regarding the completion of the delete.
      */
     @DeleteMapping("")
-    public ResponseEntity<?> delete(@RequestHeader("email") final String email) {
-        return userService.deleteByEmail(email) ? ResponseEntity.status(HttpStatus.NO_CONTENT).build() : ResponseEntity.status(400).body(null);
+    public ResponseEntity<HttpStatus> delete(@RequestHeader("email") final String email) {
+        return userService.deleteByEmail(email) ? ResponseEntity.status(HttpStatus.NO_CONTENT).build() : ResponseEntity.status(BAD_REQUEST).body(null);
     }
 
     /**
@@ -73,7 +73,7 @@ public class UserController {
     //todo: JWT AUTH
     @PatchMapping(value = "")
     @PreAuthorize("hasRole('PDADMIN') or hasRole('PDUSER') or hasRole('TCADMIN') or hasRole('TCUSER')")
-    public ResponseEntity<?> update(@RequestHeader("Authorization") final String jwtToken,
+    public ResponseEntity<Users> update(@RequestHeader("Authorization") final String jwtToken,
                                     @RequestBody UpdateRequest updateRequest) {
         String userId = jwtUtils.getUUIDFromJwtToken(jwtToken);
         Users data = userService.updateByUUID(UUID.fromString(userId), updateRequest.getFirstname(), updateRequest.getLastname(), updateRequest.getEmail(), updateRequest.getPhone());

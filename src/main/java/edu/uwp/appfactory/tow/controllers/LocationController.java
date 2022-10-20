@@ -1,9 +1,11 @@
 package edu.uwp.appfactory.tow.controllers;
 
+import edu.uwp.appfactory.tow.entities.TCUser;
 import edu.uwp.appfactory.tow.requestObjects.location.DriversRadiusRequest;
 import edu.uwp.appfactory.tow.requestObjects.location.TCULocationRequest;
 import edu.uwp.appfactory.tow.services.locator.LocationService;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -44,8 +46,8 @@ public class LocationController {
      */
     @PreAuthorize("hasRole('TCUSER')")
     @PatchMapping("/my-location")
-    public ResponseEntity<?> setLocation(@RequestHeader("Authorization") final String jwtToken,
-                                         @RequestBody TCULocationRequest setRequest) {
+    public ResponseEntity<HttpStatus> setLocation(@RequestHeader("Authorization") final String jwtToken,
+                                                  @RequestBody TCULocationRequest setRequest) {
         String userUUID = jwtUtils.getUUIDFromJwtToken(jwtToken);
         return locationService.setLocation(setRequest.getLatitude(), setRequest.getLongitude(), setRequest.isActive(), userUUID)
                 ? ResponseEntity.status(NO_CONTENT).body(null)
@@ -63,8 +65,8 @@ public class LocationController {
      */
     @PreAuthorize("hasRole('PDUSER')")
     @GetMapping("/driver-locations")
-    public ResponseEntity<?> getLocations(@RequestBody DriversRadiusRequest driversRequest) {
-        List<?> data = locationService.findByDistance(driversRequest.getLatitude(), driversRequest.getLongitude(), driversRequest.getRadius());
+    public ResponseEntity<List<TCUser>> getLocations(@RequestBody DriversRadiusRequest driversRequest) {
+        List<TCUser> data = locationService.findByDistance(driversRequest.getLatitude(), driversRequest.getLongitude(), driversRequest.getRadius());
         if(data.isEmpty()){
             return ResponseEntity.status(BAD_REQUEST).build();
         }

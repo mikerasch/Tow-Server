@@ -3,9 +3,11 @@ package edu.uwp.appfactory.tow.controllers;
 import edu.uwp.appfactory.tow.requestObjects.rolerequest.AdminRequest;
 import edu.uwp.appfactory.tow.requestObjects.rolerequest.LoginRequest;
 import edu.uwp.appfactory.tow.services.roles.AuthService;
+import edu.uwp.appfactory.tow.webSecurityConfig.payload.response.JwtResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -53,7 +55,7 @@ public class AuthController {
      * @return Response entity which can be a JWTResponse or an HttpStatus
      */
     @PostMapping("/login")
-    public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<JwtResponse> authenticateUser(@RequestBody LoginRequest loginRequest) {
         return authService.authenticateUser(loginRequest);
     }
 
@@ -77,13 +79,13 @@ public class AuthController {
      * @return Response entity: 204 if success, String response otherwise
      */
     @GetMapping("/verification")
-    public ResponseEntity<?> verification(@RequestParam("token") final String token) {
+    public ResponseEntity<HttpStatus> verification(@RequestParam("token") final String token) {
         HttpStatus status = authService.verification(token);
         return switch (status) {
             case OK -> ResponseEntity.status(NO_CONTENT).build();
-            case FORBIDDEN -> ResponseEntity.status(FORBIDDEN).body("Link expired, account deleted");
-            case GONE -> ResponseEntity.status(GONE).body("User already verified");
-            default -> ResponseEntity.status(NOT_FOUND).body("Resource not found");
+            case FORBIDDEN -> throw new ResponseStatusException(FORBIDDEN, "Link expired, account deleted");
+            case GONE -> throw new ResponseStatusException(GONE, "User already verified");
+            default -> throw new ResponseStatusException(BAD_REQUEST, "Resource not found");
         };
     }
 }

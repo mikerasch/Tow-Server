@@ -7,6 +7,7 @@ import edu.uwp.appfactory.tow.services.roles.PasswordService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
@@ -47,10 +48,12 @@ public class PasswordController {
      * @return returns the response code to let the user know if it worked or not
      */
     @PatchMapping("/verify")
-    public ResponseEntity<?> verify(@RequestBody VerifyPassRequest verifyRequest) {
-        return passwordService.verify(verifyRequest.getEmail(), verifyRequest.getToken())
-                ? ResponseEntity.status(NO_CONTENT).build()
-                : ResponseEntity.status(400).body("Token expired or no associated user");
+    public ResponseEntity<HttpStatus> verify(@RequestBody VerifyPassRequest verifyRequest) {
+        boolean verify = passwordService.verify(verifyRequest.getEmail(), verifyRequest.getToken());
+        if(verify){
+            return ResponseEntity.status(NO_CONTENT).build();
+        }
+        throw new ResponseStatusException(BAD_REQUEST,"Token expired or no associated user");
     }
 
     /**
@@ -59,7 +62,7 @@ public class PasswordController {
      * @return success or failure code
      */
     @PatchMapping("/reset")
-    public ResponseEntity<?> reset(@RequestBody ResetPassRequest resetRequest) {
+    public ResponseEntity<HttpStatus> reset(@RequestBody ResetPassRequest resetRequest) {
         return passwordService.reset(resetRequest.getEmail(), resetRequest.getToken(), resetRequest.getPassword())
                 ? ResponseEntity.status(NO_CONTENT).build()
                 : ResponseEntity.status(BAD_REQUEST).build();

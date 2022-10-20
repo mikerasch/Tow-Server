@@ -58,7 +58,7 @@ public class TCUserService {
      * @param adminUUID - AdminUUID to map to the user it will create.
      * @return token of newly created account if successful, otherwise 400 error
      */
-    public ResponseEntity<?> register(TCUserRequest tcUserRequest, UUID adminUUID) {
+    public ResponseEntity<TestVerifyResponse> register(TCUserRequest tcUserRequest, UUID adminUUID) {
         if (usersRepository.existsByEmail(tcUserRequest.getEmail())) {
             TCUser tcuser = new TCUser(tcUserRequest.getEmail(),
                     tcUserRequest.getEmail(),

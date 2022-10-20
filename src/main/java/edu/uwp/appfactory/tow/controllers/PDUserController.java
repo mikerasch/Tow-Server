@@ -43,7 +43,7 @@ public class PDUserController {
      */
     @GetMapping("")
     @PreAuthorize("hasRole('PDUSER')")
-    public ResponseEntity<?> get(@RequestHeader("Authorization") final String jwtToken) {
+    public ResponseEntity<PDUser> get(@RequestHeader("Authorization") final String jwtToken) {
         String userId = jwtUtils.getUUIDFromJwtToken(jwtToken);
         PDUser data = pdUserService.get(UUID.fromString(userId));
         if (data != null) {
@@ -62,7 +62,7 @@ public class PDUserController {
      */
     @PostMapping("")
     @PreAuthorize("hasRole('PDADMIN')")
-    public ResponseEntity<?> register(@RequestHeader("Authorization") final String jwtToken,
+    public ResponseEntity<PDUAuthResponse> register(@RequestHeader("Authorization") final String jwtToken,
                                       @RequestBody PDUserRequest pdUserRequest) {
         PDUAuthResponse data = pdUserService.register(pdUserRequest, jwtToken);
         if (data != null) {

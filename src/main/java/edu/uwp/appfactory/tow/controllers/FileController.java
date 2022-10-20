@@ -35,10 +35,10 @@ public class FileController {
 
 
     /**
-     *      * Takes in the users jwt token and a multipart file. The multipart file contains the image or file itself
-     *      * and various metadata regarding the image(you'll notice postgres knows what type of file is being stored).
-     *      * The token allows us to extract the users UUID which we use as a primary key and the photos own UUID. This should
-     *      * be changed to something less.... wrong if possible.
+     * Takes in the users jwt token and a multipart file. The multipart file contains the image or file itself
+     * and various metadata regarding the image(you'll notice postgres knows what type of file is being stored).
+     * The token allows us to extract the users UUID which we use as a primary key and the photos own UUID. This should
+     * be changed to something less.... wrong if possible.
      * @param jwtToken used to extract UUID for user association
      * @param file multipart file that contains data and metadata
      * @return a success or failure method

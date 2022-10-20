@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -53,7 +55,7 @@ public class TCAdminService {
      * @param tcAdminRequest - TCAdmin information to create a new account
      * @return token response of newly created account, otherwise 400 error
      */
-    public ResponseEntity<?> register(TCAdminRequest tcAdminRequest) {
+    public ResponseEntity<TestVerifyResponse> register(TCAdminRequest tcAdminRequest) {
         if (!usersRepository.existsByEmail(tcAdminRequest.getEmail())) {
             TCAdmin tcAdmin = new TCAdmin(tcAdminRequest.getEmail(),
                     tcAdminRequest.getEmail(),
@@ -69,10 +71,9 @@ public class TCAdminService {
             tcAdmin.setVerEnabled(false);
             usersRepository.save(tcAdmin);
             sendEmail.sendEmailAsync(tcAdmin);
-            TestVerifyResponse x = new TestVerifyResponse(tcAdmin.getVerifyToken());
-            return ResponseEntity.ok(x);
+            return ResponseEntity.ok(new TestVerifyResponse(tcAdmin.getVerifyToken()));
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Email is already in use.");
     }
 
     /**

@@ -1,5 +1,6 @@
 package edu.uwp.appfactory.tow.controllers;
 
+import edu.uwp.appfactory.tow.responseObjects.TestVerifyResponse;
 import edu.uwp.appfactory.tow.services.roles.PDAdminService;
 import edu.uwp.appfactory.tow.entities.PDAdmin;
 import edu.uwp.appfactory.tow.requestObjects.rolerequest.PDAdminRequest;
@@ -56,7 +57,7 @@ public class PDAdminController {
      * @return verification token if successful, else 400
      */
     @PostMapping("")
-    public ResponseEntity<?> register(@RequestBody PDAdminRequest pdAdminRequest) {
+    public ResponseEntity<TestVerifyResponse> register(@RequestBody PDAdminRequest pdAdminRequest) {
         return pdAdminService.register(pdAdminRequest);
     }
 

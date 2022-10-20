@@ -1,5 +1,6 @@
 package edu.uwp.appfactory.tow.controllers;
 
+import edu.uwp.appfactory.tow.responseObjects.TestVerifyResponse;
 import edu.uwp.appfactory.tow.services.roles.TCUserService;
 import edu.uwp.appfactory.tow.entities.TCUser;
 import edu.uwp.appfactory.tow.requestObjects.rolerequest.TCUserRequest;
@@ -42,7 +43,7 @@ public class TCUserController {
      */
     @GetMapping("")
     @PreAuthorize("hasRole('TCUSER')")
-    public ResponseEntity<?> get(@RequestHeader("Authorization") final String jwtToken) {
+    public ResponseEntity<TCUser> get(@RequestHeader("Authorization") final String jwtToken) {
         String userId = jwtUtils.getUUIDFromJwtToken(jwtToken);
         TCUser data = tcUserService.get(UUID.fromString(userId));
         if (data != null) {
@@ -60,7 +61,7 @@ public class TCUserController {
      */
     @GetMapping("/all")
     @PreAuthorize("hasRole('TCADMIN')")
-    public ResponseEntity<?> getAll(@RequestHeader("Authorization") final String jwtToken) {
+    public ResponseEntity<List<TCUser>> getAll(@RequestHeader("Authorization") final String jwtToken) {
         UUID adminUUID = UUID.fromString(jwtUtils.getUUIDFromJwtToken(jwtToken));
         List<TCUser> data = tcUserService.getAll(adminUUID);
         if (data != null) {
@@ -70,11 +71,6 @@ public class TCUserController {
         }
     }
 
-
-    /**
-     * POST method that uses the users jwt for the admin preauth and the pdUserRequest object that contains
-     * the information of a user.
-     */
     /**
      * Registers a new tow company user.
      * @param jwtToken - jwt token of tc administrator
@@ -83,8 +79,8 @@ public class TCUserController {
      */
     @PreAuthorize("hasRole('TCADMIN')")
     @PostMapping("")
-    public ResponseEntity<?> register(@RequestHeader("Authorization") final String jwtToken,
-                                      @RequestBody TCUserRequest tcUserRequest) {
+    public ResponseEntity<TestVerifyResponse> register(@RequestHeader("Authorization") final String jwtToken,
+                                                       @RequestBody TCUserRequest tcUserRequest) {
         UUID adminUUID = UUID.fromString(jwtUtils.getUUIDFromJwtToken(jwtToken));
         return tcUserService.register(tcUserRequest, adminUUID);
     }

@@ -1,5 +1,6 @@
 package edu.uwp.appfactory.tow.controllers;
 
+import edu.uwp.appfactory.tow.responseObjects.TestVerifyResponse;
 import edu.uwp.appfactory.tow.services.roles.TCAdminService;
 import edu.uwp.appfactory.tow.requestObjects.rolerequest.TCAdminRequest;
 import edu.uwp.appfactory.tow.responseObjects.TCAdminResponse;
@@ -38,7 +39,7 @@ public class TCAdminController {
      */
     @GetMapping("")
     @PreAuthorize("hasRole('TCADMIN')")
-    public ResponseEntity<?> get(@RequestHeader("Authorization") final String jwtToken) {
+    public ResponseEntity<TCAdminResponse> get(@RequestHeader("Authorization") final String jwtToken) {
         String userId = jwtUtils.getUUIDFromJwtToken(jwtToken);
         TCAdminResponse data = tcAdminService.get(UUID.fromString(userId));
         if (data != null) {
@@ -55,7 +56,8 @@ public class TCAdminController {
      * @return token of newly created tc admin, 400 otherwise
      */
     @PostMapping("")
-    public ResponseEntity<?> register(@RequestBody TCAdminRequest tcAdminRequest) {
+    @ResponseBody
+    public ResponseEntity<TestVerifyResponse> register(@RequestBody TCAdminRequest tcAdminRequest) {
         return tcAdminService.register(tcAdminRequest);
 
     }

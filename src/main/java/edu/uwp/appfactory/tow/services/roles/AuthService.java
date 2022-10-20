@@ -18,6 +18,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.Optional;
@@ -39,7 +41,7 @@ public class AuthService {
     private final JwtUtils jwtUtils;
 
     @Autowired
-    public AuthService(AuthenticationManager authenticationManager, UsersRepository usersRepository,PasswordEncoder encoder, JwtUtils jwtUtils) {
+    public AuthService(AuthenticationManager authenticationManager, UsersRepository usersRepository, PasswordEncoder encoder, JwtUtils jwtUtils) {
         this.authenticationManager = authenticationManager;
         this.usersRepository = usersRepository;
         this.encoder = encoder;
@@ -48,6 +50,7 @@ public class AuthService {
 
     /**
      * Used to refresh a jwtToken.
+     *
      * @param jwtToken - jwtToken to be refreshed.
      * @return - new jwt Token
      */
@@ -59,10 +62,11 @@ public class AuthService {
      * Used for authentication a user.
      * There are four possibilities: user does not exist in DB, user is not permitted, user not verified, or
      * successfully authenticated.
+     *
      * @param loginRequest - login user information to authenticate.
      * @return Response Entity of user information if success, else BAD_REQUEST or UNAUTHORIZED
      */
-    public ResponseEntity<?> authenticateUser(LoginRequest loginRequest) {
+    public ResponseEntity<JwtResponse> authenticateUser(LoginRequest loginRequest) {
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
@@ -71,32 +75,29 @@ public class AuthService {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
         Optional<Users> usersOptional = usersRepository.findByEmail(loginRequest.getEmail());
-
+        if (usersOptional.isEmpty()) {
+            throw new ResponseStatusException(BAD_REQUEST, "User does not exist");
+        }
         //todo: when not testing, uncomment code
         if (userDetails.getRole().equals(loginRequest.getPlatform())) { // this line checks that the user attempting to log in is on the correct client app
-            if (usersOptional.isPresent()) {
-                Users user = usersOptional.get();
-                return user.getVerEnabled() ?
-                        ResponseEntity.ok(new JwtResponse(
-                                jwt,
-                                userDetails.getId(),
-                                userDetails.getUsername(),
-                                userDetails.getEmail(),
-                                userDetails.getFirstname(),
-                                userDetails.getLastname(),
-                                userDetails.getRole(),
-                                userDetails.getPhone())
-                        ) :
-                        ResponseEntity.badRequest().body(new MessageResponse("User not verified"));
+            Users user = usersOptional.get();
+            boolean verEnabled = user.getVerEnabled();
+            if (verEnabled) {
+                return ResponseEntity.ok(new JwtResponse(
+                        jwt,
+                        userDetails.getId(),
+                        userDetails.getUsername(),
+                        userDetails.getEmail(),
+                        userDetails.getFirstname(),
+                        userDetails.getLastname(),
+                        userDetails.getRole(),
+                        userDetails.getPhone())
+                );
             } else {
-                return ResponseEntity
-                        .status(BAD_REQUEST)
-                        .body(new MessageResponse("User does not exist"));
+                throw new ResponseStatusException(BAD_REQUEST, "User not verified");
             }
         } else {
-            return ResponseEntity
-                    .status(UNAUTHORIZED)
-                    .body(new MessageResponse("User is not permitted to use this dashboard"));
+            throw new ResponseStatusException(UNAUTHORIZED, "User is not permitted to use this dashboard");
         }
     }
 
@@ -126,6 +127,7 @@ public class AuthService {
 
     /**
      * Used by the verification route in the initial sign up email
+     *
      * @param token the email users token
      * @return returns a status code that will indicates success or failure
      */
