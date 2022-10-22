@@ -1,32 +1,35 @@
-package edu.uwp.appfactory.tow.services.files;
+package edu.uwp.appfactory.tow.controllers.files;
 
 
 import edu.uwp.appfactory.tow.entities.File;
 import edu.uwp.appfactory.tow.repositories.FileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.io.IOException;
 import java.util.Optional;
 import java.util.UUID;
-
+import static edu.uwp.appfactory.tow.controllers.files.HandleFileOperationsUtil.*;
 @Service
 public class FileService {
     @Autowired
     private FileRepository fileRepository;
+
     public ResponseEntity<HttpStatus> storeFile(MultipartFile multipartFile) {
+        boolean isValidExtension = isValidFileExtension(multipartFile.getContentType());
+        if(!isValidExtension){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Invalid extension");
+        }
         try{
             File file = new File();
             file.setUser_uuid(UUID.randomUUID());
             file.setType(multipartFile.getContentType());
-            file.setData(multipartFile.getBytes());
+            file.setData(compressBytes(multipartFile.getBytes()));
             file.setFilename(multipartFile.getOriginalFilename());
             fileRepository.save(file);
             return ResponseEntity.ok().build();
@@ -42,6 +45,7 @@ public class FileService {
         }
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.valueOf("image/png"))
-                .body(new ByteArrayResource(file.get().getData()));
+                .body(new ByteArrayResource(decompressBytes(file.get().getData())));
     }
+
 }

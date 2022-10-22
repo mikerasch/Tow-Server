@@ -1,6 +1,5 @@
 package edu.uwp.appfactory.tow.controllers.files;
 
-import edu.uwp.appfactory.tow.services.files.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
