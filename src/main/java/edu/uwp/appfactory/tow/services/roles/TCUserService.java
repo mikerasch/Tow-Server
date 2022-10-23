@@ -76,7 +76,7 @@ public class TCUserService {
             tcuser.setVerifyDate(String.valueOf(LocalDate.now()));
             tcuser.setVerEnabled(false);
             usersRepository.save(tcuser);
-            sendEmail.sendEmailAsync(tcuser);
+            sendEmail.submitEmailExecution(tcuser);
             TestVerifyResponse x = new TestVerifyResponse(tcuser.getVerifyToken());
             return ResponseEntity.ok(x);
         }

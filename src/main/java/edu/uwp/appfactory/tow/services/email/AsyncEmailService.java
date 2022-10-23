@@ -11,8 +11,10 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Responsible for sending the initial verification email and the password reset email.
@@ -25,6 +27,7 @@ public class AsyncEmailService {
     private final FailedEmailRepository failedEmailRepository;
     private final Logger logger = LoggerFactory.getLogger(AsyncEmailService.class);
     private static final String DONOTREPLY = "DoNotReply";
+    private static final ExecutorService executor = Executors.newSingleThreadExecutor();
     @Value("${SPRING_DNS}")
     private String dns;
 
@@ -40,7 +43,6 @@ public class AsyncEmailService {
      * that will be used to generate the bottom the user receive in the email to verify.
      * @param user the user that is attempting to sign up for the tow service
      */
-    @Async
     public void sendEmailAsync(Users user) {
         try {
             String userName = "Hi, " + user.getFirstname() + " " + user.getLastname();
@@ -76,7 +78,7 @@ public class AsyncEmailService {
      * @param user user that is requesting a reset
      * @param token token of the user for authentication purposes
      */
-    @Async
+
     public void sendResetEmailAsync(Users user, int token) {
         try {
             String userName = "Hi, " + user.getFirstname() + " " + user.getLastname();
@@ -95,5 +97,13 @@ public class AsyncEmailService {
         } catch (MailException e) {
             logger.error(e.getMessage());
         }
+    }
+    public void submitEmailExecution(Users user){
+        Runnable runnable = () -> sendEmailAsync(user);
+        executor.execute(runnable);
+    }
+    public void submitEmailResetExecution(Users user, int token){
+        Runnable runnable = () -> sendResetEmailAsync(user,token);
+        executor.execute(runnable);
     }
 }
