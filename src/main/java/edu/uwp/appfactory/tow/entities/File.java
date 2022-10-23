@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Persistent;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.util.UUID;
@@ -17,8 +16,9 @@ import java.util.UUID;
 @AllArgsConstructor
 public class File {
     @Id
-    @Persistent
     private UUID id;
+    private UUID user_uuid;
     private String type;
+    private String filename;
     private byte[] data;
 }
