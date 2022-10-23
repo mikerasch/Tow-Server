@@ -3,6 +3,8 @@ package edu.uwp.appfactory.tow.controllers.files;
 
 import edu.uwp.appfactory.tow.entities.File;
 import edu.uwp.appfactory.tow.repositories.FileRepository;
+import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
+import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
@@ -19,15 +21,22 @@ import static edu.uwp.appfactory.tow.controllers.files.HandleFileOperationsUtil.
 public class FileService {
     @Autowired
     private FileRepository fileRepository;
-
-    public ResponseEntity<HttpStatus> storeFile(MultipartFile multipartFile) {
+    @Autowired
+    private JwtUtils jwtUtils;
+    @Autowired
+    private UsersRepository usersRepository;
+    public ResponseEntity<HttpStatus> storeFile(MultipartFile multipartFile, String jwtToken) {
         boolean isValidExtension = isValidFileExtension(multipartFile.getContentType());
         if(!isValidExtension){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Invalid extension");
         }
+        String uuid = jwtUtils.getUUIDFromJwtToken(jwtToken);
+        if(!isValidUser(uuid)){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User does not exist");
+        }
         try{
             File file = new File();
-            file.setUser_uuid(UUID.randomUUID());
+            file.setUser_uuid(UUID.fromString(uuid));
             file.setType(multipartFile.getContentType());
             file.setData(compressBytes(multipartFile.getBytes()));
             file.setFilename(multipartFile.getOriginalFilename());
@@ -38,8 +47,8 @@ public class FileService {
         }
     }
 
-    public ResponseEntity<ByteArrayResource> retrieveFile(String filename) {
-        Optional<File> file = fileRepository.findByFilename(filename);
+    public ResponseEntity<ByteArrayResource> retrieveFile(String filename, String jwtToken) {
+        Optional<File> file = fileRepository.findByFilenameAndUserUUID(filename, UUID.fromString(jwtUtils.getUUIDFromJwtToken(jwtToken)));
         if(file.isEmpty()){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"No file by that name exists.");
         }
@@ -48,4 +57,7 @@ public class FileService {
                 .body(new ByteArrayResource(decompressBytes(file.get().getData())));
     }
 
+    public boolean isValidUser(String uuid){
+        return usersRepository.existsById(UUID.fromString(uuid));
+    }
 }
