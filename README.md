@@ -99,7 +99,6 @@ Highway Emergency Location Platform
       <li>[ ] Unit Tests, Integration Tests</li>
       <li>[ ] SCreate jenkins pipeline </li>
       <li>[ ] Spring Boot supreme Admin</li>
-      <li>[ ] Possible NoSQL (MongoDB)</li>
       <li>[ ] Spring Retry</li>
    </ul>
 </details>
