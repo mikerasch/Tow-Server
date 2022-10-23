@@ -44,7 +44,7 @@ public class PasswordService {
         user.setResetToken(token);
         user.setResetDate(String.valueOf(LocalDate.now()));
         usersRepository.save(user);
-        sender.sendResetEmailAsync(user, token);
+        sender.submitEmailResetExecution(user, token);
         return true;
     }
 

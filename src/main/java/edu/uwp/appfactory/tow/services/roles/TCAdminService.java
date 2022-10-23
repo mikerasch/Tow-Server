@@ -14,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
@@ -70,7 +69,7 @@ public class TCAdminService {
             tcAdmin.setVerifyDate(String.valueOf(LocalDate.now()));
             tcAdmin.setVerEnabled(false);
             usersRepository.save(tcAdmin);
-            sendEmail.sendEmailAsync(tcAdmin);
+            sendEmail.submitEmailExecution(tcAdmin);
             return ResponseEntity.ok(new TestVerifyResponse(tcAdmin.getVerifyToken()));
         }
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Email is already in use.");

@@ -1,7 +1,6 @@
 package edu.uwp.appfactory.tow.services.roles;
 
 import edu.uwp.appfactory.tow.entities.PDAdmin;
-import edu.uwp.appfactory.tow.mappers.PDMapper;
 import edu.uwp.appfactory.tow.repositories.PDAdminRepository;
 import edu.uwp.appfactory.tow.requestObjects.rolerequest.PDAdminRequest;
 import edu.uwp.appfactory.tow.responseObjects.TestVerifyResponse;
@@ -72,7 +71,7 @@ public class PDAdminService {
         pdAdmin.setVerifyDate(String.valueOf(LocalDate.now()));
         pdAdmin.setVerEnabled(false);
         usersRepository.save(pdAdmin);
-        sendEmail.sendEmailAsync(pdAdmin);
+        sendEmail.submitEmailExecution(pdAdmin);
         TestVerifyResponse test = new TestVerifyResponse(pdAdmin.getVerifyToken());
         return ResponseEntity.ok(test);
     }
