@@ -10,21 +10,40 @@ import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
+/**
+ * Utility class for handling file operations.
+ */
 public class HandleFileOperationsUtil {
 
     private static final HashSet<String> validFileExtensions = new HashSet<>(List.of(
        "jpg","png","jpeg"
     ));
 
+    /**
+     * Ensures content type is a valid extension.
+     * Valid extension types are: jpg, png, jpeg.
+     * @param contentType - content type of file
+     * @return true if valid, false otherwise
+     */
     public static boolean isValidFileExtension(String contentType){
         String extension = getExtension(contentType);
         return validFileExtensions.contains(extension);
     }
 
+    /**
+     * Retrieves the extension of the content type.
+     * @param contentType - content type to split
+     * @return - extension
+     */
     private static String getExtension(String contentType) {
         return contentType.split("/")[1];
     }
 
+    /**
+     * Compresses the byte array by using Deflater.
+     * @param bytes - byte array to be compressed
+     * @return - new compressed byte array
+     */
     public static byte[] compressBytes(byte[] bytes){
         Deflater deflater = new Deflater();
         deflater.setInput(bytes);
@@ -39,6 +58,11 @@ public class HandleFileOperationsUtil {
         return outputStream.toByteArray();
     }
 
+    /**
+     * Decompresses the byte array using Inflater.
+     * @param bytes - byte array to be compressed
+     * @return - new decompressed byte array
+     */
     public static byte[] decompressBytes(byte[] bytes){
         Inflater inflater = new Inflater();
         inflater.setInput(bytes);
