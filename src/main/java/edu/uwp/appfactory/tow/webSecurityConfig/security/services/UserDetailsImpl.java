@@ -1,6 +1,7 @@
 package edu.uwp.appfactory.tow.webSecurityConfig.security.services;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import edu.uwp.appfactory.tow.entities.SuperAdmin;
 import edu.uwp.appfactory.tow.entities.Users;
 import edu.uwp.appfactory.tow.webSecurityConfig.models.ERole;
 import edu.uwp.appfactory.tow.webSecurityConfig.models.Role;
@@ -50,7 +51,7 @@ public class UserDetailsImpl implements UserDetails {
     /**
      * build method for a user details implementation
      */
-    public static UserDetailsImpl build(Users user) {
+    public static UserDetailsImpl buildUser(Users user) {
         return new UserDetailsImpl(
                 user.getId(),
                 user.getUsername(),
@@ -62,6 +63,18 @@ public class UserDetailsImpl implements UserDetails {
                 user.getPhone());
     }
 
+    public static UserDetailsImpl buildSuperAdmin(SuperAdmin superAdmin){
+        return new UserDetailsImpl(
+                superAdmin.getId(),
+                superAdmin.getUsername(),
+                superAdmin.getEmail(),
+                superAdmin.getPassword(),
+                superAdmin.getFirstname(),
+                superAdmin.getLastname(),
+                superAdmin.getRole(),
+                superAdmin.getPhone()
+        );
+    }
     public String getRole() {
         return role;
     }
@@ -86,6 +99,7 @@ public class UserDetailsImpl implements UserDetails {
             case "ROLE_PDUSER" -> ERole.ROLE_PDUSER;
             case "ROLE_TCADMIN" -> ERole.ROLE_TCADMIN;
             case "ROLE_TCUSER" -> ERole.ROLE_TCUSER;
+            case "ROLE_SPADMIN" -> ERole.ROLE_SPADMIN;
             default -> ERole.ROLE_ADMIN;
         };
 
