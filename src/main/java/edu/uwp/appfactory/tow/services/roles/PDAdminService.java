@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -59,8 +60,9 @@ public class PDAdminService {
         if(!AccountInformationValidator.validateEmail(pdAdminRequest.getEmail())){
             throw new ResponseStatusException(BAD_REQUEST,"Typo in email");
         }
-        if(!AccountInformationValidator.validatePassword(pdAdminRequest.getPassword())){
-            throw new ResponseStatusException(BAD_REQUEST,"Not secure password");
+        List<String> passwordViolations = AccountInformationValidator.validatePassword(pdAdminRequest.getPassword());
+        if(!passwordViolations.isEmpty()){
+            throw new ResponseStatusException(BAD_REQUEST, passwordViolations.toString());
         }
         PDAdmin pdAdmin = new PDAdmin(
                 pdAdminRequest.getEmail(),

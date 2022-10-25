@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -58,11 +59,9 @@ public class TCAdminService {
      * @return token response of newly created account, otherwise 400 error
      */
     public ResponseEntity<TestVerifyResponse> register(TCAdminRequest tcAdminRequest) {
-        if(!AccountInformationValidator.validateEmail(tcAdminRequest.getEmail())){
-            throw new ResponseStatusException(BAD_REQUEST,"Typo in email");
-        }
-        if(!AccountInformationValidator.validatePassword(tcAdminRequest.getPassword())){
-            throw new ResponseStatusException(BAD_REQUEST,"Not secure password");
+        List<String> passwordViolations = AccountInformationValidator.validatePassword(tcAdminRequest.getPassword());
+        if(!passwordViolations.isEmpty()){
+            throw new ResponseStatusException(BAD_REQUEST,passwordViolations.toString());
         }
         if (!usersRepository.existsByEmail(tcAdminRequest.getEmail())) {
             TCAdmin tcAdmin = new TCAdmin(tcAdminRequest.getEmail(),

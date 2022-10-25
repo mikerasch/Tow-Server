@@ -3,6 +3,7 @@ package edu.uwp.appfactory.tow.utilities;
 import org.passay.*;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Pattern;
 
 /**
@@ -42,8 +43,8 @@ public class AccountInformationValidator {
      * @param password - password to be validated
      * @return true if good password, false otherwise.
      */
-    public static boolean validatePassword(String password){
+    public static List<String> validatePassword(String password){
         RuleResult result = VALIDATOR.validate(new PasswordData(password));
-        return result.isValid();
+        return VALIDATOR.getMessages(result);
     }
 }
