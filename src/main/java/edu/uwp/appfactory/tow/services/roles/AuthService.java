@@ -1,6 +1,8 @@
 package edu.uwp.appfactory.tow.services.roles;
 
+import edu.uwp.appfactory.tow.entities.SuperAdmin;
 import edu.uwp.appfactory.tow.entities.Users;
+import edu.uwp.appfactory.tow.repositories.SuperAdminRepository;
 import edu.uwp.appfactory.tow.requestObjects.rolerequest.AdminRequest;
 import edu.uwp.appfactory.tow.requestObjects.rolerequest.LoginRequest;
 import edu.uwp.appfactory.tow.webSecurityConfig.models.ERole;
@@ -9,6 +11,7 @@ import edu.uwp.appfactory.tow.webSecurityConfig.payload.response.MessageResponse
 import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsImpl;
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,12 +43,14 @@ public class AuthService {
     private final PasswordEncoder encoder;
     private final JwtUtils jwtUtils;
 
+    private final SuperAdminRepository superAdminRepository;
     @Autowired
-    public AuthService(AuthenticationManager authenticationManager, UsersRepository usersRepository, PasswordEncoder encoder, JwtUtils jwtUtils) {
+    public AuthService(AuthenticationManager authenticationManager, UsersRepository usersRepository, PasswordEncoder encoder, JwtUtils jwtUtils, SuperAdminRepository superAdminRepository) {
         this.authenticationManager = authenticationManager;
         this.usersRepository = usersRepository;
         this.encoder = encoder;
         this.jwtUtils = jwtUtils;
+        this.superAdminRepository = superAdminRepository;
     }
 
     /**
@@ -67,13 +72,9 @@ public class AuthService {
      * @return Response Entity of user information if success, else BAD_REQUEST or UNAUTHORIZED
      */
     public ResponseEntity<JwtResponse> authenticateUser(LoginRequest loginRequest) {
-        Authentication authentication = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        Authentication authentication = authenticationRequest(loginRequest);
         String jwt = jwtUtils.generateJwtToken(authentication);
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-
         Optional<Users> usersOptional = usersRepository.findByEmail(loginRequest.getEmail());
         if (usersOptional.isEmpty()) {
             throw new ResponseStatusException(BAD_REQUEST, "User does not exist");
@@ -99,6 +100,39 @@ public class AuthService {
         } else {
             throw new ResponseStatusException(UNAUTHORIZED, "User is not permitted to use this dashboard");
         }
+    }
+
+    public Authentication authenticationRequest(LoginRequest loginRequest){
+        Authentication authentication = authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return authentication;
+    }
+
+    //todo add verification from email. Needs to be custom
+    public ResponseEntity<JwtResponse> authenticateSuperAdmin(LoginRequest loginRequest) {
+        Authentication authentication = authenticationRequest(loginRequest);
+        String jwt = jwtUtils.generateJwtToken(authentication);
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        Optional<SuperAdmin> superAdminQuery = superAdminRepository.findByEmail(loginRequest.getEmail());
+        if(superAdminQuery.isEmpty()){
+            throw new ResponseStatusException(BAD_REQUEST,"User does not exist");
+        }
+        if (userDetails.getRole().equals(loginRequest.getPlatform())) { // this line checks that the user attempting to log in is on the correct client app
+            return ResponseEntity.ok(new JwtResponse(
+                    jwt,
+                    userDetails.getId(),
+                    userDetails.getUsername(),
+                    userDetails.getEmail(),
+                    userDetails.getFirstname(),
+                    userDetails.getLastname(),
+                    userDetails.getRole(),
+                    userDetails.getPhone()
+            ));
+        } else {
+            throw new ResponseStatusException(UNAUTHORIZED, "User is not permitted to use this dashboard");
+        }
+
     }
 
     /**
