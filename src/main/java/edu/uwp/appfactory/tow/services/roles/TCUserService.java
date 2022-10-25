@@ -5,12 +5,14 @@ import edu.uwp.appfactory.tow.repositories.TCUserRepository;
 import edu.uwp.appfactory.tow.requestObjects.rolerequest.TCUserRequest;
 import edu.uwp.appfactory.tow.responseObjects.TestVerifyResponse;
 import edu.uwp.appfactory.tow.services.email.AsyncEmailService;
+import edu.uwp.appfactory.tow.utilities.AccountInformationValidator;
 import edu.uwp.appfactory.tow.webSecurityConfig.models.ERole;
 import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -59,6 +61,13 @@ public class TCUserService {
      * @return token of newly created account if successful, otherwise 400 error
      */
     public ResponseEntity<TestVerifyResponse> register(TCUserRequest tcUserRequest, UUID adminUUID) {
+        if(!AccountInformationValidator.validateEmail(tcUserRequest.getEmail())){
+            throw new ResponseStatusException(BAD_REQUEST,"Typo in email");
+        }
+        if(!AccountInformationValidator.validateEmail(tcUserRequest.getPassword())){
+            throw new ResponseStatusException(BAD_REQUEST,"Not secure password");
+        }
+
         if (usersRepository.existsByEmail(tcUserRequest.getEmail())) {
             TCUser tcuser = new TCUser(tcUserRequest.getEmail(),
                     tcUserRequest.getEmail(),

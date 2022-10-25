@@ -5,12 +5,14 @@ import edu.uwp.appfactory.tow.repositories.PDAdminRepository;
 import edu.uwp.appfactory.tow.requestObjects.rolerequest.PDAdminRequest;
 import edu.uwp.appfactory.tow.responseObjects.TestVerifyResponse;
 import edu.uwp.appfactory.tow.services.email.AsyncEmailService;
+import edu.uwp.appfactory.tow.utilities.AccountInformationValidator;
 import edu.uwp.appfactory.tow.webSecurityConfig.models.ERole;
 import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -53,6 +55,12 @@ public class PDAdminService {
     public ResponseEntity<TestVerifyResponse> register(PDAdminRequest pdAdminRequest) {
         if(usersRepository.existsByEmail(pdAdminRequest.getEmail())){
             return ResponseEntity.status(BAD_REQUEST).build();
+        }
+        if(!AccountInformationValidator.validateEmail(pdAdminRequest.getEmail())){
+            throw new ResponseStatusException(BAD_REQUEST,"Typo in email");
+        }
+        if(!AccountInformationValidator.validatePassword(pdAdminRequest.getPassword())){
+            throw new ResponseStatusException(BAD_REQUEST,"Not secure password");
         }
         PDAdmin pdAdmin = new PDAdmin(
                 pdAdminRequest.getEmail(),
