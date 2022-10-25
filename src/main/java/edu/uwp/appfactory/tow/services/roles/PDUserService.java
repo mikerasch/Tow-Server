@@ -6,16 +6,22 @@ import edu.uwp.appfactory.tow.repositories.PDAdminRepository;
 import edu.uwp.appfactory.tow.repositories.PDUserRepository;
 import edu.uwp.appfactory.tow.requestObjects.rolerequest.PDUserRequest;
 import edu.uwp.appfactory.tow.responseObjects.PDUAuthResponse;
+import edu.uwp.appfactory.tow.utilities.AccountInformationValidator;
 import edu.uwp.appfactory.tow.webSecurityConfig.models.ERole;
 import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
+
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 
 @Service
@@ -47,14 +53,21 @@ public class PDUserService {
         return user.orElse(null);
     }
 
+    //todo fix this bad code
     /**
      * Registers a new PD user.
      * @param pdUserRequest - PD user information to be added.
      * @param token - token to ensure request is authorized
      * @return information of new PD user if successful, else null
      */
-    public PDUAuthResponse register(PDUserRequest pdUserRequest, String token) {
-        if (usersRepository.existsByEmail(pdUserRequest.getEmail())) {
+    public ResponseEntity<PDUAuthResponse> register(PDUserRequest pdUserRequest, String token) {
+        if(!AccountInformationValidator.validateEmail(pdUserRequest.getEmail())){
+            throw new ResponseStatusException(BAD_REQUEST,"Typo in email");
+        }
+        if(!AccountInformationValidator.validateEmail(pdUserRequest.getPassword())){
+            throw new ResponseStatusException(BAD_REQUEST,"Not secure password");
+        }
+        if (!usersRepository.existsByEmail(pdUserRequest.getEmail())) {
             UUID adminUUID = UUID.fromString(jwtUtils.getUUIDFromJwtToken(token));
 
             String frontID = "";
@@ -81,9 +94,9 @@ public class PDUserService {
             pdUser.setVerifyDate(String.valueOf(LocalDate.now()));
             pdUser.setVerEnabled(true);
             usersRepository.save(pdUser);
-            return new PDUAuthResponse(frontID, password);
+            return ResponseEntity.ok(new PDUAuthResponse(frontID,password));
         }
-        return null;
+        throw new ResponseStatusException(BAD_REQUEST,"Email already exists");
     }
 
     /**

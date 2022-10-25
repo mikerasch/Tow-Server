@@ -7,6 +7,7 @@ import edu.uwp.appfactory.tow.requestObjects.rolerequest.TCAdminRequest;
 import edu.uwp.appfactory.tow.responseObjects.TCAdminResponse;
 import edu.uwp.appfactory.tow.responseObjects.TestVerifyResponse;
 import edu.uwp.appfactory.tow.services.email.AsyncEmailService;
+import edu.uwp.appfactory.tow.utilities.AccountInformationValidator;
 import edu.uwp.appfactory.tow.webSecurityConfig.models.ERole;
 import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,8 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
+
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Service
 public class TCAdminService {
@@ -55,6 +58,12 @@ public class TCAdminService {
      * @return token response of newly created account, otherwise 400 error
      */
     public ResponseEntity<TestVerifyResponse> register(TCAdminRequest tcAdminRequest) {
+        if(!AccountInformationValidator.validateEmail(tcAdminRequest.getEmail())){
+            throw new ResponseStatusException(BAD_REQUEST,"Typo in email");
+        }
+        if(!AccountInformationValidator.validatePassword(tcAdminRequest.getPassword())){
+            throw new ResponseStatusException(BAD_REQUEST,"Not secure password");
+        }
         if (!usersRepository.existsByEmail(tcAdminRequest.getEmail())) {
             TCAdmin tcAdmin = new TCAdmin(tcAdminRequest.getEmail(),
                     tcAdminRequest.getEmail(),

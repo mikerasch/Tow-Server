@@ -64,12 +64,7 @@ public class PDUserController {
     @PreAuthorize("hasRole('PDADMIN')")
     public ResponseEntity<PDUAuthResponse> register(@RequestHeader("Authorization") final String jwtToken,
                                       @RequestBody PDUserRequest pdUserRequest) {
-        PDUAuthResponse data = pdUserService.register(pdUserRequest, jwtToken);
-        if (data != null) {
-            return ResponseEntity.ok(data);
-        } else {
-            return ResponseEntity.status(BAD_REQUEST).build();
-        }
+        return pdUserService.register(pdUserRequest, jwtToken);
     }
     //todo add Patch and Delete
 }
