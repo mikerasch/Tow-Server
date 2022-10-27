@@ -1,8 +1,7 @@
 
-package edu.uwp.appfactory.tow.controllers;
+package edu.uwp.appfactory.tow.controllers.auth;
 import edu.uwp.appfactory.tow.requestObjects.rolerequest.AdminRequest;
 import edu.uwp.appfactory.tow.requestObjects.rolerequest.LoginRequest;
-import edu.uwp.appfactory.tow.services.roles.AuthService;
 import edu.uwp.appfactory.tow.webSecurityConfig.payload.response.JwtResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

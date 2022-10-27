@@ -1,9 +1,8 @@
-package edu.uwp.appfactory.tow.controllers;
+package edu.uwp.appfactory.tow.controllers.password;
 
 import edu.uwp.appfactory.tow.requestObjects.password.ForgotPassRequest;
 import edu.uwp.appfactory.tow.requestObjects.password.ResetPassRequest;
 import edu.uwp.appfactory.tow.requestObjects.password.VerifyPassRequest;
-import edu.uwp.appfactory.tow.services.roles.PasswordService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

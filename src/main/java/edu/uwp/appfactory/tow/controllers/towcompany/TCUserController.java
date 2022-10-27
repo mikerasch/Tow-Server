@@ -1,7 +1,7 @@
-package edu.uwp.appfactory.tow.controllers;
+package edu.uwp.appfactory.tow.controllers.towcompany;
 
+import edu.uwp.appfactory.tow.controllers.user.UserController;
 import edu.uwp.appfactory.tow.responseObjects.TestVerifyResponse;
-import edu.uwp.appfactory.tow.services.roles.TCUserService;
 import edu.uwp.appfactory.tow.entities.TCUser;
 import edu.uwp.appfactory.tow.requestObjects.rolerequest.TCUserRequest;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
@@ -39,7 +39,7 @@ public class TCUserController {
      * Only usable by tc users, for other auth options, see below.
      * @param jwtToken jwt token of tc user
      * @return UUID information of TC user, else 400
-     * @see edu.uwp.appfactory.tow.controllers.UserController
+     * @see UserController
      */
     @GetMapping("")
     @PreAuthorize("hasRole('TCUSER')")
@@ -57,7 +57,7 @@ public class TCUserController {
      * Retrieves all user based off the UUID from the JWT token.
      * @param jwtToken Only usable by TC admins, for other auth options, see below
      * @return list of all tow company users, else 400
-     * @see edu.uwp.appfactory.tow.controllers.UserController
+     * @see UserController
      */
     @GetMapping("/all")
     @PreAuthorize("hasRole('TCADMIN')")

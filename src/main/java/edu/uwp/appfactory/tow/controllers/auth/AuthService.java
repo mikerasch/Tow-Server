@@ -1,4 +1,4 @@
-package edu.uwp.appfactory.tow.services.roles;
+package edu.uwp.appfactory.tow.controllers.auth;
 
 import edu.uwp.appfactory.tow.entities.SuperAdmin;
 import edu.uwp.appfactory.tow.entities.Users;

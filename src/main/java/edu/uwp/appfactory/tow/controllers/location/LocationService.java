@@ -1,4 +1,4 @@
-package edu.uwp.appfactory.tow.services.locator;
+package edu.uwp.appfactory.tow.controllers.location;
 
 import edu.uwp.appfactory.tow.entities.TCUser;
 import edu.uwp.appfactory.tow.repositories.TCUserRepository;

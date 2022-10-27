@@ -1,4 +1,4 @@
-package edu.uwp.appfactory.tow.controllers.spAdmin;
+package edu.uwp.appfactory.tow.controllers.superAdmin;
 
 import edu.uwp.appfactory.tow.entities.SuperAdmin;
 import edu.uwp.appfactory.tow.repositories.SuperAdminRepository;

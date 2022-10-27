@@ -1,9 +1,9 @@
-package edu.uwp.appfactory.tow.controllers;
+package edu.uwp.appfactory.tow.controllers.location;
 
+import edu.uwp.appfactory.tow.controllers.auth.AuthController;
 import edu.uwp.appfactory.tow.entities.TCUser;
 import edu.uwp.appfactory.tow.requestObjects.location.DriversRadiusRequest;
 import edu.uwp.appfactory.tow.requestObjects.location.TCULocationRequest;
-import edu.uwp.appfactory.tow.services.locator.LocationService;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,7 +42,7 @@ public class LocationController {
      * @param jwtToken - JWT token, must be active, else request a refresh
      * @param setRequest - location data of TCUSER
      * @return 204 if successful, else 400
-     * @see edu.uwp.appfactory.tow.controllers.AuthController#refreshToken(String)
+     * @see AuthController#refreshToken(String)
      */
     @PreAuthorize("hasRole('TCUSER')")
     @PatchMapping("/my-location")

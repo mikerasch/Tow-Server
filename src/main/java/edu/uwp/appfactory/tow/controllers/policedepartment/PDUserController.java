@@ -1,6 +1,7 @@
-package edu.uwp.appfactory.tow.controllers;
+package edu.uwp.appfactory.tow.controllers.policedepartment;
 
-import edu.uwp.appfactory.tow.services.roles.PDUserService;
+import edu.uwp.appfactory.tow.controllers.auth.AuthController;
+import edu.uwp.appfactory.tow.controllers.user.UserController;
 import edu.uwp.appfactory.tow.entities.PDUser;
 import edu.uwp.appfactory.tow.requestObjects.rolerequest.PDUserRequest;
 import edu.uwp.appfactory.tow.responseObjects.PDUAuthResponse;
@@ -38,8 +39,8 @@ public class PDUserController {
      * For all other authentication options view the link below.
      * @param jwtToken - jwt token to be used for further authorization, needs to be valid see below to refresh
      * @return UUID information if successful, 400 otherwise
-     * @see edu.uwp.appfactory.tow.controllers.UserController
-     * @see edu.uwp.appfactory.tow.controllers.AuthController#refreshToken(String)
+     * @see UserController
+     * @see AuthController#refreshToken(String)
      */
     @GetMapping("")
     @PreAuthorize("hasRole('PDUSER')")
@@ -58,7 +59,7 @@ public class PDUserController {
      * @param jwtToken - jwt token to be used for further authorization, needs to be valid see below to refresh
      * @param pdUserRequest - contains the information of a user
      * @return information relating to the newly created PD user, 400 otherwise
-     * @see edu.uwp.appfactory.tow.controllers.AuthController#refreshToken(String)
+     * @see AuthController#refreshToken(String)
      */
     @PostMapping("")
     @PreAuthorize("hasRole('PDADMIN')")

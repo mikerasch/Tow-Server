@@ -1,4 +1,4 @@
-package edu.uwp.appfactory.tow.services.roles;
+package edu.uwp.appfactory.tow.controllers.user;
 
 import edu.uwp.appfactory.tow.entities.Users;
 import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
