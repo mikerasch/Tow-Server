@@ -64,11 +64,11 @@ public class TCUserService {
         if(!AccountInformationValidator.validateEmail(tcUserRequest.getEmail())){
             throw new ResponseStatusException(BAD_REQUEST,"Typo in email");
         }
-        if(!AccountInformationValidator.validateEmail(tcUserRequest.getPassword())){
-            throw new ResponseStatusException(BAD_REQUEST,"Not secure password");
+        List<String> errorPassword = AccountInformationValidator.validatePassword(tcUserRequest.getPassword());
+        if(!errorPassword.isEmpty()){
+            throw new ResponseStatusException(BAD_REQUEST, errorPassword.toString());
         }
-
-        if (usersRepository.existsByEmail(tcUserRequest.getEmail())) {
+        if (!usersRepository.existsByEmail(tcUserRequest.getEmail())) {
             TCUser tcuser = new TCUser(tcUserRequest.getEmail(),
                     tcUserRequest.getEmail(),
                     encoder.encode(tcUserRequest.getPassword()),
