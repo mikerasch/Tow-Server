@@ -1,4 +1,4 @@
-package edu.uwp.appfactory.tow.controllers.spAdmin;
+package edu.uwp.appfactory.tow.controllers.superAdmin;
 
 import edu.uwp.appfactory.tow.requestObjects.rolerequest.SuperAdminRequest;
 import edu.uwp.appfactory.tow.responseObjects.TestVerifyResponse;

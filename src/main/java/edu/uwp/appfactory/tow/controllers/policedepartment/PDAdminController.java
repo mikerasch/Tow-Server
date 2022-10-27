@@ -1,7 +1,6 @@
-package edu.uwp.appfactory.tow.controllers;
+package edu.uwp.appfactory.tow.controllers.policedepartment;
 
 import edu.uwp.appfactory.tow.responseObjects.TestVerifyResponse;
-import edu.uwp.appfactory.tow.services.roles.PDAdminService;
 import edu.uwp.appfactory.tow.entities.PDAdmin;
 import edu.uwp.appfactory.tow.requestObjects.rolerequest.PDAdminRequest;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;

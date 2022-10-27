@@ -1,5 +1,5 @@
 package edu.uwp.appfactory.tow.stomp.controllers;
-import edu.uwp.appfactory.tow.services.locator.LocationService;
+import edu.uwp.appfactory.tow.controllers.location.LocationService;
 import edu.uwp.appfactory.tow.requestObjects.location.TCULocationRequest;
 import edu.uwp.appfactory.tow.requestObjects.rolerequest.TCUserRequest;
 import edu.uwp.appfactory.tow.stomp.models.MessageRequest;

@@ -1,4 +1,4 @@
-package edu.uwp.appfactory.tow.services.roles;
+package edu.uwp.appfactory.tow.controllers.password;
 
 import edu.uwp.appfactory.tow.entities.Users;
 import edu.uwp.appfactory.tow.requestObjects.password.ForgotPassRequest;
