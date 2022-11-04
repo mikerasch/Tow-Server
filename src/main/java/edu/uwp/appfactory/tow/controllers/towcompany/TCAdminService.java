@@ -60,6 +60,9 @@ public class TCAdminService {
      */
     public ResponseEntity<TestVerifyResponse> register(TCAdminRequest tcAdminRequest) {
         List<String> passwordViolations = AccountInformationValidator.validatePassword(tcAdminRequest.getPassword());
+        if(!AccountInformationValidator.validateEmail(tcAdminRequest.getEmail())){
+            throw new ResponseStatusException(BAD_REQUEST,"Bad email");
+        }
         if(!passwordViolations.isEmpty()){
             throw new ResponseStatusException(BAD_REQUEST,passwordViolations.toString());
         }
