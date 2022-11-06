@@ -149,7 +149,7 @@ information to the environment variables in the IDE
 spring.datasource.url=${SPRING_DATASOURCE_URL}
 spring.datasource.username=${SPRING_DATASOURCE_USERNAME}
 spring.datasource.password=${SPRING_DATASOURCE_PASSWORD}
-spring.datasource.driver-class-name=org.postgresql.Driver
+spring.datasource.drivers-class-name=org.postgresql.Driver
 ```
 
 ### EER Diagram
