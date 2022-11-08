@@ -54,7 +54,7 @@ public class DriverService {
             TestVerifyResponse testVerifyResponse = new TestVerifyResponse(drivers.getVerifyToken());
             return ResponseEntity.ok(testVerifyResponse);
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"User already exists!");
     }
 
     /**
