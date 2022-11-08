@@ -6,5 +6,4 @@ import lombok.Value;
 public class LoginRequest {
     String email;
     String password;
-    String platform;
 }
