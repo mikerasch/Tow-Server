@@ -12,6 +12,7 @@ import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsImpl;
 import lombok.extern.java.Log;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -79,27 +80,22 @@ public class AuthService {
         if (usersOptional.isEmpty()) {
             throw new ResponseStatusException(BAD_REQUEST, "User does not exist");
         }
-        //todo: when not testing, uncomment code
-        if (userDetails.getRole().equals(loginRequest.getPlatform())) { // this line checks that the user attempting to log in is on the correct client app
-            Users user = usersOptional.get();
-            boolean verEnabled = user.getVerEnabled();
-            if (verEnabled) {
-                return ResponseEntity.ok(new JwtResponse(
-                        jwt,
-                        userDetails.getId(),
-                        userDetails.getUsername(),
-                        userDetails.getEmail(),
-                        userDetails.getFirstname(),
-                        userDetails.getLastname(),
-                        userDetails.getRole(),
-                        userDetails.getPhone())
-                );
-            } else {
-                throw new ResponseStatusException(BAD_REQUEST, "User not verified");
-            }
-        } else {
-            throw new ResponseStatusException(UNAUTHORIZED, "User is not permitted to use this dashboard");
+        Users user = usersOptional.get();
+        boolean verEnabled = user.getVerEnabled();
+        if(verEnabled){
+            return ResponseEntity.ok(new JwtResponse(
+                    jwt,
+                    userDetails.getId(),
+                    userDetails.getUsername(),
+                    userDetails.getEmail(),
+                    userDetails.getFirstname(),
+                    userDetails.getLastname(),
+                    userDetails.getRole(),
+                    userDetails.getPhone()
+            ));
         }
+        throw new ResponseStatusException(BAD_REQUEST,"User not verified");
+        //todo: when not testing, uncomment code
     }
 
     public Authentication authenticationRequest(LoginRequest loginRequest){
@@ -118,21 +114,16 @@ public class AuthService {
         if(superAdminQuery.isEmpty()){
             throw new ResponseStatusException(BAD_REQUEST,"User does not exist");
         }
-        if (userDetails.getRole().equals(loginRequest.getPlatform())) { // this line checks that the user attempting to log in is on the correct client app
-            return ResponseEntity.ok(new JwtResponse(
-                    jwt,
-                    userDetails.getId(),
-                    userDetails.getUsername(),
-                    userDetails.getEmail(),
-                    userDetails.getFirstname(),
-                    userDetails.getLastname(),
-                    userDetails.getRole(),
-                    userDetails.getPhone()
-            ));
-        } else {
-            throw new ResponseStatusException(UNAUTHORIZED, "User is not permitted to use this dashboard");
-        }
-
+        return ResponseEntity.ok(new JwtResponse(
+                jwt,
+                userDetails.getId(),
+                userDetails.getUsername(),
+                userDetails.getEmail(),
+                userDetails.getFirstname(),
+                userDetails.getLastname(),
+                userDetails.getRole(),
+                userDetails.getPhone()
+        ));
     }
 
     /**

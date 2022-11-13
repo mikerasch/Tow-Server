@@ -3,7 +3,7 @@
  */
 
 -- lat1 = officer location
--- lat2 = driver location
+-- lat2 = drivers location
 CREATE OR REPLACE FUNCTION calculate_distance(lat1 float, lon1 float, lat2 float, lon2 float)
     RETURNS float AS
 $dist$
