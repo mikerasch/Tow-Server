@@ -1,6 +1,5 @@
 package edu.uwp.appfactory.tow.controllers.auth;
 
-import edu.uwp.appfactory.tow.entities.SuperAdmin;
 import edu.uwp.appfactory.tow.entities.Users;
 import edu.uwp.appfactory.tow.repositories.SuperAdminRepository;
 import edu.uwp.appfactory.tow.requestObjects.rolerequest.AdminRequest;
@@ -12,6 +11,7 @@ import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsImpl;
 import lombok.extern.java.Log;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -79,46 +79,9 @@ public class AuthService {
         if (usersOptional.isEmpty()) {
             throw new ResponseStatusException(BAD_REQUEST, "User does not exist");
         }
-        //todo: when not testing, uncomment code
-        if (userDetails.getRole().equals(loginRequest.getPlatform())) { // this line checks that the user attempting to log in is on the correct client app
-            Users user = usersOptional.get();
-            boolean verEnabled = user.getVerEnabled();
-            if (verEnabled) {
-                return ResponseEntity.ok(new JwtResponse(
-                        jwt,
-                        userDetails.getId(),
-                        userDetails.getUsername(),
-                        userDetails.getEmail(),
-                        userDetails.getFirstname(),
-                        userDetails.getLastname(),
-                        userDetails.getRole(),
-                        userDetails.getPhone())
-                );
-            } else {
-                throw new ResponseStatusException(BAD_REQUEST, "User not verified");
-            }
-        } else {
-            throw new ResponseStatusException(UNAUTHORIZED, "User is not permitted to use this dashboard");
-        }
-    }
-
-    public Authentication authenticationRequest(LoginRequest loginRequest){
-        Authentication authentication = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        return authentication;
-    }
-
-    //todo add verification from email. Needs to be custom
-    public ResponseEntity<JwtResponse> authenticateSuperAdmin(LoginRequest loginRequest) {
-        Authentication authentication = authenticationRequest(loginRequest);
-        String jwt = jwtUtils.generateJwtToken(authentication);
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        Optional<SuperAdmin> superAdminQuery = superAdminRepository.findByEmail(loginRequest.getEmail());
-        if(superAdminQuery.isEmpty()){
-            throw new ResponseStatusException(BAD_REQUEST,"User does not exist");
-        }
-        if (userDetails.getRole().equals(loginRequest.getPlatform())) { // this line checks that the user attempting to log in is on the correct client app
+        Users user = usersOptional.get();
+        boolean verEnabled = user.getVerEnabled();
+        if(verEnabled){
             return ResponseEntity.ok(new JwtResponse(
                     jwt,
                     userDetails.getId(),
@@ -129,10 +92,16 @@ public class AuthService {
                     userDetails.getRole(),
                     userDetails.getPhone()
             ));
-        } else {
-            throw new ResponseStatusException(UNAUTHORIZED, "User is not permitted to use this dashboard");
         }
+        throw new ResponseStatusException(BAD_REQUEST,"User not verified");
+        //todo: when not testing, uncomment code
+    }
 
+    public Authentication authenticationRequest(LoginRequest loginRequest){
+        Authentication authentication = authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return authentication;
     }
 
     /**

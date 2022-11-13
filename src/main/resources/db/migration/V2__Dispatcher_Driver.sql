@@ -31,3 +31,12 @@ create table public.tc_user
     active     boolean NOT NULL default false,
     admin_UUID uuid
 ) inherits (public.users);
+
+create table public.drivers
+(
+
+) inherits (public.tc_user);
+
+create table public.sp_admin (
+
+) inherits (public.users);
