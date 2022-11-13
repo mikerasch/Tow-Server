@@ -36,3 +36,7 @@ create table public.drivers
 (
 
 ) inherits (public.tc_user);
+
+create table public.sp_admin (
+
+) inherits (public.users);

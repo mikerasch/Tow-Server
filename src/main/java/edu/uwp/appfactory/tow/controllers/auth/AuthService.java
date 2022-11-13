@@ -1,6 +1,5 @@
 package edu.uwp.appfactory.tow.controllers.auth;
 
-import edu.uwp.appfactory.tow.entities.SuperAdmin;
 import edu.uwp.appfactory.tow.entities.Users;
 import edu.uwp.appfactory.tow.repositories.SuperAdminRepository;
 import edu.uwp.appfactory.tow.requestObjects.rolerequest.AdminRequest;
@@ -103,27 +102,6 @@ public class AuthService {
                 .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return authentication;
-    }
-
-    //todo add verification from email. Needs to be custom
-    public ResponseEntity<JwtResponse> authenticateSuperAdmin(LoginRequest loginRequest) {
-        Authentication authentication = authenticationRequest(loginRequest);
-        String jwt = jwtUtils.generateJwtToken(authentication);
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        Optional<SuperAdmin> superAdminQuery = superAdminRepository.findByEmail(loginRequest.getEmail());
-        if(superAdminQuery.isEmpty()){
-            throw new ResponseStatusException(BAD_REQUEST,"User does not exist");
-        }
-        return ResponseEntity.ok(new JwtResponse(
-                jwt,
-                userDetails.getId(),
-                userDetails.getUsername(),
-                userDetails.getEmail(),
-                userDetails.getFirstname(),
-                userDetails.getLastname(),
-                userDetails.getRole(),
-                userDetails.getPhone()
-        ));
     }
 
     /**

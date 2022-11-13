@@ -58,11 +58,6 @@ public class AuthController {
         return authService.authenticateUser(loginRequest);
     }
 
-    @PostMapping("/login/super")
-    public ResponseEntity<JwtResponse> authenticateSuperAdmin(@RequestBody LoginRequest loginRequest){
-        return authService.authenticateSuperAdmin(loginRequest);
-    }
-
     //todo handle auth
     /**
      * Handles registering an administrator.

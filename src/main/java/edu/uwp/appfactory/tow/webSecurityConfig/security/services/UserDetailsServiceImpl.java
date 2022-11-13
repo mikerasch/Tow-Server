@@ -1,6 +1,5 @@
 package edu.uwp.appfactory.tow.webSecurityConfig.security.services;
 
-import edu.uwp.appfactory.tow.entities.SuperAdmin;
 import edu.uwp.appfactory.tow.entities.Users;
 import edu.uwp.appfactory.tow.repositories.SuperAdminRepository;
 import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
@@ -30,15 +29,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<Users> user = userRepository.findByUsername(username);
-        if(user.isPresent()){
-            return UserDetailsImpl.buildUser(user.get());
-        }
-        Optional<SuperAdmin> pdAdmin = superAdminRepository.findByEmail(username);
-        if(pdAdmin.isEmpty()){
-            throw new UsernameNotFoundException("Username is not found!");
-        }
-        return UserDetailsImpl.buildSuperAdmin(pdAdmin.get());
+        Users user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+        return UserDetailsImpl.buildUser(user);
     }
 
     /**
