@@ -59,6 +59,4 @@ public class PDAdminController {
     public ResponseEntity<TestVerifyResponse> register(@RequestBody PDAdminRequest pdAdminRequest) {
         return pdAdminService.register(pdAdminRequest);
     }
-
-
 }

@@ -1,8 +1,6 @@
 package edu.uwp.appfactory.tow.webSecurityConfig.models;
 
-/**
- *
- */
+
 public enum ERole {
     ROLE_PDADMIN,
     ROLE_PDUSER,
