@@ -47,7 +47,7 @@ public class SuperAdminController {
     public long getTotalPDCount(@RequestHeader("Authorization") final String jwtToken){
         return superAdminService.getPDAdminCount() + superAdminService.getPDUserCount();
     }
-    @GetMapping("/pd/count")
+    @GetMapping("/tc/count")
     @PreAuthorize("hasRole('SPADMIN')")
     public long getTotalTCCount(@RequestHeader("Authorization") final String jwtToken){
         return superAdminService.getTCAdminCount() + superAdminService.getTCUserCount();
