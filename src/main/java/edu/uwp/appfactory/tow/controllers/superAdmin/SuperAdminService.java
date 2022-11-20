@@ -243,4 +243,12 @@ public class SuperAdminService {
             default -> null;
         };
     }
+
+    public long getPDUserCount() {
+        return pdUserRepository.count();
+    }
+
+    public long getTCUserCount() {
+        return tcUserRepository.count();
+    }
 }
