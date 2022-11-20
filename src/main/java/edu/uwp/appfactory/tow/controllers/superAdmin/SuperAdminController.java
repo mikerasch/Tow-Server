@@ -42,6 +42,16 @@ public class SuperAdminController {
         return superAdminService.getUserCount();
     }
 
+    @GetMapping("/pd/count")
+    @PreAuthorize("hasRole('SPADMIN')")
+    public long getTotalPDCount(@RequestHeader("Authorization") final String jwtToken){
+        return superAdminService.getPDAdminCount() + superAdminService.getPDUserCount();
+    }
+    @GetMapping("/pd/count")
+    @PreAuthorize("hasRole('SPADMIN')")
+    public long getTotalTCCount(@RequestHeader("Authorization") final String jwtToken){
+        return superAdminService.getTCAdminCount() + superAdminService.getTCUserCount();
+    }
     @GetMapping("/users/all")
     @PreAuthorize("hasRole('SPADMIN')")
     public List<UsersDTO> getAllUsers(@RequestHeader("Authorization") final String jwtToken){
