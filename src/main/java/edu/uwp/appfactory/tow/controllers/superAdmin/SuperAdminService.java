@@ -78,16 +78,6 @@ public class SuperAdminService {
         return UUID.randomUUID().toString().replace("-", "");
     }
 
-    public long getTCAdminCount() {
-        return tcAdminRepository.count();
-    }
-    public long getPDAdminCount() {
-        return pdAdminRepository.count();
-    }
-    public long getUserCount() {
-        return usersRepository.count();
-    }
-
     public List<UsersDTO> getAllUsers() {
         List<Users> users = usersRepository.getAllUsers();
         List<UsersDTO> usersDTOS = new ArrayList<>();
@@ -244,11 +234,14 @@ public class SuperAdminService {
         };
     }
 
-    public long getPDUserCount() {
-        return pdUserRepository.count();
-    }
-
-    public long getTCUserCount() {
-        return tcUserRepository.count();
+    public CountDTO getStatistics() {
+        long pdCount = pdAdminRepository.count() + pdUserRepository.count();
+        long tcCount = tcAdminRepository.count() + tcUserRepository.count();
+        long totalUsers = usersRepository.count();
+        return new CountDTO(
+                pdCount,
+                tcCount,
+                totalUsers
+        );
     }
 }
