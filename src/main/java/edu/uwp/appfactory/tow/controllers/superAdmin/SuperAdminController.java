@@ -1,5 +1,6 @@
 package edu.uwp.appfactory.tow.controllers.superAdmin;
 
+import edu.uwp.appfactory.tow.entities.CountDTO;
 import edu.uwp.appfactory.tow.entities.UsersDTO;
 import edu.uwp.appfactory.tow.requestObjects.rolerequest.SuperAdminRequest;
 import edu.uwp.appfactory.tow.responseObjects.TestVerifyResponse;
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,37 +27,10 @@ public class SuperAdminController {
     public ResponseEntity<TestVerifyResponse> registerSuperAdmin(@RequestBody SuperAdminRequest spAdminRequest){
         return superAdminService.register(spAdminRequest);
     }
-
-    @GetMapping("/tcadmins/count")
+    @GetMapping("/users/statistics")
     @PreAuthorize("hasRole('SPADMIN')")
-    public long getTCAdminCount(@RequestHeader("Authorization") final String jwtToken){
-        return superAdminService.getTCAdminCount();
-    }
-    @GetMapping("/pdadmins/count")
-    @PreAuthorize("hasRole('SPADMIN')")
-    public long getPDAdminCount(@RequestHeader("Authorization") final String jwtToken){
-        return superAdminService.getPDAdminCount();
-    }
-    @GetMapping("/users/count")
-    @PreAuthorize("hasRole('SPADMIN')")
-    public long getUserCount(@RequestHeader("Authorization") final String jwtToken){
-        return superAdminService.getUserCount();
-    }
-
-    @GetMapping("/pd/count")
-    @PreAuthorize("hasRole('SPADMIN')")
-    public long getTotalPDCount(@RequestHeader("Authorization") final String jwtToken){
-        return superAdminService.getPDAdminCount() + superAdminService.getPDUserCount();
-    }
-    @GetMapping("/tc/count")
-    @PreAuthorize("hasRole('SPADMIN')")
-    public long getTotalTCCount(@RequestHeader("Authorization") final String jwtToken){
-        return superAdminService.getTCAdminCount() + superAdminService.getTCUserCount();
-    }
-    @GetMapping("/users/all")
-    @PreAuthorize("hasRole('SPADMIN')")
-    public List<UsersDTO> getAllUsers(@RequestHeader("Authorization") final String jwtToken){
-        return superAdminService.getAllUsers();
+    public CountDTO getUserStatistics(@RequestHeader("Authorization") final String jwtToken){
+        return superAdminService.getStatistics();
     }
 
     @PostMapping("/users/update")
