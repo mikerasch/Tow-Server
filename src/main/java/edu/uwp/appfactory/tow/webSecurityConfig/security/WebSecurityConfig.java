@@ -10,17 +10,20 @@ import org.springframework.security.access.expression.SecurityExpressionHandler;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.FilterInvocation;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
+import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
@@ -30,24 +33,27 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  */
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(
-        // securedEnabled = true,
-        // jsr250Enabled = true,
-        prePostEnabled = true)
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+@EnableMethodSecurity(prePostEnabled = true)
+public class WebSecurityConfig{
 
-    @Autowired
     UserDetailsServiceImpl userDetailsService;
 
-    @Autowired
     private AuthEntryPointJwt unauthorizedHandler;
 
-    @Autowired
-    private RoleHierarchy roleHierarchy;
+    private AuthTokenFilter authTokenFilter;
 
-    @Bean
+    @Autowired
+    public WebSecurityConfig(UserDetailsServiceImpl userDetailsService, AuthEntryPointJwt unauthorizedHandler,AuthTokenFilter authTokenFilter){
+        this.userDetailsService = userDetailsService;
+        this.unauthorizedHandler = unauthorizedHandler;
+        this.authTokenFilter = authTokenFilter;
+    }
+
+//    @Autowired
+//    private RoleHierarchy roleHierarchy;
+
     public AuthTokenFilter authenticationJwtTokenFilter() {
-        return new AuthTokenFilter();
+        return authTokenFilter;
     }
 
     /**
@@ -56,22 +62,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      * @param authenticationManagerBuilder: builds manager for authentication
      * @throws Exception: any
      */
-    @Override
-    public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
-        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-    }
-
-    /**
-     * getter of the bean for the authentication manager
-     *
-     * @return super of the authentication manager bean
-     * @throws Exception any
-     */
-    @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
+//    @Autowired
+//    public void configure(AuthenticationManagerBuilder authenticationManagerBuilder,AuthenticationProvider authenticationProvider) throws Exception {
+//        authenticationManagerBuilder.authenticationProvider(authenticationProvider);
+//        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+//    }
 
     /**
      * encoder for passwords, security
@@ -89,13 +84,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      *
      * @return role hierarchy set by the developer
      */
-    @Bean
-    public RoleHierarchy roleHierarchy() {
-        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
-        /* tricks lies here */
-        roleHierarchy.setHierarchy("ROLE_SPADMIN > ROLE_ADMIN > ROLE_TCADMIN ROLE_PDADMIN > ROLE_TCUSER ROLE_PDUSER");
-        return roleHierarchy;
-    }
+//    @Bean
+//    public RoleHierarchy roleHierarchy() {
+//        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
+//        /* tricks lies here */
+//        roleHierarchy.setHierarchy("ROLE_SPADMIN > ROLE_ADMIN > ROLE_TCADMIN ROLE_PDADMIN > ROLE_TCUSER ROLE_PDUSER");
+//        return roleHierarchy;
+//    }
 
     /**
      * security expression handler, using the default web security expression
@@ -105,10 +100,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     private SecurityExpressionHandler<FilterInvocation> webExpressionHandler() {
         DefaultWebSecurityExpressionHandler defaultWebSecurityExpressionHandler = new DefaultWebSecurityExpressionHandler();
-        defaultWebSecurityExpressionHandler.setRoleHierarchy(roleHierarchy);
+    //    defaultWebSecurityExpressionHandler.setRoleHierarchy(roleHierarchy);
         return defaultWebSecurityExpressionHandler;
     }
 
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
     /**
      * configure method that sets the constraints on accessing the server
      * in accordance with roles, authentication
@@ -116,13 +115,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      * @param http HttpSecurity
      * @throws Exception any
      */
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.cors().and().csrf().disable()
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+                http.cors().and().csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .authorizeRequests().antMatchers("/**").permitAll()
-                .anyRequest().authenticated();
+                .authorizeHttpRequests().anyRequest().permitAll();
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+        return http.build();
     }
 }

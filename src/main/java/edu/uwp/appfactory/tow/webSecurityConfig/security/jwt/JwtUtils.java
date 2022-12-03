@@ -1,17 +1,19 @@
 package edu.uwp.appfactory.tow.webSecurityConfig.security.jwt;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.AlgorithmMismatchException;
+import com.auth0.jwt.exceptions.IncorrectClaimException;
+import com.auth0.jwt.exceptions.SignatureVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsImpl;
-import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
-
 import java.util.Date;
-import java.util.function.Function;
-
-import static io.jsonwebtoken.SignatureAlgorithm.HS256;
 
 /**
  * Java Web Tokens Utilities class, housing mostly all methods relating to JWT
@@ -31,42 +33,25 @@ public class JwtUtils {
      * method that generates a JWT token
      */
     public String generateJwtToken(Authentication authentication) {
-
+        Algorithm algorithm = Algorithm.HMAC256(jwtSecret);
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
-
-        return Jwts.builder()
-                .setSubject(userPrincipal.getId().toString())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
-                .signWith(HS256, jwtSecret)
-                .compact();
+        return JWT.create()
+                .withSubject(userPrincipal.getId().toString())
+                .withIssuedAt(new Date(System.currentTimeMillis()))
+                .withExpiresAt(new Date(System.currentTimeMillis() + jwtExpirationMs))
+                .sign(algorithm);
     }
 
     /**
      * method to refresh a users JWT token
      */
     public String refreshJwtToken(String userUUID) {
-
-        return Jwts.builder()
-                .setSubject(userUUID)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
-                .signWith(HS256, jwtSecret)
-                .compact();
-    }
-
-    /**
-     * method to get UUID from a JWT token
-     */
-    public String getUUIDFromJwtToken(String token) {
-        token = truncateBearerTag(token);
-        Function<Claims, String> claimsResolver = Claims::getSubject;
-        Claims parsedToken = Jwts
-                .parser()
-                .setSigningKey(jwtSecret)
-                .parseClaimsJws(token)
-                .getBody();
-        return claimsResolver.apply(parsedToken);
+        Algorithm algorithm = Algorithm.HMAC256(jwtSecret);
+        return JWT.create()
+                .withSubject(userUUID)
+                .withIssuedAt(new Date(System.currentTimeMillis()))
+                .withExpiresAt(new Date(System.currentTimeMillis() + jwtExpirationMs))
+                .sign(algorithm);
     }
 
     /**
@@ -78,22 +63,30 @@ public class JwtUtils {
         return token.replace("Bearer","");
     }
 
+    public String getUUIDFromJwtToken(String token) {
+        Algorithm algorithm = Algorithm.HMAC256(jwtSecret);
+        token = truncateBearerTag(token);
+        DecodedJWT jwt = JWT.require(algorithm)
+                .build().verify(token.strip());
+        return jwt.getSubject();
+    }
+
     /**
      * method to validate a JWT token
      */
     public boolean validateJwtToken(String authToken) {
+        Algorithm algorithm = Algorithm.HMAC256(jwtSecret);
         try {
-            Jwts.parser()
-                    .setSigningKey(jwtSecret)
-                    .parseClaimsJws(authToken);
+            DecodedJWT jwt = JWT.require(algorithm)
+                    .build().verify(authToken.strip());
             return true;
-        } catch (MalformedJwtException e) {
+        } catch (SignatureVerificationException e) {
             logger.error("Invalid JWT token: {}", e.getMessage());
-        } catch (ExpiredJwtException e) {
+        } catch (TokenExpiredException e) {
             logger.error("JWT token is expired: {}", e.getMessage());
-        } catch (UnsupportedJwtException e) {
+        } catch (AlgorithmMismatchException e) {
             logger.error("JWT token is unsupported: {}", e.getMessage());
-        } catch (IllegalArgumentException e) {
+        } catch (IncorrectClaimException e) {
             logger.error("JWT claims string is empty: {}", e.getMessage());
         } catch (Exception e) {
             logger.error("JWT exception: {}", e.getMessage());

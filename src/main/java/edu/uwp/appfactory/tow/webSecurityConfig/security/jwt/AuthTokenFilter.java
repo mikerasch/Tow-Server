@@ -12,10 +12,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.UUID;
 
@@ -26,11 +26,14 @@ import java.util.UUID;
 public class AuthTokenFilter extends OncePerRequestFilter {
 
     private static final Logger logging = LoggerFactory.getLogger(AuthTokenFilter.class);
-    @Autowired
     private JwtUtils jwtUtils;
-    @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
+    @Autowired
+    public AuthTokenFilter(JwtUtils jwtUtils, UserDetailsServiceImpl userDetailsService){
+        this.jwtUtils = jwtUtils;
+        this.userDetailsService = userDetailsService;
+    }
     /**
      * applies a filter to a request
      */

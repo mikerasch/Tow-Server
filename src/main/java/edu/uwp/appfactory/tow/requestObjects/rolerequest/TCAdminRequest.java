@@ -2,7 +2,7 @@ package edu.uwp.appfactory.tow.requestObjects.rolerequest;
 
 import lombok.Value;
 
-// todo: "import javax.validation.constraints.NotBlank;" NotBlank isn't working
+// todo: "import jakarta.validation.constraints.NotBlank;" NotBlank isn't working
 
 @Value
 public class TCAdminRequest {
