@@ -1,6 +1,6 @@
 package edu.uwp.appfactory.tow.webSecurityConfig.payload.request;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 
 /**
  *
