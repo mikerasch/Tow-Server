@@ -56,6 +56,7 @@ public class TCAdminController {
      */
     @PostMapping()
     @ResponseBody
+    @PreAuthorize("hasRole('SPADMIN')")
     public ResponseEntity<TestVerifyResponse> register(@RequestBody TCAdminRequest tcAdminRequest) {
         return tcAdminService.register(tcAdminRequest);
 

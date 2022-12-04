@@ -90,7 +90,6 @@ public class AuthService {
             ));
         }
         throw new ResponseStatusException(BAD_REQUEST,"User not verified");
-        //todo: when not testing, uncomment code
     }
 
     public Authentication authenticationRequest(LoginRequest loginRequest){
@@ -106,7 +105,7 @@ public class AuthService {
      * @return - true if successfully registered, false otherwise
      */
     public boolean registerAdmin(AdminRequest adminRequest) {
-        if (usersRepository.existsByEmail(adminRequest.getEmail())) {
+        if (!usersRepository.existsByEmail(adminRequest.getEmail())) {
             Users user = new Users(adminRequest.getEmail(),
                     adminRequest.getEmail(),
                     encoder.encode(adminRequest.getPassword()),
@@ -118,9 +117,8 @@ public class AuthService {
 
             usersRepository.save(user);
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
 

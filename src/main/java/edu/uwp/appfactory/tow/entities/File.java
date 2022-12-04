@@ -10,10 +10,7 @@ import org.springframework.data.relational.core.mapping.Table;
 import java.util.UUID;
 
 @Data
-@Builder
 @Table("file_db")
-@NoArgsConstructor
-@AllArgsConstructor
 public class File {
     @Id
     private UUID id;
@@ -21,4 +18,14 @@ public class File {
     private String type;
     private String filename;
     private byte[] data;
+
+    public File(UUID user_uuid, String type, String filename, byte[] data){
+        this.user_uuid = user_uuid;
+        this.type = type;
+        this.filename = filename;
+        this.data = data;
+    }
+    public File(){
+
+    }
 }
