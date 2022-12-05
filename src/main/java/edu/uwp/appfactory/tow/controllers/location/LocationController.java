@@ -64,7 +64,7 @@ public class LocationController {
      * @return - list of closest and available tow truck drivers, else 400
      */
     @PreAuthorize("hasRole('PDUSER')")
-    @GetMapping("/driver-locations")
+    @PostMapping("/driver-locations")
     public ResponseEntity<List<TCUser>> getLocations(@RequestBody DriversRadiusRequest driversRequest) {
         List<TCUser> data = locationService.findByDistance(driversRequest.getLatitude(), driversRequest.getLongitude(), driversRequest.getRadius());
         if(data.isEmpty()){

@@ -23,12 +23,7 @@ public class DriverController {
         return null;
     }
 
-    @GetMapping("/all")
-    @PreAuthorize("hasRole('SPADMIN')")
-    public ResponseEntity<List<Drivers>> getAll(@RequestHeader("Authorization") final String jwtToken){
-        return ResponseEntity.ok(new ArrayList<>());
-    }
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<TestVerifyResponse> register(@RequestBody DriverRequest driverRequest){
         return driverService.register(driverRequest);
     }

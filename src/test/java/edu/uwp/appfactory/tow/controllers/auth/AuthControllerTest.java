@@ -5,31 +5,22 @@ import edu.uwp.appfactory.tow.controllers.superAdmin.SuperAdminService;
 import edu.uwp.appfactory.tow.entities.Users;
 import edu.uwp.appfactory.tow.requestObjects.rolerequest.LoginRequest;
 import edu.uwp.appfactory.tow.requestObjects.rolerequest.SuperAdminRequest;
+import edu.uwp.appfactory.tow.webSecurityConfig.payload.response.JwtResponse;
 import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
-import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.AuthTokenFilter;
-import org.json.JSONObject;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureWebMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.*;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.net.URI;
-import java.util.UUID;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @SpringBootTest
@@ -45,9 +36,9 @@ class AuthControllerTest {
 
     @Autowired
     private SuperAdminService superAdminService;
-    @AfterEach
+    @BeforeEach
     void tearDown(){
-      //  usersRepository.deleteAll();
+        usersRepository.deleteAll();
     }
 
     @BeforeEach
@@ -62,7 +53,7 @@ class AuthControllerTest {
                 "test@gmail.com",
                 "dingledart123A!"
         );
-        addUserToDatabase();
+        addUserToDatabaseAndVerfiyEmail();
         // when
         MockHttpServletResponse response = mockMvc.perform(
                 post("/auth/login").contentType(MediaType.APPLICATION_JSON)
@@ -71,9 +62,37 @@ class AuthControllerTest {
 
         // then
         assertThat(response.getStatus()).isEqualTo(200);
+        assertEquals("application/json",response.getContentType());
     }
 
-    private void addUserToDatabase() {
+    @Test
+    void testRefreshTokenGivenRealToken() throws Exception {
+        // given
+        LoginRequest loginRequest = new LoginRequest(
+                "test@gmail.com",
+                "dingledart123A!"
+        );
+        addUserToDatabaseAndVerfiyEmail();
+        MockHttpServletResponse response = mockMvc.perform(
+                        post("/auth/login").contentType(MediaType.APPLICATION_JSON)
+                                .content(asJsonString(loginRequest)))
+                .andReturn().getResponse();
+        String json = response.getContentAsString();
+        JwtResponse jwtResponse = new ObjectMapper().readValue(json, JwtResponse.class);
+        String token = jwtResponse.getToken();
+
+        // when
+        MockHttpServletResponse refreshResponse = mockMvc.perform(
+                        post("/auth/refresh").contentType(MediaType.APPLICATION_JSON)
+                                .content(asJsonString(loginRequest)).header("Authorization",token))
+                .andReturn().getResponse();
+
+        // then
+        assertThat(refreshResponse.getStatus()).isEqualTo(200);
+        assertEquals("application/json",refreshResponse.getContentType());
+    }
+
+    private void addUserToDatabaseAndVerfiyEmail() {
         superAdminService.register(
                 new SuperAdminRequest(
                         "test@gmail.com",
@@ -84,6 +103,8 @@ class AuthControllerTest {
                         "mike"
                 )
         );
+        Optional<Users> user = usersRepository.findByEmail("test@gmail.com");
+        usersRepository.updateUserEmailVerifiedByUUID(user.get().getId(),true);
     }
 
 
