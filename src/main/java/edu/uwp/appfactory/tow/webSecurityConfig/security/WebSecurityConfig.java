@@ -3,6 +3,7 @@ package edu.uwp.appfactory.tow.webSecurityConfig.security;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.AuthEntryPointJwt;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.AuthTokenFilter;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsServiceImpl;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +18,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -49,24 +51,9 @@ public class WebSecurityConfig{
         this.authTokenFilter = authTokenFilter;
     }
 
-//    @Autowired
-//    private RoleHierarchy roleHierarchy;
-
     public AuthTokenFilter authenticationJwtTokenFilter() {
         return authTokenFilter;
     }
-
-    /**
-     * main constructor for the configure object for web security
-     *
-     * @param authenticationManagerBuilder: builds manager for authentication
-     * @throws Exception: any
-     */
-//    @Autowired
-//    public void configure(AuthenticationManagerBuilder authenticationManagerBuilder,AuthenticationProvider authenticationProvider) throws Exception {
-//        authenticationManagerBuilder.authenticationProvider(authenticationProvider);
-//        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-//    }
 
     /**
      * encoder for passwords, security
@@ -76,32 +63,6 @@ public class WebSecurityConfig{
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
-
-    /**
-     * role hierarchy method that pulls from the impl, and sets the hierarchy
-     * to what the developer states
-     *
-     * @return role hierarchy set by the developer
-     */
-//    @Bean
-//    public RoleHierarchy roleHierarchy() {
-//        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
-//        /* tricks lies here */
-//        roleHierarchy.setHierarchy("ROLE_SPADMIN > ROLE_ADMIN > ROLE_TCADMIN ROLE_PDADMIN > ROLE_TCUSER ROLE_PDUSER");
-//        return roleHierarchy;
-//    }
-
-    /**
-     * security expression handler, using the default web security expression
-     * and the role hierarchy
-     *
-     * @return default web handler
-     */
-    private SecurityExpressionHandler<FilterInvocation> webExpressionHandler() {
-        DefaultWebSecurityExpressionHandler defaultWebSecurityExpressionHandler = new DefaultWebSecurityExpressionHandler();
-    //    defaultWebSecurityExpressionHandler.setRoleHierarchy(roleHierarchy);
-        return defaultWebSecurityExpressionHandler;
     }
 
     @Bean
@@ -122,6 +83,7 @@ public class WebSecurityConfig{
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeHttpRequests().anyRequest().permitAll();
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         return http.build();
     }
 }

@@ -17,6 +17,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -28,18 +29,37 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     private static final Logger logging = LoggerFactory.getLogger(AuthTokenFilter.class);
     private JwtUtils jwtUtils;
     private UserDetailsServiceImpl userDetailsService;
+    private final List<String> bypassUrlFilter = List.of(
+            "/api/drivers",
+            "/api/auth/refresh",
+            "/api/auth/verification",
+            "/api/password/forgot",
+            "/api/password/forgot/verify",
+            "/api/password/forgot/reset",
+            "/api/auth/login"
+    );
+
+
 
     @Autowired
     public AuthTokenFilter(JwtUtils jwtUtils, UserDetailsServiceImpl userDetailsService){
         this.jwtUtils = jwtUtils;
         this.userDetailsService = userDetailsService;
     }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String path = request.getRequestURI();
+        return bypassUrlFilter.contains(path);
+    }
+
     /**
      * applies a filter to a request
      */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+        System.out.println("DINGLEDART");
         try {
             String jwt = parseJwt(request);
             if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
@@ -53,6 +73,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             }
         } catch (Exception e) {
             logging.error("Cannot set user authentication: {}", e);
+            filterChain.doFilter(request,response);
         }
         filterChain.doFilter(request, response);
     }
