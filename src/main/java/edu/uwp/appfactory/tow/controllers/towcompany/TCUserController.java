@@ -3,7 +3,11 @@ package edu.uwp.appfactory.tow.controllers.towcompany;
 import edu.uwp.appfactory.tow.controllers.user.UserController;
 import edu.uwp.appfactory.tow.responseObjects.TestVerifyResponse;
 import edu.uwp.appfactory.tow.entities.TCUser;
+<<<<<<< develop
 import edu.uwp.appfactory.tow.requestobjects.rolerequest.TCUserRequest;
+=======
+import edu.uwp.appfactory.tow.controllers.requestObjects.rolerequest.TCUserRequest;
+>>>>>>> More intergration testing
 import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

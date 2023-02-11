@@ -1,7 +1,11 @@
 package edu.uwp.appfactory.tow.controllers.towcompany;
 
 import edu.uwp.appfactory.tow.responseObjects.TestVerifyResponse;
+<<<<<<< develop
 import edu.uwp.appfactory.tow.requestobjects.rolerequest.TCAdminRequest;
+=======
+import edu.uwp.appfactory.tow.controllers.requestObjects.rolerequest.TCAdminRequest;
+>>>>>>> More intergration testing
 import edu.uwp.appfactory.tow.responseObjects.TCAdminResponse;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
 import org.springframework.http.ResponseEntity;

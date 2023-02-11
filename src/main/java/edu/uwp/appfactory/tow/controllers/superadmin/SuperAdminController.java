@@ -2,7 +2,11 @@ package edu.uwp.appfactory.tow.controllers.superadmin;
 
 import edu.uwp.appfactory.tow.entities.CountDTO;
 import edu.uwp.appfactory.tow.entities.UsersDTO;
+<<<<<<< develop:src/main/java/edu/uwp/appfactory/tow/controllers/superadmin/SuperAdminController.java
 import edu.uwp.appfactory.tow.requestobjects.rolerequest.SuperAdminRequest;
+=======
+import edu.uwp.appfactory.tow.controllers.requestObjects.rolerequest.SuperAdminRequest;
+>>>>>>> More intergration testing:src/main/java/edu/uwp/appfactory/tow/controllers/superAdmin/SuperAdminController.java
 import edu.uwp.appfactory.tow.responseObjects.TestVerifyResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

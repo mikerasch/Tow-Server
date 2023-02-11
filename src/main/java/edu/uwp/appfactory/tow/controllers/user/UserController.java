@@ -1,7 +1,11 @@
 package edu.uwp.appfactory.tow.controllers.user;
 
 import edu.uwp.appfactory.tow.entities.Users;
+<<<<<<< develop
 import edu.uwp.appfactory.tow.requestobjects.rolerequest.UpdateRequest;
+=======
+import edu.uwp.appfactory.tow.controllers.requestObjects.rolerequest.UpdateRequest;
+>>>>>>> More intergration testing
 import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

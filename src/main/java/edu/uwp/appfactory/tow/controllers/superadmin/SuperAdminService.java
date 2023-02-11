@@ -2,7 +2,11 @@ package edu.uwp.appfactory.tow.controllers.superadmin;
 
 import edu.uwp.appfactory.tow.entities.*;
 import edu.uwp.appfactory.tow.repositories.*;
+<<<<<<< develop:src/main/java/edu/uwp/appfactory/tow/controllers/superadmin/SuperAdminService.java
 import edu.uwp.appfactory.tow.requestobjects.rolerequest.SuperAdminRequest;
+=======
+import edu.uwp.appfactory.tow.controllers.requestObjects.rolerequest.SuperAdminRequest;
+>>>>>>> More intergration testing:src/main/java/edu/uwp/appfactory/tow/controllers/superAdmin/SuperAdminService.java
 import edu.uwp.appfactory.tow.responseObjects.TestVerifyResponse;
 import edu.uwp.appfactory.tow.services.email.AsyncEmailService;
 import edu.uwp.appfactory.tow.utilities.AccountInformationValidator;

@@ -1,18 +1,14 @@
 package edu.uwp.appfactory.tow.controllers.files;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.uwp.appfactory.tow.controllers.auth.AuthService;
 import edu.uwp.appfactory.tow.controllers.policedepartment.PDAdminService;
-import edu.uwp.appfactory.tow.entities.File;
-import edu.uwp.appfactory.tow.entities.PDAdmin;
 import edu.uwp.appfactory.tow.entities.Users;
 import edu.uwp.appfactory.tow.repositories.FileRepository;
-import edu.uwp.appfactory.tow.requestObjects.rolerequest.LoginRequest;
-import edu.uwp.appfactory.tow.requestObjects.rolerequest.PDAdminRequest;
+import edu.uwp.appfactory.tow.controllers.requestObjects.rolerequest.LoginRequest;
+import edu.uwp.appfactory.tow.controllers.requestObjects.rolerequest.PDAdminRequest;
 import edu.uwp.appfactory.tow.webSecurityConfig.payload.response.JwtResponse;
 import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,17 +18,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.security.core.parameters.P;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 @SpringBootTest
