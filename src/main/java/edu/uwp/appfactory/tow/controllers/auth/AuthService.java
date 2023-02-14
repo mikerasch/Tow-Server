@@ -72,11 +72,12 @@ public class AuthService {
      * @return Response Entity of user information if success, else BAD_REQUEST or UNAUTHORIZED
      */
     public ResponseEntity<JwtResponse> authenticateUser(LoginRequest loginRequest) {
+        System.out.println("here 1");
         Authentication authentication = authenticationRequest(loginRequest);
+        System.out.println("here 2");
         String jwt;
         try{
             jwt = jwtUtils.generateJwtToken(authentication);
-
         } catch(Exception e){
             throw new ResponseStatusException(BAD_REQUEST,"Could not authenticate");
         }
