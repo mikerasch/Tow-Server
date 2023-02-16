@@ -45,7 +45,7 @@ public class JwtUtils {
                 .withIssuedAt(new Date(System.currentTimeMillis()))
                 .withExpiresAt(new Date(System.currentTimeMillis() + jwtExpirationMs))
                 .sign(algorithm);
-        return encryptionUtility.encrypt(jwt);
+        return encryptionUtility.encrypt(jwt.strip());
     }
 
     /**
@@ -58,7 +58,7 @@ public class JwtUtils {
                 .withIssuedAt(new Date(System.currentTimeMillis()))
                 .withExpiresAt(new Date(System.currentTimeMillis() + jwtExpirationMs))
                 .sign(algorithm);
-        return encryptionUtility.encrypt(token);
+        return encryptionUtility.encrypt(token.strip());
     }
 
     /**
@@ -73,7 +73,8 @@ public class JwtUtils {
     public String getUUIDFromJwtToken(String token) {
         Algorithm algorithm = Algorithm.HMAC256(jwtSecret);
         token = truncateBearerTag(token);
-        token = encryptionUtility.decrypt(token);
+        token = encryptionUtility.decrypt(token.strip());
+        System.out.println("token: " + token);
         DecodedJWT jwt = JWT.require(algorithm)
                 .build().verify(token.strip());
         return jwt.getSubject();
@@ -83,8 +84,8 @@ public class JwtUtils {
      * method to validate a JWT token
      */
     public boolean validateJwtToken(String authToken) {
-        authToken = encryptionUtility.decrypt(authToken);
-        System.out.println(authToken);
+        authToken = encryptionUtility.decrypt(authToken.strip());
+        System.out.println("token: " + authToken);
         Algorithm algorithm = Algorithm.HMAC256(jwtSecret);
         try {
             DecodedJWT jwt = JWT.require(algorithm)

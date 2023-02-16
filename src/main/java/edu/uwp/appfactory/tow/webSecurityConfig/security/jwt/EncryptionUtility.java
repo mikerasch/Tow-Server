@@ -27,7 +27,7 @@ public class EncryptionUtility {
             Base64.Encoder encoder = Base64.getEncoder();
             return encoder.encodeToString(encryptedByte);
         } catch (Exception e){
-            return "roh row";
+            return "encrypt failed";
         }
     }
     public String decrypt(final String encryptedMessage) {
@@ -38,7 +38,7 @@ public class EncryptionUtility {
             byte[] decryptedByte = cipher.doFinal(encryptedByte);
             return new String(decryptedByte);
         } catch(Exception e){
-            return "roh row";
+            return "decrypt failed";
         }
     }
     public String getStrongSecret() throws NoSuchAlgorithmException {
