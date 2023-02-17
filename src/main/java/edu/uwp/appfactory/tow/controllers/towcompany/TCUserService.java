@@ -2,13 +2,12 @@ package edu.uwp.appfactory.tow.controllers.towcompany;
 
 import edu.uwp.appfactory.tow.entities.TCUser;
 import edu.uwp.appfactory.tow.repositories.TCUserRepository;
-import edu.uwp.appfactory.tow.requestObjects.rolerequest.TCUserRequest;
+import edu.uwp.appfactory.tow.requestobjects.rolerequest.TCUserRequest;
 import edu.uwp.appfactory.tow.responseObjects.TestVerifyResponse;
 import edu.uwp.appfactory.tow.services.email.AsyncEmailService;
 import edu.uwp.appfactory.tow.utilities.AccountInformationValidator;
 import edu.uwp.appfactory.tow.webSecurityConfig.models.ERole;
 import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -30,8 +29,6 @@ public class TCUserService {
     private final AsyncEmailService sendEmail;
     private final PasswordEncoder encoder;
 
-
-    @Autowired
     public TCUserService(TCUserRepository tcUserRepository, UsersRepository usersRepository, AsyncEmailService sendEmail, PasswordEncoder encoder) {
         this.tcUserRepository = tcUserRepository;
         this.usersRepository = usersRepository;

@@ -1,10 +1,9 @@
 package edu.uwp.appfactory.tow.controllers.password;
 
 import edu.uwp.appfactory.tow.entities.Users;
-import edu.uwp.appfactory.tow.requestObjects.password.ForgotPassRequest;
+import edu.uwp.appfactory.tow.requestobjects.password.ForgotPassRequest;
 import edu.uwp.appfactory.tow.services.email.AsyncEmailService;
 import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +20,7 @@ public class PasswordService {
     private final PasswordEncoder encoder;
     private final AsyncEmailService sender;
     private final Random random;
-    @Autowired
+
     public PasswordService(UsersRepository usersRepository, PasswordEncoder encoder, AsyncEmailService sender) {
         this.usersRepository = usersRepository;
         this.encoder = encoder;

@@ -27,10 +27,12 @@ import java.util.UUID;
 @Order(Ordered.HIGHEST_PRECEDENCE + 99)
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
-    @Autowired
     private JwtUtils jwtUtils;
-    @Autowired
     private UserDetailsServiceImpl userDetailsService;
+    public WebSocketConfig(JwtUtils jwtUtils, UserDetailsServiceImpl userDetailsService){
+        this.jwtUtils = jwtUtils;
+        this.userDetailsService = userDetailsService;
+    }
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
         config.enableSimpleBroker("/topic");
@@ -55,7 +57,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
                 if(StompCommand.CONNECT.equals(accessor.getCommand())){
                     String token = accessor.getFirstNativeHeader("Authorization");
-                    if(!jwtUtils.validateJwtToken(token)){
+                    if(!jwtUtils.isTokenValid(token)){
                         return null;
                     }
                     String userId = jwtUtils.getUUIDFromJwtToken(token);

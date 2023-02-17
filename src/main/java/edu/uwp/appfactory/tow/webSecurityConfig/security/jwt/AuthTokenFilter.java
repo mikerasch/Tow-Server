@@ -1,15 +1,10 @@
 package edu.uwp.appfactory.tow.webSecurityConfig.security.jwt;
 
 import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsServiceImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import jakarta.servlet.FilterChain;
@@ -25,8 +20,6 @@ import java.util.UUID;
  */
 @Component
 public class AuthTokenFilter extends OncePerRequestFilter {
-
-    private static final Logger logging = LoggerFactory.getLogger(AuthTokenFilter.class);
     private JwtUtils jwtUtils;
     private UserDetailsServiceImpl userDetailsService;
     private final List<String> bypassUrlFilter = List.of(
@@ -39,9 +32,6 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             "/api/auth/login"
     );
 
-
-
-    @Autowired
     public AuthTokenFilter(JwtUtils jwtUtils, UserDetailsServiceImpl userDetailsService){
         this.jwtUtils = jwtUtils;
         this.userDetailsService = userDetailsService;
@@ -59,35 +49,23 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        try {
-            String jwt = parseJwt(request);
-            if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
-                String userId = jwtUtils.getUUIDFromJwtToken(jwt);
-                UserDetails userDetails = userDetailsService.loadUserByUUID(UUID.fromString(userId));
+        final String authorizationHeader = request.getHeader("Authorization");
+        if(authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            filterChain.doFilter(request,response);
+            return;
+        }
+        String jwtToken = authorizationHeader.substring(7);
+        String userUUID = jwtUtils.getUUIDFromJwtToken(jwtToken);
+        if(userUUID != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails userDetails = userDetailsService.loadUserByUUID(UUID.fromString(userUUID));
+            if(jwtUtils.isTokenValid(jwtToken) && userDetails != null) {
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
+                        userDetails,null,userDetails.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
-        } catch (Exception e) {
-            logging.error("Cannot set user authentication: {}", e);
-            filterChain.doFilter(request,response);
         }
+
         filterChain.doFilter(request, response);
     }
 
-    /**
-     * method that parses a JWT token from a user
-     */
-    private String parseJwt(HttpServletRequest request) {
-        String headerAuth = request.getHeader("Authorization");
-        //todo: fix JWT to be sent in bearer
-        if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
-            return headerAuth.substring(7);
-        } else if (StringUtils.hasText(headerAuth)) {
-            return headerAuth;
-        }
-        return null;
-    }
 }

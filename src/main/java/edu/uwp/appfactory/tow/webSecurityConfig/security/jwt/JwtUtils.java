@@ -2,14 +2,9 @@ package edu.uwp.appfactory.tow.webSecurityConfig.security.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.AlgorithmMismatchException;
-import com.auth0.jwt.exceptions.IncorrectClaimException;
-import com.auth0.jwt.exceptions.SignatureVerificationException;
-import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.auth0.jwt.exceptions.*;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -21,9 +16,6 @@ import java.util.Date;
  */
 @Component
 public class JwtUtils {
-
-    private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
-
     private final String jwtSecret;
 
     @Value("${tow.app.jwtExpirationMs}")
@@ -40,7 +32,7 @@ public class JwtUtils {
     public String generateJwtToken(Authentication authentication){
         Algorithm algorithm = Algorithm.HMAC256(jwtSecret);
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
-        String jwt =  JWT.create()
+        String jwt = JWT.create()
                 .withSubject(userPrincipal.getId().toString())
                 .withIssuedAt(new Date(System.currentTimeMillis()))
                 .withExpiresAt(new Date(System.currentTimeMillis() + jwtExpirationMs))
@@ -74,34 +66,27 @@ public class JwtUtils {
         Algorithm algorithm = Algorithm.HMAC256(jwtSecret);
         token = truncateBearerTag(token);
         token = encryptionUtility.decrypt(token.strip());
-        System.out.println("token: " + token);
         DecodedJWT jwt = JWT.require(algorithm)
                 .build().verify(token.strip());
         return jwt.getSubject();
     }
 
-    /**
-     * method to validate a JWT token
-     */
-    public boolean validateJwtToken(String authToken) {
-        authToken = encryptionUtility.decrypt(authToken.strip());
-        System.out.println("token: " + authToken);
-        Algorithm algorithm = Algorithm.HMAC256(jwtSecret);
-        try {
-            DecodedJWT jwt = JWT.require(algorithm)
-                    .build().verify(authToken.strip());
-            return true;
-        } catch (SignatureVerificationException e) {
-            logger.error("Invalid JWT token: {}", e.getMessage());
-        } catch (TokenExpiredException e) {
-            logger.error("JWT token is expired: {}", e.getMessage());
-        } catch (AlgorithmMismatchException e) {
-            logger.error("JWT token is unsupported: {}", e.getMessage());
-        } catch (IncorrectClaimException e) {
-            logger.error("JWT claims string is empty: {}", e.getMessage());
-        } catch (Exception e) {
-            logger.error("JWT exception: {}", e.getMessage());
+    public DecodedJWT getDecodedJwt(String jwtToken) {
+        try{
+            return JWT.decode(jwtToken);
+        } catch (JWTDecodeException e){
+            return null;
         }
-        return false;
+    }
+    public boolean isTokenValid(String jwtToken) {
+        DecodedJWT decodedJWT = getDecodedJwt(encryptionUtility.decrypt(jwtToken));
+        if(decodedJWT == null){
+            return false;
+        }
+        return !isTokenExpired(decodedJWT);
+    }
+
+    public boolean isTokenExpired(DecodedJWT token) {
+        return token.getExpiresAt().before(new Date());
     }
 }

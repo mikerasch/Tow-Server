@@ -3,7 +3,7 @@ package edu.uwp.appfactory.tow.controllers.policedepartment;
 import edu.uwp.appfactory.tow.controllers.auth.AuthController;
 import edu.uwp.appfactory.tow.controllers.user.UserController;
 import edu.uwp.appfactory.tow.entities.PDUser;
-import edu.uwp.appfactory.tow.requestObjects.rolerequest.PDUserRequest;
+import edu.uwp.appfactory.tow.requestobjects.rolerequest.PDUserRequest;
 import edu.uwp.appfactory.tow.responseObjects.PDUAuthResponse;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
 import org.springframework.http.ResponseEntity;

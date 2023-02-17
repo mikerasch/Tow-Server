@@ -1,25 +1,23 @@
-package edu.uwp.appfactory.tow.controllers.superAdmin;
+package edu.uwp.appfactory.tow.controllers.superadmin;
 
 import edu.uwp.appfactory.tow.entities.CountDTO;
 import edu.uwp.appfactory.tow.entities.UsersDTO;
-import edu.uwp.appfactory.tow.requestObjects.rolerequest.SuperAdminRequest;
+import edu.uwp.appfactory.tow.requestobjects.rolerequest.SuperAdminRequest;
 import edu.uwp.appfactory.tow.responseObjects.TestVerifyResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Controller
 @RestController
 @RequestMapping("/spadmins")
 public class SuperAdminController {
-    @Autowired
     private SuperAdminService superAdminService;
+    public SuperAdminController(SuperAdminService superAdminService) {
+        this.superAdminService = superAdminService;
+    }
 
     //todo add super admin pre auth, don't have it for testing since it is annoying
     @PostMapping

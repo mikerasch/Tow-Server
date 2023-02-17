@@ -2,12 +2,11 @@ package edu.uwp.appfactory.tow.controllers.driver;
 
 import edu.uwp.appfactory.tow.entities.Drivers;
 import edu.uwp.appfactory.tow.repositories.DriverRepository;
-import edu.uwp.appfactory.tow.requestObjects.rolerequest.DriverRequest;
+import edu.uwp.appfactory.tow.requestobjects.rolerequest.DriverRequest;
 import edu.uwp.appfactory.tow.responseObjects.TestVerifyResponse;
 import edu.uwp.appfactory.tow.services.email.AsyncEmailService;
 import edu.uwp.appfactory.tow.utilities.AccountInformationValidator;
 import edu.uwp.appfactory.tow.webSecurityConfig.models.ERole;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,14 +19,16 @@ import java.util.UUID;
 
 @Service
 public class DriverService {
-    @Autowired
-    public DriverRepository driverRepository;
-    @Autowired
-    private PasswordEncoder encoder;
+    private final DriverRepository driverRepository;
+    private final PasswordEncoder encoder;
 
-    @Autowired
-    private AsyncEmailService sendEmail;
+    private final AsyncEmailService asyncEmailService;
 
+    public DriverService(DriverRepository driverRepository, PasswordEncoder passwordEncoder, AsyncEmailService asyncEmailService) {
+        this.driverRepository = driverRepository;
+        this.encoder = passwordEncoder;
+        this.asyncEmailService = asyncEmailService;
+    }
     public ResponseEntity<TestVerifyResponse> register(DriverRequest driverRequest) {
         if(!AccountInformationValidator.validateEmail(driverRequest.getEmail())){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Typo in email");
@@ -50,7 +51,7 @@ public class DriverService {
             drivers.setVerifyDate(String.valueOf(LocalDate.now()));
             drivers.setVerEnabled(false);
             driverRepository.save(drivers);
-            sendEmail.submitEmailExecution(drivers);
+            asyncEmailService.submitEmailExecution(drivers);
             TestVerifyResponse testVerifyResponse = new TestVerifyResponse(drivers.getVerifyToken());
             return ResponseEntity.ok(testVerifyResponse);
         }

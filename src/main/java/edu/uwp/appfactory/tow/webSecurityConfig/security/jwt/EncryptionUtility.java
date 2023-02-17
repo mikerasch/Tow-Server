@@ -3,15 +3,14 @@ package edu.uwp.appfactory.tow.webSecurityConfig.security.jwt;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.*;
-import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Base64;
 
 @Component
 public class EncryptionUtility {
-    public SecretKey secret;
-    public final Cipher cipher;
+    private final SecretKey secret;
+    private final Cipher cipher;
 
     public EncryptionUtility() throws NoSuchAlgorithmException, NoSuchPaddingException {
         KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");

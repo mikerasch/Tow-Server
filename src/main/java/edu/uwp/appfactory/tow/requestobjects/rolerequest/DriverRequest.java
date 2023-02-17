@@ -1,9 +1,9 @@
-package edu.uwp.appfactory.tow.requestObjects.rolerequest;
+package edu.uwp.appfactory.tow.requestobjects.rolerequest;
 
 import lombok.Value;
 
 @Value
-public class AdminRequest {
+public class DriverRequest {
     String firstname;
     String lastname;
     String email;

@@ -4,12 +4,12 @@ import lombok.Data;
 
 @Data
 public class CountDTO {
-    private long PDUsers;
-    private long TCUsers;
+    private long pdUsers;
+    private long tcUsers;
     private long totalUsers;
-    public CountDTO(long PDUsers, long TCUsers, long totalUsers){
-        this.PDUsers = PDUsers;
-        this.TCUsers = TCUsers;
+    public CountDTO(long pdUsers, long tcUsers, long totalUsers){
+        this.pdUsers = pdUsers;
+        this.tcUsers = tcUsers;
         this.totalUsers = totalUsers;
     }
 }

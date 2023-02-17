@@ -1,18 +1,13 @@
 package edu.uwp.appfactory.tow.controllers.auth;
 
 import edu.uwp.appfactory.tow.entities.Users;
-import edu.uwp.appfactory.tow.repositories.SuperAdminRepository;
-import edu.uwp.appfactory.tow.requestObjects.rolerequest.AdminRequest;
-import edu.uwp.appfactory.tow.requestObjects.rolerequest.LoginRequest;
+import edu.uwp.appfactory.tow.requestobjects.rolerequest.AdminRequest;
+import edu.uwp.appfactory.tow.requestobjects.rolerequest.LoginRequest;
 import edu.uwp.appfactory.tow.webSecurityConfig.models.ERole;
 import edu.uwp.appfactory.tow.webSecurityConfig.payload.response.JwtResponse;
-import edu.uwp.appfactory.tow.webSecurityConfig.payload.response.MessageResponse;
 import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsImpl;
-import lombok.extern.java.Log;
-import org.apache.coyote.Response;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -42,15 +37,11 @@ public class AuthService {
     private final UsersRepository usersRepository;
     private final PasswordEncoder encoder;
     private final JwtUtils jwtUtils;
-
-    private final SuperAdminRepository superAdminRepository;
-    @Autowired
-    public AuthService(AuthenticationManager authenticationManager, UsersRepository usersRepository, PasswordEncoder encoder, JwtUtils jwtUtils, SuperAdminRepository superAdminRepository) {
+    public AuthService(AuthenticationManager authenticationManager, UsersRepository usersRepository, PasswordEncoder encoder, JwtUtils jwtUtils) {
         this.authenticationManager = authenticationManager;
         this.usersRepository = usersRepository;
         this.encoder = encoder;
         this.jwtUtils = jwtUtils;
-        this.superAdminRepository = superAdminRepository;
     }
 
     /**
@@ -72,9 +63,7 @@ public class AuthService {
      * @return Response Entity of user information if success, else BAD_REQUEST or UNAUTHORIZED
      */
     public ResponseEntity<JwtResponse> authenticateUser(LoginRequest loginRequest) {
-        System.out.println("here 1");
         Authentication authentication = authenticationRequest(loginRequest);
-        System.out.println("here 2");
         String jwt;
         try{
             jwt = jwtUtils.generateJwtToken(authentication);
