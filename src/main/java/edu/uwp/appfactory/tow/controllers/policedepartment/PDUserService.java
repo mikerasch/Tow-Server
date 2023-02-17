@@ -64,7 +64,7 @@ public class PDUserService {
         if(!AccountInformationValidator.validateEmail(pdUserRequest.getEmail())){
             throw new ResponseStatusException(BAD_REQUEST,"Typo in email");
         }
-        if(!AccountInformationValidator.validateEmail(pdUserRequest.getPassword())){
+        if(!AccountInformationValidator.validatePassword(pdUserRequest.getPassword()).isEmpty()){
             throw new ResponseStatusException(BAD_REQUEST,"Not secure password");
         }
         if (!usersRepository.existsByEmail(pdUserRequest.getEmail())) {

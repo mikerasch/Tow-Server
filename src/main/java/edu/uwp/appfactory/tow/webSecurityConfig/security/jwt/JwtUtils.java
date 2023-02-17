@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
 /**
@@ -23,23 +24,28 @@ public class JwtUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 
-    @Value("${tow.app.jwtSecret}")
-    private String jwtSecret;
+    private final String jwtSecret;
 
     @Value("${tow.app.jwtExpirationMs}")
     private int jwtExpirationMs;
 
+    private final EncryptionUtility encryptionUtility;
+    public JwtUtils(EncryptionUtility encryptionUtility) throws NoSuchAlgorithmException {
+        this.encryptionUtility = encryptionUtility;
+        jwtSecret = encryptionUtility.getStrongSecret();
+    }
     /**
      * method that generates a JWT token
      */
-    public String generateJwtToken(Authentication authentication) {
+    public String generateJwtToken(Authentication authentication){
         Algorithm algorithm = Algorithm.HMAC256(jwtSecret);
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
-        return JWT.create()
+        String jwt =  JWT.create()
                 .withSubject(userPrincipal.getId().toString())
                 .withIssuedAt(new Date(System.currentTimeMillis()))
                 .withExpiresAt(new Date(System.currentTimeMillis() + jwtExpirationMs))
                 .sign(algorithm);
+        return encryptionUtility.encrypt(jwt.strip());
     }
 
     /**
@@ -47,11 +53,12 @@ public class JwtUtils {
      */
     public String refreshJwtToken(String userUUID) {
         Algorithm algorithm = Algorithm.HMAC256(jwtSecret);
-        return JWT.create()
+        String token = JWT.create()
                 .withSubject(userUUID)
                 .withIssuedAt(new Date(System.currentTimeMillis()))
                 .withExpiresAt(new Date(System.currentTimeMillis() + jwtExpirationMs))
                 .sign(algorithm);
+        return encryptionUtility.encrypt(token.strip());
     }
 
     /**
@@ -66,6 +73,8 @@ public class JwtUtils {
     public String getUUIDFromJwtToken(String token) {
         Algorithm algorithm = Algorithm.HMAC256(jwtSecret);
         token = truncateBearerTag(token);
+        token = encryptionUtility.decrypt(token.strip());
+        System.out.println("token: " + token);
         DecodedJWT jwt = JWT.require(algorithm)
                 .build().verify(token.strip());
         return jwt.getSubject();
@@ -75,6 +84,8 @@ public class JwtUtils {
      * method to validate a JWT token
      */
     public boolean validateJwtToken(String authToken) {
+        authToken = encryptionUtility.decrypt(authToken.strip());
+        System.out.println("token: " + authToken);
         Algorithm algorithm = Algorithm.HMAC256(jwtSecret);
         try {
             DecodedJWT jwt = JWT.require(algorithm)
