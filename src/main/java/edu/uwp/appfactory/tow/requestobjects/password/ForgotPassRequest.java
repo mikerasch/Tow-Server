@@ -5,5 +5,4 @@ import lombok.Value;
 @Value
 public class ForgotPassRequest {
     String email;
-    String platform;
 }

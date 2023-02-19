@@ -12,4 +12,6 @@ public interface FileRepository extends CrudRepository<File, UUID> {
 
     @Query(value = "select * from file_db where filename = :filename and user_uuid = :userUUID LIMIT 1")
     Optional<File> findByFilenameAndUserUUID(String filename,UUID userUUID);
+
+    Optional<File> findByFilename(String filename);
 }

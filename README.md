@@ -20,7 +20,7 @@ Highway Emergency Location Platform
 <br>
 
 <div align="center">
-  <sub>Built with ❤︎ by <a href="https://github.com/kayleqb">Quincy Kayle</a> and <a href="https://github.com/MattRank93">Matthew Rank</a>
+  <sub>Built with ❤︎ by <a href="https://github.com/kayleqb">Quincy Kayle</a>  <a href="https://github.com/MattRank93">Matthew Rank</a> and <a href="https://github.com/mikerasch">Michael Rasch</a>
 </div>
 
 
