@@ -3,11 +3,7 @@ package edu.uwp.appfactory.tow.controllers.towcompany;
 import edu.uwp.appfactory.tow.entities.TCAdmin;
 import edu.uwp.appfactory.tow.mappers.TCMapper;
 import edu.uwp.appfactory.tow.repositories.TCAdminRepository;
-<<<<<<< develop
 import edu.uwp.appfactory.tow.requestobjects.rolerequest.TCAdminRequest;
-=======
-import edu.uwp.appfactory.tow.controllers.requestObjects.rolerequest.TCAdminRequest;
->>>>>>> More intergration testing
 import edu.uwp.appfactory.tow.responseObjects.TCAdminResponse;
 import edu.uwp.appfactory.tow.responseObjects.TestVerifyResponse;
 import edu.uwp.appfactory.tow.services.email.AsyncEmailService;

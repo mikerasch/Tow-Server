@@ -2,11 +2,7 @@ package edu.uwp.appfactory.tow.controllers.towcompany;
 
 import edu.uwp.appfactory.tow.entities.TCUser;
 import edu.uwp.appfactory.tow.repositories.TCUserRepository;
-<<<<<<< develop
 import edu.uwp.appfactory.tow.requestobjects.rolerequest.TCUserRequest;
-=======
-import edu.uwp.appfactory.tow.controllers.requestObjects.rolerequest.TCUserRequest;
->>>>>>> More intergration testing
 import edu.uwp.appfactory.tow.responseObjects.TestVerifyResponse;
 import edu.uwp.appfactory.tow.services.email.AsyncEmailService;
 import edu.uwp.appfactory.tow.utilities.AccountInformationValidator;
