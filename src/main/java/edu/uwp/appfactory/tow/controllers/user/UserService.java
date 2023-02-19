@@ -2,7 +2,6 @@ package edu.uwp.appfactory.tow.controllers.user;
 
 import edu.uwp.appfactory.tow.entities.Users;
 import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -12,8 +11,6 @@ import java.util.UUID;
 @Service
 public class UserService {
     private final UsersRepository usersRepository;
-
-    @Autowired
     public UserService(UsersRepository usersRepository) {
         this.usersRepository = usersRepository;
     }

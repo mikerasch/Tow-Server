@@ -12,7 +12,7 @@ import java.security.Principal;
 public class MessageController {
     @MessageMapping("/private-message")
     @SendToUser("/topic/private-messages")
-    public MessageResponse getPrivateMessage(Message message, final Principal principal) throws Exception {
+    public MessageResponse getPrivateMessage(Message message, final Principal principal) {
         return new MessageResponse(message.getContent());
     }
 }

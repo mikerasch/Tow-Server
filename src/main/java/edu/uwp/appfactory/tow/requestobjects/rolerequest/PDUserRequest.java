@@ -1,12 +1,11 @@
-package edu.uwp.appfactory.tow.requestObjects.rolerequest;
+package edu.uwp.appfactory.tow.requestobjects.rolerequest;
 
 import lombok.Value;
 
 @Value
-public class DriverRequest {
+public class PDUserRequest {
     String firstname;
     String lastname;
     String email;
     String password;
-    String phone;
 }

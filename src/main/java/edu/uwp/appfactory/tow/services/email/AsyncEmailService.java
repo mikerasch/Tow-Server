@@ -5,7 +5,6 @@ import edu.uwp.appfactory.tow.entities.Users;
 import edu.uwp.appfactory.tow.repositories.FailedEmailRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -31,7 +30,6 @@ public class AsyncEmailService {
     @Value("${SPRING_DNS}")
     private String dns;
 
-    @Autowired
     public AsyncEmailService(JavaMailSender javaMailSender, ContentBuilderService contentBuilderService, FailedEmailRepository failedEmailRepository) {
         this.javaMailSender = javaMailSender;
         this.contentBuilderService = contentBuilderService;

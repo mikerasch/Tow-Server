@@ -3,7 +3,6 @@ package edu.uwp.appfactory.tow.webSecurityConfig.security.services;
 import edu.uwp.appfactory.tow.entities.Users;
 import edu.uwp.appfactory.tow.repositories.SuperAdminRepository;
 import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,11 +17,12 @@ import java.util.UUID;
  */
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
-
-    @Autowired
     UsersRepository userRepository;
-    @Autowired
     SuperAdminRepository superAdminRepository;
+    public UserDetailsServiceImpl(UsersRepository userRepository, SuperAdminRepository superAdminRepository){
+        this.userRepository = userRepository;
+        this.superAdminRepository = superAdminRepository;
+    }
     /**
      * load a user by their username, exception if not found
      */
@@ -38,8 +38,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
      * load a user by their username, exception if not found
      */
     public UserDetails loadUserByUUID(UUID id) {
-        Users user = userRepository.findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + id));
-        return UserDetailsImpl.buildUser(user);
+        Optional<Users> user = userRepository.findById(id);
+        return user.map(UserDetailsImpl::buildUser).orElse(null);
     }
 }

@@ -17,9 +17,11 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/files")
 public class FileController {
-    @Autowired
     private FileService fileService;
 
+    public FileController(FileService fileService) {
+        this.fileService = fileService;
+    }
     /**
      * Uploads the file to the database.
      * The file extensions must either be jpg, png, or jpeg.

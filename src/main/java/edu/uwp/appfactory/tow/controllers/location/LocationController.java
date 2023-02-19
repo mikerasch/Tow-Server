@@ -2,8 +2,8 @@ package edu.uwp.appfactory.tow.controllers.location;
 
 import edu.uwp.appfactory.tow.controllers.auth.AuthController;
 import edu.uwp.appfactory.tow.entities.TCUser;
-import edu.uwp.appfactory.tow.requestObjects.location.DriversRadiusRequest;
-import edu.uwp.appfactory.tow.requestObjects.location.TCULocationRequest;
+import edu.uwp.appfactory.tow.requestobjects.location.DriversRadiusRequest;
+import edu.uwp.appfactory.tow.requestobjects.location.TCULocationRequest;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

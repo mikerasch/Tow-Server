@@ -1,4 +1,4 @@
-package edu.uwp.appfactory.tow.requestObjects.rolerequest;
+package edu.uwp.appfactory.tow.requestobjects.rolerequest;
 
 import lombok.Value;
 

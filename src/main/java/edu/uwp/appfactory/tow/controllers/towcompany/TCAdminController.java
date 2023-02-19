@@ -1,7 +1,7 @@
 package edu.uwp.appfactory.tow.controllers.towcompany;
 
 import edu.uwp.appfactory.tow.responseObjects.TestVerifyResponse;
-import edu.uwp.appfactory.tow.requestObjects.rolerequest.TCAdminRequest;
+import edu.uwp.appfactory.tow.requestobjects.rolerequest.TCAdminRequest;
 import edu.uwp.appfactory.tow.responseObjects.TCAdminResponse;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
 import org.springframework.http.ResponseEntity;
@@ -54,7 +54,7 @@ public class TCAdminController {
      * @param tcAdminRequest - tow company admin account information
      * @return token of newly created tc admin, 400 otherwise
      */
-    @PostMapping("")
+    @PostMapping()
     @ResponseBody
     public ResponseEntity<TestVerifyResponse> register(@RequestBody TCAdminRequest tcAdminRequest) {
         return tcAdminService.register(tcAdminRequest);

@@ -2,7 +2,7 @@ package edu.uwp.appfactory.tow.controllers.policedepartment;
 
 import edu.uwp.appfactory.tow.responseObjects.TestVerifyResponse;
 import edu.uwp.appfactory.tow.entities.PDAdmin;
-import edu.uwp.appfactory.tow.requestObjects.rolerequest.PDAdminRequest;
+import edu.uwp.appfactory.tow.requestobjects.rolerequest.PDAdminRequest;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

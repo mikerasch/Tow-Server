@@ -2,13 +2,12 @@ package edu.uwp.appfactory.tow.controllers.policedepartment;
 
 import edu.uwp.appfactory.tow.entities.PDAdmin;
 import edu.uwp.appfactory.tow.repositories.PDAdminRepository;
-import edu.uwp.appfactory.tow.requestObjects.rolerequest.PDAdminRequest;
+import edu.uwp.appfactory.tow.requestobjects.rolerequest.PDAdminRequest;
 import edu.uwp.appfactory.tow.responseObjects.TestVerifyResponse;
 import edu.uwp.appfactory.tow.services.email.AsyncEmailService;
 import edu.uwp.appfactory.tow.utilities.AccountInformationValidator;
 import edu.uwp.appfactory.tow.webSecurityConfig.models.ERole;
 import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -30,7 +29,6 @@ public class PDAdminService {
     private final AsyncEmailService sendEmail;
     private final PasswordEncoder encoder;
 
-    @Autowired
     public PDAdminService(PDAdminRepository pdAdminRepository, UsersRepository usersRepository, AsyncEmailService sendEmail, PasswordEncoder encoder) {
         this.pdAdminRepository = pdAdminRepository;
         this.usersRepository = usersRepository;

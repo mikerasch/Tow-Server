@@ -1,10 +1,8 @@
 package edu.uwp.appfactory.tow.controllers.driver;
 
 import edu.uwp.appfactory.tow.entities.Drivers;
-import edu.uwp.appfactory.tow.requestObjects.rolerequest.DriverRequest;
+import edu.uwp.appfactory.tow.requestobjects.rolerequest.DriverRequest;
 import edu.uwp.appfactory.tow.responseObjects.TestVerifyResponse;
-import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -15,12 +13,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/drivers")
 public class DriverController {
-    @Autowired
-    private JwtUtils jwtUtils;
+    private final DriverService driverService;
 
-    @Autowired
-    private DriverService driverService;
-    // to
+    public DriverController(DriverService driverService) {
+        this.driverService = driverService;
+    }
     @GetMapping()
     public ResponseEntity<Drivers> get(@RequestHeader("Authorization") final String jwtToken){
         return null;

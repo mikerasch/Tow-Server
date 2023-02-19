@@ -3,7 +3,7 @@ package edu.uwp.appfactory.tow.controllers.towcompany;
 import edu.uwp.appfactory.tow.controllers.user.UserController;
 import edu.uwp.appfactory.tow.responseObjects.TestVerifyResponse;
 import edu.uwp.appfactory.tow.entities.TCUser;
-import edu.uwp.appfactory.tow.requestObjects.rolerequest.TCUserRequest;
+import edu.uwp.appfactory.tow.requestobjects.rolerequest.TCUserRequest;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -78,7 +78,7 @@ public class TCUserController {
      * @return new tow company users token, else 400
      */
     @PreAuthorize("hasRole('TCADMIN')")
-    @PostMapping("")
+    @PostMapping()
     public ResponseEntity<TestVerifyResponse> register(@RequestHeader("Authorization") final String jwtToken,
                                                        @RequestBody TCUserRequest tcUserRequest) {
         UUID adminUUID = UUID.fromString(jwtUtils.getUUIDFromJwtToken(jwtToken));

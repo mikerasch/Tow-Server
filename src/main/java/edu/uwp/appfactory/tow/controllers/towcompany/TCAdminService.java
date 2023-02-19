@@ -3,14 +3,13 @@ package edu.uwp.appfactory.tow.controllers.towcompany;
 import edu.uwp.appfactory.tow.entities.TCAdmin;
 import edu.uwp.appfactory.tow.mappers.TCMapper;
 import edu.uwp.appfactory.tow.repositories.TCAdminRepository;
-import edu.uwp.appfactory.tow.requestObjects.rolerequest.TCAdminRequest;
+import edu.uwp.appfactory.tow.requestobjects.rolerequest.TCAdminRequest;
 import edu.uwp.appfactory.tow.responseObjects.TCAdminResponse;
 import edu.uwp.appfactory.tow.responseObjects.TestVerifyResponse;
 import edu.uwp.appfactory.tow.services.email.AsyncEmailService;
 import edu.uwp.appfactory.tow.utilities.AccountInformationValidator;
 import edu.uwp.appfactory.tow.webSecurityConfig.models.ERole;
 import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,8 +32,6 @@ public class TCAdminService {
     private final PasswordEncoder encoder;
     private final TCMapper tcMapper;
 
-
-    @Autowired
     public TCAdminService(TCAdminRepository tcAdminRepository, UsersRepository usersRepository, AsyncEmailService sendEmail, PasswordEncoder encoder, TCMapper tcMapper) {
         this.tcAdminRepository = tcAdminRepository;
         this.usersRepository = usersRepository;

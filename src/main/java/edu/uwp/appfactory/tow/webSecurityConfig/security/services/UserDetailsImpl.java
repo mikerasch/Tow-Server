@@ -3,17 +3,12 @@ package edu.uwp.appfactory.tow.webSecurityConfig.security.services;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import edu.uwp.appfactory.tow.entities.Users;
 import edu.uwp.appfactory.tow.webSecurityConfig.models.ERole;
-import edu.uwp.appfactory.tow.webSecurityConfig.models.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serial;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Objects;
-import java.util.UUID;
-import java.util.stream.Collectors;
+import java.util.*;
 
 /**
  * user details implementation, implementing userDetails
@@ -89,15 +84,11 @@ public class UserDetailsImpl implements UserDetails {
             case "ROLE_DRIVER" -> ERole.ROLE_DRIVER;
             default -> ERole.ROLE_ADMIN;
         };
-
-        Role tempRole = new Role();
-        tempRole.setName(eRole);
-        Collection<Role> roles = new ArrayList<>();
-        roles.add(tempRole);
+        Collection<ERole> roles = List.of(eRole);
 
         return roles.stream()
-                .map(role1 -> new SimpleGrantedAuthority(role1.getName().name()))
-                .collect(Collectors.toList());
+                .map(role1 -> new SimpleGrantedAuthority(role1.name()))
+                .toList();
     }
 
 
@@ -143,6 +134,11 @@ public class UserDetailsImpl implements UserDetails {
             return false;
         UserDetailsImpl user = (UserDetailsImpl) o;
         return Objects.equals(id, user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 
     public String getFirstname() {

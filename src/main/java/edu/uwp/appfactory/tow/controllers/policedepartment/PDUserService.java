@@ -4,14 +4,12 @@ import edu.uwp.appfactory.tow.entities.PDAdmin;
 import edu.uwp.appfactory.tow.entities.PDUser;
 import edu.uwp.appfactory.tow.repositories.PDAdminRepository;
 import edu.uwp.appfactory.tow.repositories.PDUserRepository;
-import edu.uwp.appfactory.tow.requestObjects.rolerequest.PDUserRequest;
+import edu.uwp.appfactory.tow.requestobjects.rolerequest.PDUserRequest;
 import edu.uwp.appfactory.tow.responseObjects.PDUAuthResponse;
 import edu.uwp.appfactory.tow.utilities.AccountInformationValidator;
 import edu.uwp.appfactory.tow.webSecurityConfig.models.ERole;
 import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -33,8 +31,6 @@ public class PDUserService {
     private final PasswordEncoder encoder;
     private final JwtUtils jwtUtils;
 
-
-    @Autowired
     public PDUserService(PDUserRepository pdUserRepository, PDAdminRepository pdAdminRepository, UsersRepository usersRepository, JwtUtils jwtUtils, PasswordEncoder encoder) {
         this.pdUserRepository = pdUserRepository;
         this.pdAdminRepository = pdAdminRepository;

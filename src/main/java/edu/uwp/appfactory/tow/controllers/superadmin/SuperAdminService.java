@@ -1,14 +1,13 @@
-package edu.uwp.appfactory.tow.controllers.superAdmin;
+package edu.uwp.appfactory.tow.controllers.superadmin;
 
 import edu.uwp.appfactory.tow.entities.*;
 import edu.uwp.appfactory.tow.repositories.*;
-import edu.uwp.appfactory.tow.requestObjects.rolerequest.SuperAdminRequest;
+import edu.uwp.appfactory.tow.requestobjects.rolerequest.SuperAdminRequest;
 import edu.uwp.appfactory.tow.responseObjects.TestVerifyResponse;
 import edu.uwp.appfactory.tow.services.email.AsyncEmailService;
 import edu.uwp.appfactory.tow.utilities.AccountInformationValidator;
 import edu.uwp.appfactory.tow.webSecurityConfig.models.ERole;
 import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,7 +32,7 @@ public class SuperAdminService {
     private final TCUserRepository tcUserRepository;
     private final PDUserRepository pdUserRepository;
     private final DriverRepository driverRepository;
-    @Autowired
+
     public SuperAdminService(SuperAdminRepository superAdminRepository, PasswordEncoder passwordEncoder, AsyncEmailService sendEmail,
                              TCAdminRepository tcAdminRepository, PDAdminRepository pdAdminRepository, UsersRepository usersRepository,
                              TCUserRepository tcUserRepository, PDUserRepository pdUserRepository, DriverRepository driverRepository){
@@ -207,6 +206,7 @@ public class SuperAdminService {
                     usersDTO.getRole(),
                     usersDTO.getUsername()
             ));
+            default -> throw new IllegalArgumentException();
         }
         UUID newUUID = usersRepository.findIDByEmail(usersDTO.getEmail());
         usersRepository.updateUserEmailVerifiedByUUID(newUUID,true);
@@ -219,6 +219,7 @@ public class SuperAdminService {
             case ROLE_PDADMIN -> pdAdminRepository.deleteById(id);
             case ROLE_DRIVER -> driverRepository.deleteById(id);
             case ROLE_SPADMIN -> superAdminRepository.deleteById(id);
+            default -> throw new IllegalArgumentException();
         }
     }
 

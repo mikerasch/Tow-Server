@@ -1,4 +1,4 @@
-package edu.uwp.appfactory.tow.requestObjects.password;
+package edu.uwp.appfactory.tow.requestobjects.password;
 
 import lombok.Value;
 

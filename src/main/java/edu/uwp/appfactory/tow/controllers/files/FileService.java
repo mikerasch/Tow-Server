@@ -23,13 +23,15 @@ import static edu.uwp.appfactory.tow.controllers.files.HandleFileOperationsUtil.
  */
 @Service
 public class FileService {
-    @Autowired
     private FileRepository fileRepository;
-    @Autowired
     private JwtUtils jwtUtils;
-    @Autowired
     private UsersRepository usersRepository;
 
+    public FileService(FileRepository fileRepository, JwtUtils jwtUtils, UsersRepository usersRepository) {
+        this.fileRepository = fileRepository;
+        this.jwtUtils = jwtUtils;
+        this.usersRepository = usersRepository;
+    }
     /**
      * Stores the requested file in the database if the file extension is valid and if the user is authorized.
      * Compresses the file for storage benefit.

@@ -15,6 +15,9 @@ import java.util.zip.Inflater;
  */
 public class HandleFileOperationsUtil {
 
+    private HandleFileOperationsUtil() throws IllegalStateException {
+        throw new IllegalStateException();
+    }
     private static final HashSet<String> validFileExtensions = new HashSet<>(List.of(
        "jpg","png","jpeg"
     ));
