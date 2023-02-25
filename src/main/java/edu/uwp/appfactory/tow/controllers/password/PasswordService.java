@@ -2,7 +2,7 @@ package edu.uwp.appfactory.tow.controllers.password;
 
 import edu.uwp.appfactory.tow.entities.Users;
 import edu.uwp.appfactory.tow.requestobjects.password.ForgotPassRequest;
-import edu.uwp.appfactory.tow.services.email.AsyncEmailService;
+import edu.uwp.appfactory.tow.controllers.email.AsyncEmailService;
 import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

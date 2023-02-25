@@ -1,4 +1,4 @@
-package edu.uwp.appfactory.tow.services.email;
+package edu.uwp.appfactory.tow.controllers.email;
 
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;

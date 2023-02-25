@@ -1,9 +1,9 @@
-package edu.uwp.appfactory.tow.services.routines;
+package edu.uwp.appfactory.tow.routines;
 
 import edu.uwp.appfactory.tow.entities.FailedEmail;
 import edu.uwp.appfactory.tow.entities.Users;
 import edu.uwp.appfactory.tow.repositories.FailedEmailRepository;
-import edu.uwp.appfactory.tow.services.email.ContentBuilderService;
+import edu.uwp.appfactory.tow.controllers.email.ContentBuilderService;
 import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
