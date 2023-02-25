@@ -2,7 +2,7 @@ package edu.uwp.appfactory.tow.controllers.driver;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.uwp.appfactory.tow.repositories.DriverRepository;
-import edu.uwp.appfactory.tow.controllers.requestObjects.rolerequest.DriverRequest;
+import edu.uwp.appfactory.tow.requestobjects.rolerequest.DriverRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
