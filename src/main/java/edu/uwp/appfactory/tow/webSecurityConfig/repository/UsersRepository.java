@@ -1,10 +1,8 @@
 package edu.uwp.appfactory.tow.webSecurityConfig.repository;
 
 import edu.uwp.appfactory.tow.entities.Users;
-import edu.uwp.appfactory.tow.entities.UsersDTO;
 import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
-import org.springframework.data.relational.core.sql.Select;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
