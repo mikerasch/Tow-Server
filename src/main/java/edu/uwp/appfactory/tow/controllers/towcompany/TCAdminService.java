@@ -6,7 +6,7 @@ import edu.uwp.appfactory.tow.repositories.TCAdminRepository;
 import edu.uwp.appfactory.tow.requestobjects.rolerequest.TCAdminRequest;
 import edu.uwp.appfactory.tow.responseObjects.TCAdminResponse;
 import edu.uwp.appfactory.tow.responseObjects.TestVerifyResponse;
-import edu.uwp.appfactory.tow.services.email.AsyncEmailService;
+import edu.uwp.appfactory.tow.controllers.email.AsyncEmailService;
 import edu.uwp.appfactory.tow.utilities.AccountInformationValidator;
 import edu.uwp.appfactory.tow.webSecurityConfig.models.ERole;
 import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
@@ -77,7 +77,7 @@ public class TCAdminService {
             tcAdmin.setVerifyDate(String.valueOf(LocalDate.now()));
             tcAdmin.setVerEnabled(false);
             usersRepository.save(tcAdmin);
-            sendEmail.submitEmailExecution(tcAdmin);
+            sendEmail.submitSignupEmailExecution(tcAdmin);
             return ResponseEntity.ok(new TestVerifyResponse(tcAdmin.getVerifyToken()));
         }
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Email is already in use.");

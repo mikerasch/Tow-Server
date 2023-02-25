@@ -4,7 +4,7 @@ import edu.uwp.appfactory.tow.entities.*;
 import edu.uwp.appfactory.tow.repositories.*;
 import edu.uwp.appfactory.tow.requestobjects.rolerequest.SuperAdminRequest;
 import edu.uwp.appfactory.tow.responseObjects.TestVerifyResponse;
-import edu.uwp.appfactory.tow.services.email.AsyncEmailService;
+import edu.uwp.appfactory.tow.controllers.email.AsyncEmailService;
 import edu.uwp.appfactory.tow.utilities.AccountInformationValidator;
 import edu.uwp.appfactory.tow.webSecurityConfig.models.ERole;
 import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
@@ -68,7 +68,7 @@ public class SuperAdminService {
         superAdmin.setVerifyDate(String.valueOf(LocalDate.now()));
         superAdmin.setVerEnabled(false);
         superAdminRepository.save(superAdmin);
-        sendEmail.submitEmailExecution(superAdmin);
+        sendEmail.submitSignupEmailExecution(superAdmin);
         TestVerifyResponse test = new TestVerifyResponse(superAdmin.getVerifyToken());
         return ResponseEntity.ok(test);
     }

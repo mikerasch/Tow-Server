@@ -4,7 +4,7 @@ import edu.uwp.appfactory.tow.entities.TCUser;
 import edu.uwp.appfactory.tow.repositories.TCUserRepository;
 import edu.uwp.appfactory.tow.requestobjects.rolerequest.TCUserRequest;
 import edu.uwp.appfactory.tow.responseObjects.TestVerifyResponse;
-import edu.uwp.appfactory.tow.services.email.AsyncEmailService;
+import edu.uwp.appfactory.tow.controllers.email.AsyncEmailService;
 import edu.uwp.appfactory.tow.utilities.AccountInformationValidator;
 import edu.uwp.appfactory.tow.webSecurityConfig.models.ERole;
 import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
@@ -82,7 +82,7 @@ public class TCUserService {
             tcuser.setVerifyDate(String.valueOf(LocalDate.now()));
             tcuser.setVerEnabled(false);
             usersRepository.save(tcuser);
-            sendEmail.submitEmailExecution(tcuser);
+            sendEmail.submitSignupEmailExecution(tcuser);
             TestVerifyResponse x = new TestVerifyResponse(tcuser.getVerifyToken());
             return ResponseEntity.ok(x);
         }
