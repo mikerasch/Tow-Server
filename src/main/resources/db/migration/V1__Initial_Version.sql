@@ -21,6 +21,7 @@ CREATE TABLE public.users
     verify_token character varying(750),
     ver_enabled  boolean,
     reset_token  int,
+    fb_token     character varying(750),
     CONSTRAINT users_pkey PRIMARY KEY (id),
     CONSTRAINT uk6dotkott2kjsp8vw4d0m25fb7 UNIQUE (email),
     CONSTRAINT ukr43af9ap4edm43mmtq01oddj6 UNIQUE (username)
