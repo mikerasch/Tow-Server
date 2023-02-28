@@ -3,11 +3,15 @@ package edu.uwp.appfactory.tow.controllers.location;
 import edu.uwp.appfactory.tow.entities.TCUser;
 import edu.uwp.appfactory.tow.repositories.TCUserRepository;
 import java.util.Collections;
+
+import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsImpl;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 /**
  * This class is used by both TC and PD user in order to store and the find by geodata.
@@ -28,19 +32,16 @@ public class LocationService {
      * Method used by the tow truck users in order to continuously set their location.
      * @param latitude the latitude of the tcuser
      * @param longitude the longitude of the tcuser
-     * @param active a boolean that we need to set true when they are available for a tow and false when they are not.
-     * @param userUUID the uuid od the user
      * @return true if userUUID could be found, false otherwise
      */
-    public boolean setLocation(float latitude, float longitude, boolean active, String userUUID) {
-        Optional<TCUser> tcUserOptional = tcUserRepository.findById(UUID.fromString(userUUID));
+    public boolean setLocation(float latitude, float longitude, UserDetailsImpl userDetails) {
+        Optional<TCUser> tcUserOptional = tcUserRepository.findById(userDetails.getId());
         if(tcUserOptional.isEmpty()){
             return false;
         }
         TCUser tcUser = tcUserOptional.get();
         tcUser.setLongitude(longitude);
         tcUser.setLatitude(latitude);
-        tcUser.setActive(active);
         tcUserRepository.save(tcUser);
         return true;
     }
@@ -58,5 +59,16 @@ public class LocationService {
             return drivers;
         }
         return Collections.emptyList();
+    }
+
+    public ResponseEntity<HttpStatus> updateActiveStatus(boolean parseBoolean, UserDetailsImpl userDetails) {
+        Optional<TCUser> tcUser = tcUserRepository.findById(userDetails.getId());
+        if(tcUser.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"User not found!");
+        }
+        TCUser user = tcUser.get();
+        user.setActive(parseBoolean);
+        tcUserRepository.save(user);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

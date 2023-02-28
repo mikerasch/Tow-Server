@@ -34,8 +34,9 @@ create table public.tc_user
 
 create table public.drivers
 (
-
-) inherits (public.tc_user);
+    longitude float4 NOT NULL default 0.0,
+    latitude  float4 NOT NULL default 0.0
+) inherits (public.users);
 
 create table public.sp_admin (
 

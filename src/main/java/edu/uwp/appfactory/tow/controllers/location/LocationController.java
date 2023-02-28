@@ -1,13 +1,13 @@
 package edu.uwp.appfactory.tow.controllers.location;
 
 import edu.uwp.appfactory.tow.controllers.auth.AuthController;
-import edu.uwp.appfactory.tow.entities.TCUser;
-import edu.uwp.appfactory.tow.requestobjects.location.DriversRadiusRequest;
-import edu.uwp.appfactory.tow.requestobjects.location.TCULocationRequest;
+import edu.uwp.appfactory.tow.requestobjects.location.Coordinates;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
+import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,37 +39,21 @@ public class LocationController {
     /**
      * Handling setting location of a TCUSER.
      * PreAuthorization requires request be made by an active TCUSER and jwtToken.
-     * @param jwtToken - JWT token, must be active, else request a refresh
      * @param setRequest - location data of TCUSER
      * @return 204 if successful, else 400
      * @see AuthController#refreshToken(String)
      */
     @PreAuthorize("hasRole('TCUSER')")
-    @PatchMapping("/my-location")
-    public ResponseEntity<HttpStatus> setLocation(@RequestHeader("Authorization") final String jwtToken,
-                                                  @RequestBody TCULocationRequest setRequest) {
-        String userUUID = jwtUtils.getUUIDFromJwtToken(jwtToken);
-        return locationService.setLocation(setRequest.getLatitude(), setRequest.getLongitude(), setRequest.isActive(), userUUID)
+    @PostMapping("/update/location")
+    public ResponseEntity<HttpStatus> updateLocation(@RequestBody Coordinates setRequest, @AuthenticationPrincipal UserDetailsImpl user) {
+        return locationService.setLocation(setRequest.getLatitude(), setRequest.getLongitude(), user)
                 ? ResponseEntity.status(NO_CONTENT).body(null)
                 : ResponseEntity.status(BAD_REQUEST).build();
     }
 
-    //todo: patch doesn't really align, but need in order to send body data
-    //todo: it needs to be 200 or something even if no drivers are returned
-    //todo: previous thoughts: @PatchMapping("/driver-locations")
-
-    /**
-     * Retrieves the list of tow truck drivers who are within range and are active.
-     * @param driversRequest - police department location data
-     * @return - list of closest and available tow truck drivers, else 400
-     */
-    @PreAuthorize("hasRole('PDUSER')")
-    @PostMapping("/driver-locations")
-    public ResponseEntity<List<TCUser>> getLocations(@RequestBody DriversRadiusRequest driversRequest) {
-        List<TCUser> data = locationService.findByDistance(driversRequest.getLatitude(), driversRequest.getLongitude(), driversRequest.getRadius());
-        if(data.isEmpty()){
-            return ResponseEntity.status(BAD_REQUEST).build();
-        }
-        return ResponseEntity.ok(data);
+    @PreAuthorize("hasRole('TCUSER')")
+    @PostMapping("/update/active")
+    public ResponseEntity<HttpStatus> updateActiveStatus(@RequestHeader("status") String status, @AuthenticationPrincipal UserDetailsImpl user) {
+        return locationService.updateActiveStatus(Boolean.parseBoolean(status),user);
     }
 }

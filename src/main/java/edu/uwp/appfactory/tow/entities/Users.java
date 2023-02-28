@@ -50,6 +50,7 @@ public class Users {
     private String verifyDate;
     private Boolean verEnabled;
     private String verifyToken;
+    private String fbToken;
 
     public Users(String email, String username, String password, String firstname, String lastname, String phone, String role) {
         this.username = username;
