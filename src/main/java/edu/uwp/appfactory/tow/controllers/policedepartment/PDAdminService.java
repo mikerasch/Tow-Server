@@ -8,6 +8,7 @@ import edu.uwp.appfactory.tow.controllers.email.AsyncEmailService;
 import edu.uwp.appfactory.tow.utilities.AccountInformationValidator;
 import edu.uwp.appfactory.tow.webSecurityConfig.models.ERole;
 import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
+import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -38,12 +39,11 @@ public class PDAdminService {
 
     /**
      * Retrieves a PDAdmin given the users UUID.
-     * @param userId - UUID of user to be retrieved.
      * @return - PdAdmin if UUID exists in database, null otherwise
      */
-    public PDAdmin get(UUID userId) {
-        Optional<PDAdmin> user = pdAdminRepository.findById(userId);
-        return user.orElse(null);
+    public PDAdmin get(UserDetailsImpl userDetails) {
+        Optional<PDAdmin> user = Optional.of(pdAdminRepository.findById(userDetails.getId()).orElseThrow());
+        return user.get();
     }
 
     /**

@@ -23,33 +23,23 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 public class UserController {
 
     private final UserService userService;
-    private final JwtUtils jwtUtils;
 
     /**
      * Parameterized constructor for creating a new UserController.
      * @param userService useful information for managing all users
-     * @param jwtUtils - handling management of JWT tokens for security
      */
-    public UserController(UserService userService, JwtUtils jwtUtils) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.jwtUtils = jwtUtils;
     }
 
     /**
      * Retrieves the account based on the UUID of the incoming JWT token.
-     * @param jwtToken token of the requesting entity.
      * @return user object containing only the necessary information.
      */
     @GetMapping("")
     @PreAuthorize("hasRole('PDADMIN') or hasRole('PDUSER') or hasRole('TCADMIN') or hasRole('TCUSER')")
-    public ResponseEntity<Users> get(@RequestHeader("Authorization") final String jwtToken) {
-        String userId = jwtUtils.getUUIDFromJwtToken(jwtToken);
-        Users data = userService.findById(UUID.fromString(userId));
-        if (data != null) {
-            return ResponseEntity.ok(data);
-        } else {
-            return ResponseEntity.status(BAD_REQUEST).build();
-        }
+    public ResponseEntity<Users> get(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.ok(userService.findById(userDetails));
     }
 
     /**

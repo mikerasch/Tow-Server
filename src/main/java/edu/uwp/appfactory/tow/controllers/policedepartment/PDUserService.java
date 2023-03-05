@@ -2,6 +2,7 @@ package edu.uwp.appfactory.tow.controllers.policedepartment;
 
 import edu.uwp.appfactory.tow.entities.PDAdmin;
 import edu.uwp.appfactory.tow.entities.PDUser;
+import edu.uwp.appfactory.tow.entities.Users;
 import edu.uwp.appfactory.tow.repositories.PDAdminRepository;
 import edu.uwp.appfactory.tow.repositories.PDUserRepository;
 import edu.uwp.appfactory.tow.requestobjects.rolerequest.PDUserRequest;
@@ -9,7 +10,7 @@ import edu.uwp.appfactory.tow.responseObjects.PDUAuthResponse;
 import edu.uwp.appfactory.tow.utilities.AccountInformationValidator;
 import edu.uwp.appfactory.tow.webSecurityConfig.models.ERole;
 import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
-import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
+import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -29,34 +30,30 @@ public class PDUserService {
     private final PDAdminRepository pdAdminRepository;
     private final UsersRepository usersRepository;
     private final PasswordEncoder encoder;
-    private final JwtUtils jwtUtils;
-
-    public PDUserService(PDUserRepository pdUserRepository, PDAdminRepository pdAdminRepository, UsersRepository usersRepository, JwtUtils jwtUtils, PasswordEncoder encoder) {
+    public PDUserService(PDUserRepository pdUserRepository, PDAdminRepository pdAdminRepository, UsersRepository usersRepository, PasswordEncoder encoder) {
         this.pdUserRepository = pdUserRepository;
         this.pdAdminRepository = pdAdminRepository;
         this.usersRepository = usersRepository;
-        this.jwtUtils = jwtUtils;
         this.encoder = encoder;
     }
 
     /**
      * Retrieves the User using a UUID.
-     * @param userId - UUID of user to retrieve
      * @return user if UUID is present in database, otherwise null
      */
-    public PDUser get(UUID userId) {
-        Optional<PDUser> user = pdUserRepository.findById(userId);
-        return user.orElse(null);
+    public PDUser get(UserDetailsImpl userDetails) {
+        Optional<PDUser> user = Optional.of(pdUserRepository.findById(userDetails.getId()).orElseThrow());
+        return user.get();
     }
 
     //todo fix this bad code
     /**
      * Registers a new PD user.
      * @param pdUserRequest - PD user information to be added.
-     * @param token - token to ensure request is authorized
      * @return information of new PD user if successful, else null
      */
-    public ResponseEntity<PDUAuthResponse> register(PDUserRequest pdUserRequest, String token) {
+    public ResponseEntity<PDUAuthResponse> register(PDUserRequest pdUserRequest, UserDetailsImpl userDetails) {
+        Optional<Users> users = Optional.of(usersRepository.findByEmail(userDetails.getEmail()).orElseThrow());
         if(!AccountInformationValidator.validateEmail(pdUserRequest.getEmail())){
             throw new ResponseStatusException(BAD_REQUEST,"Typo in email");
         }
@@ -64,7 +61,7 @@ public class PDUserService {
             throw new ResponseStatusException(BAD_REQUEST,"Not secure password");
         }
         if (!usersRepository.existsByEmail(pdUserRequest.getEmail())) {
-            UUID adminUUID = UUID.fromString(jwtUtils.getUUIDFromJwtToken(token));
+            UUID adminUUID = users.get().getId();
 
             String frontID = "";
             String password = generatePDUserUUID();

@@ -1,6 +1,5 @@
 package edu.uwp.appfactory.tow.controllers.driver;
 
-import edu.uwp.appfactory.tow.entities.Drivers;
 import edu.uwp.appfactory.tow.requestobjects.location.Coordinates;
 import edu.uwp.appfactory.tow.requestobjects.rolerequest.DriverRequest;
 import edu.uwp.appfactory.tow.responseObjects.TestVerifyResponse;
@@ -18,10 +17,6 @@ public class DriverController {
 
     public DriverController(DriverService driverService) {
         this.driverService = driverService;
-    }
-    @GetMapping()
-    public ResponseEntity<Drivers> get(@RequestHeader("Authorization") final String jwtToken){
-        return null;
     }
 
     @PostMapping

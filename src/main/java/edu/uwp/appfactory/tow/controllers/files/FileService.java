@@ -2,10 +2,10 @@ package edu.uwp.appfactory.tow.controllers.files;
 
 
 import edu.uwp.appfactory.tow.entities.File;
+import edu.uwp.appfactory.tow.entities.Users;
 import edu.uwp.appfactory.tow.repositories.FileRepository;
 import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
-import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsImpl;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,27 +24,25 @@ import static edu.uwp.appfactory.tow.controllers.files.HandleFileOperationsUtil.
 @Service
 public class FileService {
     private FileRepository fileRepository;
-    private JwtUtils jwtUtils;
     private UsersRepository usersRepository;
 
-    public FileService(FileRepository fileRepository, JwtUtils jwtUtils, UsersRepository usersRepository) {
+    public FileService(FileRepository fileRepository, UsersRepository usersRepository) {
         this.fileRepository = fileRepository;
-        this.jwtUtils = jwtUtils;
         this.usersRepository = usersRepository;
     }
     /**
      * Stores the requested file in the database if the file extension is valid and if the user is authorized.
      * Compresses the file for storage benefit.
      * @param multipartFile - multipartFile from the client to be stored in the db
-     * @param jwtToken - jwtToken for authentication
      * @return 200 OK if stored, else 400 or 401
      */
-    public ResponseEntity<HttpStatus> storeFile(MultipartFile multipartFile, String jwtToken) {
+    public ResponseEntity<HttpStatus> storeFile(MultipartFile multipartFile, UserDetailsImpl userDetails) {
         boolean isValidExtension = isValidFileExtension(multipartFile.getContentType());
         if(!isValidExtension){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Invalid extension");
         }
-        String uuid = jwtUtils.getUUIDFromJwtToken(jwtToken);
+        Optional<Users> user = Optional.of(usersRepository.findByEmail(userDetails.getEmail()).orElseThrow());
+        String uuid = String.valueOf(user.get().getId());
         if(!isValidUser(uuid)){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User does not exist");
         }
@@ -65,11 +63,11 @@ public class FileService {
      * Retrieves the file from the database. Will ensure file belongs to user by
      * checking the UUID. Decompresses the file before returning.
      * @param filename - filename to search for
-     * @param jwtToken - jwtToken for authentication
      * @return - ByteArrayResource of file
      */
-    public ResponseEntity<ByteArrayResource> retrieveFile(String filename, String jwtToken) {
-        Optional<File> file = fileRepository.findByFilenameAndUserUUID(filename, UUID.fromString(jwtUtils.getUUIDFromJwtToken(jwtToken)));
+    public ResponseEntity<ByteArrayResource> retrieveFile(String filename, UserDetailsImpl userDetails) {
+        Optional<Users> user = Optional.of(usersRepository.findByEmail(userDetails.getEmail()).orElseThrow());
+        Optional<File> file = fileRepository.findByFilenameAndUserUUID(filename, user.get().getId());
         if(file.isEmpty()){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"No file by that name exists.");
         }

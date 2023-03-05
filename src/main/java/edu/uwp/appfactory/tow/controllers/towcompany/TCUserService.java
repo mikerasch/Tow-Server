@@ -1,6 +1,7 @@
 package edu.uwp.appfactory.tow.controllers.towcompany;
 
 import edu.uwp.appfactory.tow.entities.TCUser;
+import edu.uwp.appfactory.tow.entities.Users;
 import edu.uwp.appfactory.tow.repositories.TCUserRepository;
 import edu.uwp.appfactory.tow.requestobjects.rolerequest.TCUserRequest;
 import edu.uwp.appfactory.tow.responseObjects.TestVerifyResponse;
@@ -8,6 +9,7 @@ import edu.uwp.appfactory.tow.controllers.email.AsyncEmailService;
 import edu.uwp.appfactory.tow.utilities.AccountInformationValidator;
 import edu.uwp.appfactory.tow.webSecurityConfig.models.ERole;
 import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
+import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -38,26 +40,25 @@ public class TCUserService {
 
     /**
      * Retrieves the TCUser using a UUID.
-     * @param userId - UUID of TCUser to retrieve.
      * @return user if UUID is present in database, otherwise null
      */
-    public TCUser get(UUID userId) {
-        Optional<TCUser> user = tcUserRepository.findById(userId);
-        return user.orElse(null);
+    public TCUser get(UserDetailsImpl userDetails) {
+        Optional<TCUser> user = Optional.of(tcUserRepository.findById(userDetails.getId()).orElseThrow());
+        return user.get();
     }
 
     //todo look into what this does and why it's called findAllAdmin in a USER service
-    public List<TCUser> getAll(UUID adminUUID) {
-        return tcUserRepository.findAllByAdminUUID(adminUUID);
+    public List<TCUser> getAll(UserDetailsImpl userDetails) {
+        return tcUserRepository.findAllByAdminUUID(userDetails.getId());
     }
 
     /**
      * Registers a new TCUser.
      * @param tcUserRequest - TCUser information to create a new account
-     * @param adminUUID - AdminUUID to map to the user it will create.
      * @return token of newly created account if successful, otherwise 400 error
      */
-    public ResponseEntity<TestVerifyResponse> register(TCUserRequest tcUserRequest, UUID adminUUID) {
+    public ResponseEntity<TestVerifyResponse> register(TCUserRequest tcUserRequest, UserDetailsImpl userDetails) {
+        Optional<Users> user = Optional.of(usersRepository.findByEmail(userDetails.getEmail()).orElseThrow());
         if(!AccountInformationValidator.validateEmail(tcUserRequest.getEmail())){
             throw new ResponseStatusException(BAD_REQUEST,"Typo in email");
         }
@@ -76,7 +77,7 @@ public class TCUserService {
                     0.0f,
                     0.0f,
                     false,
-                    adminUUID);
+                    user.get().getId());
 
             tcuser.setVerifyToken(generateEmailUUID());
             tcuser.setVerifyDate(String.valueOf(LocalDate.now()));

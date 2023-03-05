@@ -22,12 +22,11 @@ public class UserService {
 
     /**
      * Find a user by their ID.
-     * @param userId - UUID to search for.
      * @return User if UUID exists, null otherwise
      */
-    public Users findById(UUID userId) {
-        Optional<Users> user = usersRepository.findById(userId);
-        return user.orElse(null);
+    public Users findById(UserDetailsImpl userDetails) {
+        Optional<Users> user = Optional.of(usersRepository.findById(userDetails.getId()).orElseThrow());
+        return user.get();
     }
 
     //todo: do not lock people out if they haven't verified, give them like a week to do it, then lock or delete
