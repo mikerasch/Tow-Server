@@ -27,14 +27,13 @@ public class SuperAdminController {
     }
     @GetMapping("/users/statistics")
     @PreAuthorize("hasRole('SPADMIN')")
-    public CountDTO getUserStatistics(@RequestHeader("Authorization") final String jwtToken){
+    public CountDTO getUserStatistics(){
         return superAdminService.getStatistics();
     }
 
     @PostMapping("/users/update")
     @PreAuthorize("hasRole('SPADMIN')")
-    public ResponseEntity<HttpStatus> updateUser(@RequestHeader("Authorization") final String jwtToken,
-                                                 @RequestBody UsersDTO usersDTO,
+    public ResponseEntity<HttpStatus> updateUser(@RequestBody UsersDTO usersDTO,
                                                  @RequestParam("oldRole") String oldRole){
         return superAdminService.updateUser(usersDTO,oldRole);
     }

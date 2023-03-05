@@ -2,15 +2,12 @@ package edu.uwp.appfactory.tow.controllers.location;
 
 import edu.uwp.appfactory.tow.controllers.auth.AuthController;
 import edu.uwp.appfactory.tow.requestobjects.location.Coordinates;
-import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
@@ -24,16 +21,12 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 public class LocationController {
 
     private final LocationService locationService;
-    private final JwtUtils jwtUtils;
-
     /**
      * Parametrized constructor for creating a new LocationController instance.
      * @param locationService - service layer for accessing location data
-     * @param jwtUtils handling management of JWT tokens for security
      */
-    public LocationController(LocationService locationService, JwtUtils jwtUtils) {
+    public LocationController(LocationService locationService) {
         this.locationService = locationService;
-        this.jwtUtils = jwtUtils;
     }
 
     /**

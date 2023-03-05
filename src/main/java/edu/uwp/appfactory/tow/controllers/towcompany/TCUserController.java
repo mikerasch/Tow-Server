@@ -4,13 +4,13 @@ import edu.uwp.appfactory.tow.controllers.user.UserController;
 import edu.uwp.appfactory.tow.responseObjects.TestVerifyResponse;
 import edu.uwp.appfactory.tow.entities.TCUser;
 import edu.uwp.appfactory.tow.requestobjects.rolerequest.TCUserRequest;
-import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
+import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
@@ -21,31 +21,26 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 @RestController
 @RequestMapping("/tcusers")
 public class TCUserController {
-    private final JwtUtils jwtUtils;
     private final TCUserService tcUserService;
 
     /**
      * Parameterized constructor for creating a new TCUserController.
-     * @param jwtUtils - handling management of JWT tokens for security
      * @param tcUserService - service to handle registration and maintenance of tow company users.
      */
-    public TCUserController(JwtUtils jwtUtils, TCUserService tcUserService) {
-        this.jwtUtils = jwtUtils;
+    public TCUserController(TCUserService tcUserService) {
         this.tcUserService = tcUserService;
     }
 
     /**
      * Retrieves user based off the UUID from the JWT token.
      * Only usable by tc users, for other auth options, see below.
-     * @param jwtToken jwt token of tc user
      * @return UUID information of TC user, else 400
      * @see UserController
      */
-    @GetMapping("")
+    @GetMapping()
     @PreAuthorize("hasRole('TCUSER')")
-    public ResponseEntity<TCUser> get(@RequestHeader("Authorization") final String jwtToken) {
-        String userId = jwtUtils.getUUIDFromJwtToken(jwtToken);
-        TCUser data = tcUserService.get(UUID.fromString(userId));
+    public ResponseEntity<TCUser> get(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        TCUser data = tcUserService.get(userDetails);
         if (data != null) {
             return ResponseEntity.ok(data);
         } else {
@@ -55,34 +50,25 @@ public class TCUserController {
 
     /**
      * Retrieves all user based off the UUID from the JWT token.
-     * @param jwtToken Only usable by TC admins, for other auth options, see below
      * @return list of all tow company users, else 400
      * @see UserController
      */
     @GetMapping("/all")
     @PreAuthorize("hasRole('TCADMIN')")
-    public ResponseEntity<List<TCUser>> getAll(@RequestHeader("Authorization") final String jwtToken) {
-        UUID adminUUID = UUID.fromString(jwtUtils.getUUIDFromJwtToken(jwtToken));
-        List<TCUser> data = tcUserService.getAll(adminUUID);
-        if (data != null) {
-            return ResponseEntity.ok(data);
-        } else {
-            return ResponseEntity.status(BAD_REQUEST).build();
-        }
+    public ResponseEntity<List<TCUser>> getAll(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.ok(tcUserService.getAll(userDetails));
     }
 
     /**
      * Registers a new tow company user.
-     * @param jwtToken - jwt token of tc administrator
      * @param tcUserRequest contains information of new tow company user to be added
      * @return new tow company users token, else 400
      */
     @PreAuthorize("hasRole('TCADMIN')")
     @PostMapping()
-    public ResponseEntity<TestVerifyResponse> register(@RequestHeader("Authorization") final String jwtToken,
+    public ResponseEntity<TestVerifyResponse> register(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                                        @RequestBody TCUserRequest tcUserRequest) {
-        UUID adminUUID = UUID.fromString(jwtUtils.getUUIDFromJwtToken(jwtToken));
-        return tcUserService.register(tcUserRequest, adminUUID);
+        return tcUserService.register(tcUserRequest, userDetails);
     }
     //todo add Patch and Delete
 }
