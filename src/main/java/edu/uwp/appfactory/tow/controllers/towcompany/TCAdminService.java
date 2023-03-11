@@ -10,6 +10,7 @@ import edu.uwp.appfactory.tow.controllers.email.AsyncEmailService;
 import edu.uwp.appfactory.tow.utilities.AccountInformationValidator;
 import edu.uwp.appfactory.tow.webSecurityConfig.models.ERole;
 import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
+import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -42,11 +43,10 @@ public class TCAdminService {
 
     /**
      * Retrieves the TCAdmin using a UUID.
-     * @param userId - UUID of TCAdmin to retrieve
      * @return user if UUID is present in database, otherwise null
      */
-    public TCAdminResponse get(UUID userId) {
-        Optional<TCAdmin> user = tcAdminRepository.findById(userId);
+    public TCAdminResponse get(UserDetailsImpl userDetails) {
+        Optional<TCAdmin> user = Optional.of(tcAdminRepository.findById(userDetails.getId()).orElseThrow());
         return user.map(tcMapper::map).orElse(null);
     }
 

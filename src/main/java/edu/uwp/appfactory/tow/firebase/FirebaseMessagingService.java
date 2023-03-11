@@ -11,7 +11,9 @@ import edu.uwp.appfactory.tow.requestobjects.firebase.FirebaseTokenDTO;
 import edu.uwp.appfactory.tow.requestobjects.firebase.NotifyDriverDTO;
 import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsImpl;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -82,7 +84,7 @@ public class FirebaseMessagingService {
             sendNotification("Request Incoming",tcUser.getFbToken(), driver.getLongitude(), driver.getLatitude(),driver.getPhone(), driver.getFirstname(), driver.getLastname(),driver.getFbToken());
             // todo add some error handling
         } catch (FirebaseMessagingException e) {
-
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
     }
 

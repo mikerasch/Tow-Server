@@ -1,7 +1,10 @@
 package edu.uwp.appfactory.tow.controllers.user;
 
 import edu.uwp.appfactory.tow.entities.Users;
+import edu.uwp.appfactory.tow.requestobjects.rolerequest.UpdateRequest;
 import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
+import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsImpl;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -11,33 +14,32 @@ import java.util.UUID;
 @Service
 public class UserService {
     private final UsersRepository usersRepository;
-    public UserService(UsersRepository usersRepository) {
+    private final PasswordEncoder passwordEncoder;
+    public UserService(UsersRepository usersRepository, PasswordEncoder passwordEncoder) {
         this.usersRepository = usersRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     /**
      * Find a user by their ID.
-     * @param userId - UUID to search for.
      * @return User if UUID exists, null otherwise
      */
-    public Users findById(UUID userId) {
-        Optional<Users> user = usersRepository.findById(userId);
-        return user.orElse(null);
+    public Users findById(UserDetailsImpl userDetails) {
+        Optional<Users> user = Optional.of(usersRepository.findById(userDetails.getId()).orElseThrow());
+        return user.get();
     }
 
     //todo: do not lock people out if they haven't verified, give them like a week to do it, then lock or delete
     //todo: ask client / zaid
-    public Users updateByUUID(UUID userId, String firstname, String lastname, String email, String phone) {
+    public Users updateByUUID(UpdateRequest updateRequest, UserDetailsImpl userDetails) {
         //todo: get user by uuid
-        Optional<Users> usersOptional = usersRepository.findById(userId);
-        if(usersOptional.isEmpty()){
-            return null;
-        }
+        Optional<Users> usersOptional = Optional.of(usersRepository.findByEmail(userDetails.getEmail()).orElseThrow());
         Users user = usersOptional.get();
-        user.setFirstname(firstname);
-        user.setLastname(lastname);
-        user.setEmail(email);
-        user.setPhone(phone);
+        user.setFirstname(updateRequest.getFirstname());
+        user.setLastname(updateRequest.getLastname());
+        user.setEmail(updateRequest.getEmail());
+        user.setPhone(updateRequest.getPhone());
+        user.setPassword(passwordEncoder.encode(updateRequest.getPassword()));
         usersRepository.save(user);
         return user;
     }

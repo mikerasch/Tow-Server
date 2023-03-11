@@ -3,9 +3,11 @@ package edu.uwp.appfactory.tow.controllers.user;
 import edu.uwp.appfactory.tow.entities.Users;
 import edu.uwp.appfactory.tow.requestobjects.rolerequest.UpdateRequest;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
+import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -21,33 +23,23 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 public class UserController {
 
     private final UserService userService;
-    private final JwtUtils jwtUtils;
 
     /**
      * Parameterized constructor for creating a new UserController.
      * @param userService useful information for managing all users
-     * @param jwtUtils - handling management of JWT tokens for security
      */
-    public UserController(UserService userService, JwtUtils jwtUtils) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.jwtUtils = jwtUtils;
     }
 
     /**
      * Retrieves the account based on the UUID of the incoming JWT token.
-     * @param jwtToken token of the requesting entity.
      * @return user object containing only the necessary information.
      */
     @GetMapping("")
     @PreAuthorize("hasRole('PDADMIN') or hasRole('PDUSER') or hasRole('TCADMIN') or hasRole('TCUSER')")
-    public ResponseEntity<Users> get(@RequestHeader("Authorization") final String jwtToken) {
-        String userId = jwtUtils.getUUIDFromJwtToken(jwtToken);
-        Users data = userService.findById(UUID.fromString(userId));
-        if (data != null) {
-            return ResponseEntity.ok(data);
-        } else {
-            return ResponseEntity.status(BAD_REQUEST).build();
-        }
+    public ResponseEntity<Users> get(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.ok(userService.findById(userDetails));
     }
 
     /**
@@ -65,21 +57,16 @@ public class UserController {
      * a Patch method that updates subordinate accounts using the update object for the users info
      * and the jwt to ensure the entity has authorization to edit this users info. whether
      * it is the user or their admin.
-     * @param jwtToken
      * @param updateRequest
-     * @return
+     * @return Users
      */
-    //todo: JWT AUTH
-    @PatchMapping(value = "")
-    @PreAuthorize("hasRole('PDADMIN') or hasRole('PDUSER') or hasRole('TCADMIN') or hasRole('TCUSER')")
-    public ResponseEntity<Users> update(@RequestHeader("Authorization") final String jwtToken,
-                                    @RequestBody UpdateRequest updateRequest) {
-        String userId = jwtUtils.getUUIDFromJwtToken(jwtToken);
-        Users data = userService.updateByUUID(UUID.fromString(userId), updateRequest.getFirstname(), updateRequest.getLastname(), updateRequest.getEmail(), updateRequest.getPhone());
+    @PatchMapping()
+    @PreAuthorize("hasRole('PDADMIN') or hasRole('PDUSER') or hasRole('TCADMIN') or hasRole('TCUSER') or hasRole('DRIVER')")
+    public ResponseEntity<Users> update(@RequestBody UpdateRequest updateRequest, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        Users data = userService.updateByUUID(updateRequest,userDetails);
         if (data != null) {
             return ResponseEntity.ok(data);
-        } else {
-            return ResponseEntity.status(BAD_REQUEST).build();
         }
+        return ResponseEntity.badRequest().build();
     }
 }

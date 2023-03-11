@@ -5,12 +5,11 @@ import edu.uwp.appfactory.tow.controllers.user.UserController;
 import edu.uwp.appfactory.tow.entities.PDUser;
 import edu.uwp.appfactory.tow.requestobjects.rolerequest.PDUserRequest;
 import edu.uwp.appfactory.tow.responseObjects.PDUAuthResponse;
-import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
+import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
@@ -21,32 +20,27 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 @RestController
 @RequestMapping("/pdusers")
 public class PDUserController {
-    private final JwtUtils jwtUtils;
     private final PDUserService pdUserService;
 
     /**
      * Parameterized constructor for creating a new PdUserController.
-     * @param jwtUtils - handling management of JWT tokens for security
      * @param pdUserService - service to access/provide useful police department USER logic
      */
-    public PDUserController(JwtUtils jwtUtils, PDUserService pdUserService) {
-        this.jwtUtils = jwtUtils;
+    public PDUserController(PDUserService pdUserService) {
         this.pdUserService = pdUserService;
     }
 
     /**
      * Returns user based off the UUID from the JWT token. Only usable currently by TC users.
      * For all other authentication options view the link below.
-     * @param jwtToken - jwt token to be used for further authorization, needs to be valid see below to refresh
      * @return UUID information if successful, 400 otherwise
      * @see UserController
      * @see AuthController#refreshToken(String)
      */
     @GetMapping("")
     @PreAuthorize("hasRole('PDUSER')")
-    public ResponseEntity<PDUser> get(@RequestHeader("Authorization") final String jwtToken) {
-        String userId = jwtUtils.getUUIDFromJwtToken(jwtToken);
-        PDUser data = pdUserService.get(UUID.fromString(userId));
+    public ResponseEntity<PDUser> get(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        PDUser data = pdUserService.get(userDetails);
         if (data != null) {
             return ResponseEntity.ok(data);
         } else {
@@ -56,16 +50,15 @@ public class PDUserController {
 
     /**
      * Registers a new PD user using the PD admins jwt for further authentication.
-     * @param jwtToken - jwt token to be used for further authorization, needs to be valid see below to refresh
      * @param pdUserRequest - contains the information of a user
      * @return information relating to the newly created PD user, 400 otherwise
      * @see AuthController#refreshToken(String)
      */
     @PostMapping("")
     @PreAuthorize("hasRole('PDADMIN')")
-    public ResponseEntity<PDUAuthResponse> register(@RequestHeader("Authorization") final String jwtToken,
+    public ResponseEntity<PDUAuthResponse> register(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                       @RequestBody PDUserRequest pdUserRequest) {
-        return pdUserService.register(pdUserRequest, jwtToken);
+        return pdUserService.register(pdUserRequest, userDetails);
     }
-    //todo add Patch and Delete
+    //to do add Patch and Delete
 }
