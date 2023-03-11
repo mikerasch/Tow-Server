@@ -8,6 +8,7 @@ import edu.uwp.appfactory.tow.entities.TCUser;
 import edu.uwp.appfactory.tow.entities.Users;
 import edu.uwp.appfactory.tow.requestobjects.firebase.FirebaseDTO;
 import edu.uwp.appfactory.tow.requestobjects.firebase.FirebaseTokenDTO;
+import edu.uwp.appfactory.tow.requestobjects.firebase.NotifyDriverDTO;
 import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsImpl;
 import org.springframework.http.HttpStatus;
@@ -46,12 +47,14 @@ public class FirebaseMessagingService {
 
         firebaseMessaging.send(message);
     }
-    public void sendNotification(String title, String token, float longitude, float latitude, String phone) throws FirebaseMessagingException {
+    public void sendNotification(String title, String token, double longitude, double latitude, String phone, String firstName, String lastName, String firebaseId) throws FirebaseMessagingException {
         Map<String,String> data = new HashMap<>();
         data.put("title", title);
         data.put("longitude", String.valueOf(longitude));
         data.put("latitude", String.valueOf(latitude));
         data.put("phone", phone);
+        data.put("name",firstName + " " + lastName);
+        data.put("firebaseId",firebaseId);
         Message message = Message
                 .builder()
                 .setToken(token)
@@ -78,10 +81,19 @@ public class FirebaseMessagingService {
         }
         TCUser tcUser = tcUsersAvailable.get(0);
         try{
-            sendNotification("Request Incoming",tcUser.getFbToken(), driver.getLongitude(), driver.getLatitude(),driver.getPhone());
+            sendNotification("Request Incoming",tcUser.getFbToken(), driver.getLongitude(), driver.getLatitude(),driver.getPhone(), driver.getFirstname(), driver.getLastname(),driver.getFbToken());
             // todo add some error handling
         } catch (FirebaseMessagingException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    public void sendNotificationToDriver(NotifyDriverDTO notifyDriverDTO, UserDetailsImpl user) {
+        try{
+            sendNotification(notifyDriverDTO.getTitle(),notifyDriverDTO.getToken(),Double.parseDouble(notifyDriverDTO.getLongitude()),Double.parseDouble(notifyDriverDTO.getLatitude()),user.getPhone(),user.getFirstname(),user.getLastname(),notifyDriverDTO.getToken());
+            // todo add some error handling
+        } catch (FirebaseMessagingException e){
+
         }
     }
 }

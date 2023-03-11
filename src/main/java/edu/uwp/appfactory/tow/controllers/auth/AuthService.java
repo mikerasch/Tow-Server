@@ -3,6 +3,7 @@ package edu.uwp.appfactory.tow.controllers.auth;
 import edu.uwp.appfactory.tow.entities.Users;
 import edu.uwp.appfactory.tow.requestobjects.rolerequest.AdminRequest;
 import edu.uwp.appfactory.tow.requestobjects.rolerequest.LoginRequest;
+import edu.uwp.appfactory.tow.requestobjects.rolerequest.UserRequest;
 import edu.uwp.appfactory.tow.webSecurityConfig.models.ERole;
 import edu.uwp.appfactory.tow.webSecurityConfig.payload.response.JwtResponse;
 import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
@@ -150,5 +151,18 @@ public class AuthService {
         } else {
             return NOT_FOUND; // token doesnt exist
         }
+    }
+
+    public ResponseEntity<UserRequest> getUserInformation(UserDetailsImpl userDetails) {
+        Optional<Users> usersOptional = Optional.of(usersRepository.findById(userDetails.getId()).orElseThrow());
+        Users users = usersOptional.get();
+        UserRequest userRequest = new UserRequest(
+                users.getEmail(),
+                users.getPhone(),
+                users.getFirstname(),
+                users.getLastname(),
+                users.getFbToken()
+        );
+        return ResponseEntity.ok(userRequest);
     }
 }
