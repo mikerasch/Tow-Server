@@ -7,6 +7,5 @@ public class UpdateRequest {
     String firstname;
     String lastname;
     String email;
-    String password;
     String phone;
 }

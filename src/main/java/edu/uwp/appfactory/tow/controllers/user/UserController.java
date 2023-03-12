@@ -1,6 +1,7 @@
 package edu.uwp.appfactory.tow.controllers.user;
 
 import edu.uwp.appfactory.tow.entities.Users;
+import edu.uwp.appfactory.tow.requestobjects.password.PasswordChange;
 import edu.uwp.appfactory.tow.requestobjects.rolerequest.UpdateRequest;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsImpl;
@@ -60,7 +61,7 @@ public class UserController {
      * @param updateRequest
      * @return Users
      */
-    @PatchMapping()
+    @PatchMapping("/update/user")
     @PreAuthorize("hasRole('PDADMIN') or hasRole('PDUSER') or hasRole('TCADMIN') or hasRole('TCUSER') or hasRole('DRIVER')")
     public ResponseEntity<Users> update(@RequestBody UpdateRequest updateRequest, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         Users data = userService.updateByUUID(updateRequest,userDetails);
@@ -68,5 +69,10 @@ public class UserController {
             return ResponseEntity.ok(data);
         }
         return ResponseEntity.badRequest().build();
+    }
+    @PatchMapping("/update/password")
+    @PreAuthorize("hasRole('PDADMIN') or hasRole('PDUSER') or hasRole('TCADMIN') or hasRole('TCUSER') or hasRole('DRIVER')")
+    public ResponseEntity<HttpStatus> updatePassword(@RequestBody PasswordChange passwordChange, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return userService.updatePassword(passwordChange,userDetails);
     }
 }
