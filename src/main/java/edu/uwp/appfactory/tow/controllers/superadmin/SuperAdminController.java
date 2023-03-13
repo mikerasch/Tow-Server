@@ -10,6 +10,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RestController
 @RequestMapping("/spadmins")
@@ -36,5 +38,10 @@ public class SuperAdminController {
     public ResponseEntity<HttpStatus> updateUser(@RequestBody UsersDTO usersDTO,
                                                  @RequestParam("oldRole") String oldRole){
         return superAdminService.updateUser(usersDTO,oldRole);
+    }
+    @GetMapping("/users/allUsers")
+    @PreAuthorize("hasRole('SPADMIN')")
+    public ResponseEntity<List<UsersDTO>> getAllUsers() {
+        return ResponseEntity.ok(superAdminService.getAllUsers());
     }
 }
