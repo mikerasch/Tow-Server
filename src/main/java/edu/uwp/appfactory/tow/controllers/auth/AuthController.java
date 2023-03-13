@@ -2,9 +2,13 @@
 package edu.uwp.appfactory.tow.controllers.auth;
 import edu.uwp.appfactory.tow.requestobjects.rolerequest.AdminRequest;
 import edu.uwp.appfactory.tow.requestobjects.rolerequest.LoginRequest;
+import edu.uwp.appfactory.tow.requestobjects.rolerequest.UserRequest;
 import edu.uwp.appfactory.tow.webSecurityConfig.payload.response.JwtResponse;
+import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -87,6 +91,12 @@ public class AuthController {
             case GONE -> throw new ResponseStatusException(GONE, "User already verified");
             default -> throw new ResponseStatusException(BAD_REQUEST, "Resource not found");
         };
+    }
+
+    @GetMapping("/get/user")
+    @PreAuthorize("hasAnyRole('PDADMIN','PDUSER','TCADMIN','TCUSER','SPADMIN','DRIVER')")
+    public ResponseEntity<UserRequest> getUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return authService.getUserInformation(userDetails);
     }
 }
 
