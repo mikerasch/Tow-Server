@@ -33,7 +33,8 @@ dependencies {
     implementation group: 'com.auth0', name: 'java-jwt', version: '4.2.1'
     // https://mvnrepository.com/artifact/org.passay/passay
     implementation group: 'org.passay', name: 'passay', version: '1.6.2'
-
+    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-websocket
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', version: '3.0.4'
     // https://mvnrepository.com/artifact/com.google.firebase/firebase-admin
     implementation group: 'com.google.firebase', name: 'firebase-admin', version: '9.1.1'
 

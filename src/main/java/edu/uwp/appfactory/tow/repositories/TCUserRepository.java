@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -21,6 +22,8 @@ public interface TCUserRepository extends CrudRepository<TCUser, UUID> {
 
     @Query(value = "select * from tc_user where admin_uuid = :uuid")
     List<TCUser> findAllByAdminUUID(@Param("uuid") UUID adminUUID);
+
+    Optional<TCUser> findByEmail(String email);
 
 }
 

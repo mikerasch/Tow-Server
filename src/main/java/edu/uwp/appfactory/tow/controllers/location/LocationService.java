@@ -7,6 +7,7 @@ import java.util.Collections;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -66,6 +67,13 @@ public class LocationService {
         if(tcUser.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"User not found!");
         }
+        TCUser user = tcUser.get();
+        user.setActive(parseBoolean);
+        tcUserRepository.save(user);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+    public ResponseEntity<HttpStatus> updateActiveStatus(boolean parseBoolean, UserDetails userDetails) {
+        Optional<TCUser> tcUser = Optional.of(tcUserRepository.findByEmail(userDetails.getUsername()).orElseThrow());
         TCUser user = tcUser.get();
         user.setActive(parseBoolean);
         tcUserRepository.save(user);

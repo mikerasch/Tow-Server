@@ -20,8 +20,8 @@ import java.util.UUID;
  */
 @Component
 public class AuthTokenFilter extends OncePerRequestFilter {
-    private JwtUtils jwtUtils;
-    private UserDetailsServiceImpl userDetailsService;
+    private final JwtUtils jwtUtils;
+    private final UserDetailsServiceImpl userDetailsService;
     private final List<String> bypassUrlFilter = List.of(
             "/api/drivers",
             "/api/auth/refresh",
