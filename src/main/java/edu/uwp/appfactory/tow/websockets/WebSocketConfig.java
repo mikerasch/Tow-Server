@@ -1,50 +1,27 @@
 package edu.uwp.appfactory.tow.websockets;
-
-import edu.uwp.appfactory.tow.controllers.location.LocationService;
-import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
-import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsServiceImpl;
-import org.springframework.context.annotation.Bean;
+import edu.uwp.appfactory.tow.websockets.handlers.HeartbeatWebSocketHandler;
+import edu.uwp.appfactory.tow.websockets.handlers.TowJobWebSocketHandler;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.server.ServerHttpRequest;
-import org.springframework.http.server.ServerHttpResponse;
-import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
-import org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor;
-
-import java.util.Map;
-
 @EnableWebSocket
 @Configuration
 public class WebSocketConfig implements WebSocketConfigurer {
-
-    private final JwtUtils jwtUtils;
-    private final UserDetailsServiceImpl userDetailsService;
-
-    private final LocationService locationService;
-
-    public WebSocketConfig(JwtUtils jwtUtils, UserDetailsServiceImpl userDetailsService, LocationService locationService) {
-        this.jwtUtils = jwtUtils;
-        this.userDetailsService = userDetailsService;
-        this.locationService = locationService;
+    private final CustomHandshakeInterceptor customHandshakeInterceptor;
+    private final HeartbeatWebSocketHandler heartbeatHandler;
+    private final TowJobWebSocketHandler towJobWebSocketHandler;
+    public WebSocketConfig(CustomHandshakeInterceptor customHandshakeInterceptor, HeartbeatWebSocketHandler heartbeatHandler, TowJobWebSocketHandler towJobWebSocketHandler) {
+        this.customHandshakeInterceptor = customHandshakeInterceptor;
+        this.heartbeatHandler = heartbeatHandler;
+        this.towJobWebSocketHandler = towJobWebSocketHandler;
     }
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(webSocketHandler(), "/heartbeat")
-                .addInterceptors(new HttpSessionHandshakeInterceptor() {
-                    @Override
-                    public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception {
-                        HttpHeaders headers = request.getHeaders();
-                        return headers.containsKey("Authorization");
-                    }
-                });
-    }
-
-    @Bean
-    public WebSocketHandler webSocketHandler() {
-        return new ServerWebSocketHandler(locationService, jwtUtils, userDetailsService);
+        registry.addHandler(heartbeatHandler, "/heartbeat")
+                .addInterceptors(customHandshakeInterceptor);
+        registry.addHandler(towJobWebSocketHandler, "/websocket/{userId}")
+                .addInterceptors(customHandshakeInterceptor);
     }
 }
