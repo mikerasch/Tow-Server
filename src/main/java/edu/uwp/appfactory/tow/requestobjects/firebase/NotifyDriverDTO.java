@@ -11,4 +11,5 @@ public class NotifyDriverDTO {
     private String token;
     private String longitude;
     private String latitude;
+    private String channel;
 }

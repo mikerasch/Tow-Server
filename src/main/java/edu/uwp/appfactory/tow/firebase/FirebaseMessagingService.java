@@ -47,7 +47,7 @@ public class FirebaseMessagingService {
 
         firebaseMessaging.send(message);
     }
-    public void sendNotification(String title, String token, double longitude, double latitude, String phone, String firstName, String lastName, String firebaseId) throws FirebaseMessagingException {
+    public void sendNotification(String title, String token, double longitude, double latitude, String phone, String firstName, String lastName, String firebaseId, String channel) throws FirebaseMessagingException {
         Map<String,String> data = new HashMap<>();
         data.put("title", title);
         data.put("longitude", String.valueOf(longitude));
@@ -55,6 +55,7 @@ public class FirebaseMessagingService {
         data.put("phone", phone);
         data.put("name",firstName + " " + lastName);
         data.put("firebaseId",firebaseId);
+        data.put("channel",channel);
         Message message = Message
                 .builder()
                 .setToken(token)
@@ -81,7 +82,7 @@ public class FirebaseMessagingService {
         }
         TCUser tcUser = tcUsersAvailable.get(0);
         try{
-            sendNotification("Request Incoming",tcUser.getFbToken(), driver.getLongitude(), driver.getLatitude(),driver.getPhone(), driver.getFirstname(), driver.getLastname(),driver.getFbToken());
+            sendNotification("Request Incoming",tcUser.getFbToken(), driver.getLongitude(), driver.getLatitude(),driver.getPhone(), driver.getFirstname(), driver.getLastname(),driver.getFbToken(),"null");
             // todo add some error handling
         } catch (FirebaseMessagingException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
@@ -90,7 +91,7 @@ public class FirebaseMessagingService {
 
     public void sendNotificationToDriver(NotifyDriverDTO notifyDriverDTO, UserDetailsImpl user) {
         try{
-            sendNotification(notifyDriverDTO.getTitle(),notifyDriverDTO.getToken(),Double.parseDouble(notifyDriverDTO.getLongitude()),Double.parseDouble(notifyDriverDTO.getLatitude()),user.getPhone(),user.getFirstname(),user.getLastname(),notifyDriverDTO.getToken());
+            sendNotification(notifyDriverDTO.getTitle(),notifyDriverDTO.getToken(),Double.parseDouble(notifyDriverDTO.getLongitude()),Double.parseDouble(notifyDriverDTO.getLatitude()),user.getPhone(),user.getFirstname(),user.getLastname(),notifyDriverDTO.getToken(),notifyDriverDTO.getChannel());
             // todo add some error handling
         } catch (FirebaseMessagingException e){
 
