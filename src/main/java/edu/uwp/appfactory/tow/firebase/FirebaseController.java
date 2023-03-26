@@ -32,7 +32,6 @@ public class FirebaseController {
     }
     @PostMapping("/towtruck/message")
     public ResponseEntity<String> sendNotificationToDriver(@RequestBody NotifyDriverDTO notifyDriverDTO, @AuthenticationPrincipal UserDetailsImpl user){
-        System.out.println("HELLO: " + notifyDriverDTO.getChannel());
         firebaseMessagingService.sendNotificationToDriver(notifyDriverDTO,user);
         return ResponseEntity.ok("Message sent");
     }
