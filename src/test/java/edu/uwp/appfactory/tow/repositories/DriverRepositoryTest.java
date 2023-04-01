@@ -30,7 +30,9 @@ class DriverRepositoryTest {
                 "hello",
                 "goodbye",
                 "222-222-2222",
-                "ROLE_DRIVER"
+                "ROLE_DRIVER",
+                0F,
+                0F
         );
         driverRepository.save(drivers);
 
