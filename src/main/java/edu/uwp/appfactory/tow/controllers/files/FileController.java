@@ -33,8 +33,9 @@ public class FileController {
     @PostMapping
     @PreAuthorize("hasRole('PDADMIN') or hasRole('PDUSER') or hasRole('TCADMIN') or hasRole('TCUSER')")
     public ResponseEntity<HttpStatus> uploadFile(@RequestParam(name = "file") MultipartFile multipartFile,
+                                                 @RequestHeader(value = "location") String location,
                                                  @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return fileService.storeFile(multipartFile,userDetails);
+        return fileService.storeFile(multipartFile,userDetails,location);
     }
 
     /**

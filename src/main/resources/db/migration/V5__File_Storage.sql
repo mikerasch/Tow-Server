@@ -7,8 +7,10 @@ create table public.file_db
     id    uuid DEFAULT gen_random_uuid() NOT NULL,
     user_uuid uuid NOT NULL,
     type VARCHAR(255),
-    filename VARCHAR(20),
+    filename VARCHAR(1024),
     data bytea,
+    location VARCHAR(255),
+    date  timestamp NOT NULL,
     CONSTRAINT id_pkey PRIMARY KEY (id)
 )
     TABLESPACE pg_default;

@@ -11,6 +11,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -36,7 +38,9 @@ class FileRepositoryTest {
                 second,
                 "JPG",
                 "cool",
-                Files.readAllBytes(Path.of("src/test/resources/newparkside.png"))
+                Files.readAllBytes(Path.of("src/test/resources/newparkside.png")),
+                new Timestamp(new Date().getTime()),
+                "test"
         );
         this.uuid = file.getUser_uuid();
         fileRepository.save(file);

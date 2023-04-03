@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 import static edu.uwp.appfactory.tow.controllers.files.HandleFileOperationsUtil.*;
@@ -36,7 +38,7 @@ public class FileService {
      * @param multipartFile - multipartFile from the client to be stored in the db
      * @return 200 OK if stored, else 400 or 401
      */
-    public ResponseEntity<HttpStatus> storeFile(MultipartFile multipartFile, UserDetailsImpl userDetails) {
+    public ResponseEntity<HttpStatus> storeFile(MultipartFile multipartFile, UserDetailsImpl userDetails, String location) {
         boolean isValidExtension = isValidFileExtension(multipartFile.getContentType());
         if(!isValidExtension){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Invalid extension");
@@ -47,11 +49,14 @@ public class FileService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User does not exist");
         }
         try{
+            // todo make name actually not be bad, also need to change database from 1024 to something smaller for file name size
             File file = new File();
             file.setUser_uuid(UUID.fromString(uuid));
             file.setType(multipartFile.getContentType());
             file.setData(compressBytes(multipartFile.getBytes()));
-            file.setFilename(multipartFile.getOriginalFilename());
+            file.setFilename(userDetails.getEmail() + "file");
+            file.setDate(new Timestamp(new Date().getTime()));
+            file.setLocation(location);
             fileRepository.save(file);
             return ResponseEntity.ok().build();
         } catch(IOException e){
