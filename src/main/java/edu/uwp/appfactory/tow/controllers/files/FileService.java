@@ -48,13 +48,12 @@ public class FileService {
         if(!isValidUser(uuid)){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User does not exist");
         }
-        try{
-            // todo make name actually not be bad, also need to change database from 1024 to something smaller for file name size
+        try {
             File file = new File();
             file.setUser_uuid(UUID.fromString(uuid));
             file.setType(multipartFile.getContentType());
             file.setData(compressBytes(multipartFile.getBytes()));
-            file.setFilename(userDetails.getEmail() + "file");
+            file.setFilename(multipartFile.getOriginalFilename());
             file.setDate(new Timestamp(new Date().getTime()));
             file.setLocation(location);
             fileRepository.save(file);

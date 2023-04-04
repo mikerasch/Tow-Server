@@ -1,4 +1,5 @@
 package edu.uwp.appfactory.tow.websockets.handlers;
+import edu.uwp.appfactory.tow.controllers.location.LocationService;
 import edu.uwp.appfactory.tow.websockets.SessionInformation;
 import edu.uwp.appfactory.tow.websockets.VerifyAuthorizationToken;
 import org.springframework.context.annotation.Configuration;
@@ -15,8 +16,10 @@ import java.util.*;
 public class TowJobWebSocketHandler extends TextWebSocketHandler {
     private final VerifyAuthorizationToken verifyAuthorizationToken;
     private final Map<String, SessionInformation> webSocketSessionListMap = new HashMap<>();
-    public TowJobWebSocketHandler(VerifyAuthorizationToken verifyAuthorizationToken) {
+    private final LocationService locationService;
+    public TowJobWebSocketHandler(VerifyAuthorizationToken verifyAuthorizationToken, LocationService locationService) {
         this.verifyAuthorizationToken = verifyAuthorizationToken;
+        this.locationService = locationService;
     }
 
     @Override
@@ -50,8 +53,23 @@ public class TowJobWebSocketHandler extends TextWebSocketHandler {
     }
 
     @Override
-    public void afterConnectionClosed(WebSocketSession socketSession, CloseStatus status) {
+    public void afterConnectionClosed(WebSocketSession socketSession, CloseStatus status) throws IOException {
+        SessionInformation sessionInformation = webSocketSessionListMap.get(getSocketSessionId(socketSession));
+        for(WebSocketSession webSocketSession: sessionInformation.webSocketSessions()) {
+            webSocketSession.close();
+        }
+        updateTowTruckDriverJobStatus(sessionInformation.userDetails());
         webSocketSessionListMap.remove(getSocketSessionId(socketSession));
+    }
+
+    private void updateTowTruckDriverJobStatus(List<UserDetails> userDetails) {
+        for(UserDetails users: userDetails) {
+            if (users.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_TCUSER"))) {
+                System.out.println(users.getUsername());
+                locationService.updateActiveStatus(false, users);
+                return;
+            }
+        }
     }
 
     @Override
