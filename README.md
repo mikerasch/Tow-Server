@@ -1,205 +1,81 @@
-<!--
-*** Thanks for checking out Spring Boot Application Template. If you have a suggestion
-*** that would make this better, please fork the repo and create a pull request
-*** or simply open an issue with the tag "enhancement".
-*** Thanks again!
--->
-
 [comment]: <> (# Highway Emergency Location Platform )
 <div align="center" spacing="5">
 <a href="https://imgur.com/o56PeaZ"><img src="https://i.imgur.com/o56PeaZ.png" title="source: imgur.com" /></a>
 </div>
 <div align="center">
 Highway Emergency Location Platform
-
 </div>
 
+# Goals
+### The Problem
+In most cities, people rely on their "go-to" towing service provided through insurance companies or search engines like Google. This limits competition in the market and leaves consumers with few options. New or struggling towing companies struggle to establish themselves in the market due to a lack of visibility and resources.
 
-<div align="center">
+### The solution
+We propose an application that will support the towing industry by providing a more efficient and user-friendly way for consumers to request tow services. Our app will function similarly to popular ride-hailing platforms like Uber and Lyft, offering a semi-anonymous discovery process for tow companies that are registered on our platform.
 
-<br>
+Our app will not only benefit consumers by providing them with a convenient and reliable way to request tow services, but it will also benefit tow companies by giving them increased visibility and access to a wider pool of potential customers. This will help to level the playing field and create more competition in the market, ultimately leading to better services and pricing for consumers.
 
-<div align="center">
-  <sub>Built with ❤︎ by <a href="https://github.com/kayleqb">Quincy Kayle</a>  <a href="https://github.com/MattRank93">Matthew Rank</a> and <a href="https://github.com/mikerasch">Michael Rasch</a>
-</div>
+### Problems
+Of course, through the development of this project, there have been numerous problems which are currently still being tackled.
+This project was handed over to me (Michael Rasch) and I would like to address some shortcomings which should be ironed out.
+- The current database structure falls flat in terms of supporting and future proofing. The current implementation uses Spring JDBC, while powerful, has been previously implemented in a not ideal way. The route can go either one of two ways.
+  - The first way being the more ideal structure, which is transitioning over to Spring JPA to utilize an ORM framework. The current SQL files only support PostgresSQL databases, which would be eliminated if the switch to JPA was made via hibernate. The switch would also eliminate the need for Flyway (mitigation library).
+  - The second way would be to restructure the current tables/columns to take away the need of certain Postgres dependant extensions, in favor of supporting the would-be extensions to Java code.
+- The plethora of to do comments in the code should be handled before production.
+- The police department implementation has been stopped due to lack of scope/requirements which failed to specify the direct functionality they provide.
+  - Originally, the police officer was the person who was in charge of calling the tow truck service for the end user (the driver in need of the tow). However, this implementation needs a detailed plan as the client previously wanted the dispatch center to issue the request through the police officer. As just a developer, this portion seems inadequate to implement.
+## Pre Requisites
+- Experience with RESTApis
+- Experience with relational databases.
+- Experience with Spring Boot/Security/JDBC
+- Postman or your desired API testing solution.
 
+## Set Up
+- A locally hosted PostgresSQL database.
+- Clone the project into your respected IDE.
+- From the IDE, take a look at the applications.properties folder, these are the environmental variables which need to be filled out before running. Please pay special attention to the {FILL IN} blanks, which you will need to manually specify.
+  ``` 
+  LOGGING_LEVEL_WEB=DEBUG;LOGGING_LEVEL_SQL=DEBUG;PROFILE=dev;PORT=3000;SERVER_ADDRESS={FILL IN};
+  SPRING_DATASOURCE_URL={FILL IN};SPRING_DATASOURCE_USERNAME={FILL IN};
+  SPRING_DATASOURCE_PASSWORD={FILL IN};FLYWAY_ENABLED=true;FLYWAY_SCHEMA=public;FLYWAY_BASELINE=false;
+  FLYWAY_CLEAN_ON_ERROR=true;FLYWAY_VALIDATE_ON_MIGRATE=true;MAIL_PROTOCOL=smtp;MAIL_HOST=smtp.gmail.com;
+  MAIL_PORT=587;MAIL_EMAIL={FILL IN};MAIL_APP_PASSWORD={FILL IN};MAIL_SMTP_AUTH=true;
+  MAIL_START_TTLS=true;PRETTY_PRINT=true;JWT_SECRET={FILL IN};JWT_EXPIRATION=604800000;
+  MAX_UPLOAD_SIZE_KB=700KB;MAX_REQUEST_SIZE_KB=700KB;CUSTOMER_SUPPORT_EMAIL="{FILL IN}";
+  SPRING_DNS=0.0.0.0.0;INCLUDE_STACKTRACE=never;MAX_FILE_THRESHOLD=128KB
+  ```
+- Click the big green button to run the application.
+- Hopefully it worked
 
+## Common Set Up Problems
+- PSQLException
+  - Typically, means your locally hosted database is not correctly setup/credentials filled. Important to note, the test cases rely on a separate database to be hosted.
+  - Flyway mismatch
+    - Database physically holds the flyway mitigation files, in which upon starting the application, it will compare the current mitigation files with the ones hosted in the database. If the compared results fail to match, it will throw this exception.
+- IllegalStateException
+  - Double-check the environmental variables are properly set. In this case, the error is throwing because a file expects the @Value annotation to be correctly filled.
 
-<p align="center">
-	<a href="https://documenter.getpostman.com/view/13688383/TVmLCyby#61200d8c-9d42-4cb3-9dc7-b96fa7dca8c2"><strong>Explore the Postman example docs »</strong></a>
-	<br />
-	<br />
+## Contact
+For any questions, or help with understanding what is happening feel free to email me: raschmichael10@gmail.com or just make a pull request.
 
-</p>
+## Technologies Used
+  - Spring Boot/JDBC/Security/Websockets/Mail
+  - Java JWT
+  - Lombok
+  - Postgres
+  - Flyway
+## Resources
+[Postman Tutorial](https://www.youtube.com/watch?v=cGn_LTFCif0&list=PLhW3qG5bs-L9P22XSnRe4suiWL4acXG-g)
 
-<!-- PROJECT SHIELDS -->
-<!--
-*** I'm using markdown "reference style" links for readability.
-*** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
--->
+[Spring Tutorial V1](https://www.baeldung.com/)
 
-## Important Note: This app in not yet complete, expect MVP soon
+[Spring Tutorial V2](https://spring.io/guides)
 
-## Technology stack & other Open-source libraries
+[Spring In Action (Awesome Book)](https://www.amazon.com/Spring-Action-Sixth-Craig-Walls/dp/1617297577/ref=sr_1_1?keywords=Spring+in+action&qid=1681099073&sr=8-1)
 
-### Database
+[Postgres Setup](https://www.youtube.com/watch?v=BLH3s5eTL4Y)
 
-<details open="open">
-   <ul>
-      <li><a href="https://flywaydb.org/">Flyway</a> - Version control for database</li>
-      <li><a href="https://www.postgresql.org//">postgresql</a> - Open-Source Relational Database Management System</li>
-      <li><a href="https://docs.oracle.com/javase/tutorial/jdbc/basics/index.html">JDBC</a> - Java SQL database. Embedded and server modes; in-memory databases</li>
-   </ul>
-</details>
+[RestAPI Tutorial](https://www.youtube.com/watch?v=7YcW25PHnAA)
 
-### Server - Backend
-
-<details open="open">
-   <ul>
-      <li><a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html">JDK</a> - Java™ Platform, Standard Edition Development Kit</li>
-      <li><a href="https://spring.io/projects/spring-boot">Spring Boot</a> - Framework to ease the bootstrapping and development of new Spring Applications</li>
-      <li><a href="https://gradle.org/">Gradle</a> - Dependency Management</li>
-      <li><a href="https://www.jsonwebtoken.io/">JSON Web Token</a> - Encode or Decode JWTs</li>
-      <li><a href="http://tomcat.apache.org/">Tomcat</a> - java servlet technology</li>
-      <li><a href="https://projectlombok.org/">Lombok</a> - Never write another getter or equals method again, with one annotation your class has a fully featured builder, Automate your logging variables, and much more.</li>
-
-   </ul>
-</details>
-
-
-
-### Others
-
-<details open="open">
-   <ul>
-      <li><a href="https://git-scm.com/">git</a> - Free and Open-Source distributed version control system</li>
-      <li><a href="https://visualvm.github.io/">VisualVM</a> - Monitoring system and time series database</li>
-   </ul>
-</details>
-
-### External Tools & Services
-
-<details open="open">
-   <ul>
-      <li><a href="https://www.getpostman.com/">Postman</a> - API Development Environment (Testing Docmentation)</li>
-      <li><a href="https://docs.postman-echo.com/?version=latest">Postman Echo</a> - A service that can be used to test your REST clients and make sample API calls. It provides endpoints for GET, POST, PUT, various auth mechanisms and other utility endpoints.</li>
-      <li><a href="https://www.toptal.com/developers/gitignore/api/java,eclipse,intellij">gitignore.io</a> - Create useful .gitignore files for your project.</li>
-   </ul>
-</details>
-
-## Features and To-Do
-
-<details open="open">
-   <ul>
-      <li>[x] <a href="https://spring.io/projects/spring-security">Spring Security</a> RBAC, Session Timeout</li>
-      <li>[x] API <a href="https://en.wikipedia.org/wiki/Rate_limiting">Rate Limiting</a></li>
-      <li>[x] <a href="https://www.docker.com/">Docker</a></li>
-      <li>[x] <a href="https://en.wikipedia.org/wiki/HTTPS">HTTPS</a> with <a href="https://en.wikipedia.org/wiki/Self-signed_certificate">(self-signed certificate)</a></li>
-      <li>[ ] Multiple Databases</li>
-      <li>[ ] Unit Tests, Integration Tests</li>
-      <li>[ ] SCreate jenkins pipeline </li>
-      <li>[ ] Spring Boot supreme Admin</li>
-      <li>[ ] Spring Retry</li>
-   </ul>
-</details>
-
-## Getting Started
-
-These instructions will get you a copy of the project up and running on your local machine for development and testing
-purposes. See deployment for notes on how to deploy the project on a live system.
-
-### Prerequisites
-
-* To activate the accounts of registered users, an email with activation link is sent to the email provided during the
-  user signup stage.
-
-  [Mailtrap](https://mailtrap.io/) or any other service like **Gmail**, etc., can be used to create an SMTP.
-
-  update the **springMailHost**, **springMailPort**, **springMailProtocol**, **springMailUsername** and **
-  springMailPassword** details in the **application_settings**
-
-* You need to have **Postgres** installed on your machine to run the application in **`dev`** profile. Using
-  the postgres client/console, create a database/schema named `tow`.
-
-~~~sql
--- create schema I NEED TO CHANGE THIS STUFF
-CREATE SCHEMA tow;
-
--- use schema
-USE
-sbat;
-
--- Create user 
-create
-user 'user'@'localhost' identified by 'usert';
-
--- Grant privileges to user
-grant all privileges on *.* to
-'user'@'localhost' with grant option;
-~~~
-
-After creating the database/schema, you need to add your **Postgres** `username` and `password` in
-the `application-dev.properties` file on `src/main/resource`. The lines that must be modified are as follows: Then add the appropriate 
-information to the environment variables in the IDE
-
-```properties
-# ===============================
-# = DATA SOURCE - PostgreSQL
-# ===============================
-spring.datasource.url=${SPRING_DATASOURCE_URL}
-spring.datasource.username=${SPRING_DATASOURCE_USERNAME}
-spring.datasource.password=${SPRING_DATASOURCE_PASSWORD}
-spring.datasource.drivers-class-name=org.postgresql.Driver
-```
-
-### EER Diagram
-
-* Refer to [ARCHITECTURE.md](documents/ARCHITECTURE.md) for details.
-
-## Installing
-
-* URL to access application routes: **http://localhost:3007/api/**
-
-
-
-#### Running the application with IDE
-
-There are several ways to run a Spring Boot application on your local machine. One way is to execute the `main` method
-in the `com.arc.sbtest.SBtemplateApplication` class from your IDE.
-
-* Download the zip or clone the Git repository.
-* Unzip the zip file (if you downloaded one)
-* Open Command Prompt and Change directory (cd) to folder containing pom.xml
-* Open Eclipse
-    * File -> Import -> Existing Maven Project -> Navigate to the folder where you unzipped the zip
-    * Select the project
-* Choose the Spring Boot Application file (search for @SpringBootApplication)
-* Right Click on the file and Run as Java Application
-
-
-
-#### Running the application with Executable JAR
-
-The code can also be built into a jar and then executed/run. Once the jar is built, run the jar by double clicking on it
-or by using the command
-
-```shell
-$ git clone https://github.com/uwp-se/TOW-Server.git
-$ cd Spring-Boot-help-app
-$ gradle package -DskipTests
-$ java -jar <filename>.jar --spring.profiles.active=test
-```
-
-
-#### Running the application via docker container
-
-* Will hopefully have good docker image ready by end of semester.
-
-
-## Testing API
-
-### Testing with Postman
-
-Refer to link at top of page for postman testing link
 
 
