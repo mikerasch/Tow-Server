@@ -14,6 +14,7 @@ import edu.uwp.appfactory.tow.controllers.email.AsyncEmailService;
 import edu.uwp.appfactory.tow.utilities.AccountInformationValidator;
 import edu.uwp.appfactory.tow.webSecurityConfig.models.ERole;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,6 +27,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
+@Slf4j
 public class DriverService {
     private final DriverRepository driverRepository;
     private final PasswordEncoder encoder;
@@ -72,8 +74,10 @@ public class DriverService {
             driverRepository.save(drivers);
             asyncEmailService.submitSignupEmailExecution(drivers);
             TestVerifyResponse testVerifyResponse = new TestVerifyResponse(drivers.getVerifyToken());
+            log.debug("Saving new user with role {} and email {}", drivers.getRole(), drivers.getEmail());
             return ResponseEntity.ok(testVerifyResponse);
         }
+        log.warn("While adding a new driver: email {} already existed", driverRequest.getEmail());
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"User already exists!");
     }
 
@@ -88,18 +92,21 @@ public class DriverService {
     public ResponseEntity<HttpStatus> updateLocation(Coordinates coordinates, UserDetailsImpl user) {
         Optional<Drivers> driversOptional = driverRepository.findById(user.getId());
         if(driversOptional.isEmpty()){
+            log.error("Driver tried updating location, but user could not be found in database.");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"User not found!");
         }
         Drivers driver = driversOptional.get();
         driver.setLatitude(coordinates.getLatitude());
         driver.setLongitude(coordinates.getLongitude());
         driverRepository.save(driver);
+        log.debug("Changing coordinates of driver {} with initial coordinates of {} : {} to {} : {}", driver.getEmail(), driver.getLatitude(), driver.getLongitude(), coordinates.getLatitude(), coordinates.getLatitude());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     public ResponseEntity<HttpStatus> findTowTruckDrivers(int radius, UserDetailsImpl user) {
         Optional<Drivers> driversOptional = driverRepository.findById(user.getId());
         if(driversOptional.isEmpty()){
+            log.error("Driver tried finding tow truck, but user could not be found in database.");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"User not found!");
         }
         Drivers drivers = driversOptional.get();
@@ -110,6 +117,7 @@ public class DriverService {
         );
         List<TCUser> ensureAllDriversAreNotRepeats = generateUniqueDriver(tcUsersAvailable,drivers.getId());
         if(ensureAllDriversAreNotRepeats.isEmpty()){
+            log.info("Driver tried finding tow trucks, but no tow trucks are currently on duty");
             return new ResponseEntity<>(HttpStatus.CONFLICT); // todo should not be conflict
         }
         storeRequest(ensureAllDriversAreNotRepeats.get(0),drivers.getId());

@@ -9,6 +9,7 @@ import edu.uwp.appfactory.tow.webSecurityConfig.payload.response.JwtResponse;
 import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,14 +27,8 @@ import java.util.Optional;
 import static org.springframework.http.HttpStatus.*;
 
 @Service
+@Slf4j
 public class AuthService {
-
-    //access tokens expire quickly
-    //clients ask for new one based on their refresh token
-    //if refresh token is expired, re-auth
-    //logout route
-    //JSON WEB TOKEN NPM
-
     private final AuthenticationManager authenticationManager;
     private final UsersRepository usersRepository;
     private final PasswordEncoder encoder;
@@ -69,13 +64,11 @@ public class AuthService {
         try{
             jwt = jwtUtils.generateJwtToken(authentication);
         } catch(Exception e){
+            log.warn("User {} tried authenticating, but failed to be verified", loginRequest.getEmail());
             throw new ResponseStatusException(BAD_REQUEST,"Could not authenticate");
         }
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        Optional<Users> usersOptional = usersRepository.findByEmail(loginRequest.getEmail());
-        if (usersOptional.isEmpty()) {
-            throw new ResponseStatusException(BAD_REQUEST, "User does not exist");
-        }
+        Optional<Users> usersOptional = Optional.of(usersRepository.findByEmail(loginRequest.getEmail()).orElseThrow());
         Users user = usersOptional.get();
         boolean verEnabled = user.getVerEnabled();
         if(verEnabled){
@@ -90,6 +83,7 @@ public class AuthService {
                     userDetails.getPhone()
             ));
         }
+        log.debug("User {} could not be verified, this could be due to user not verifying through email upon registration", user.getEmail());
         throw new ResponseStatusException(BAD_REQUEST,"User not verified");
     }
 
@@ -101,38 +95,15 @@ public class AuthService {
     }
 
     /**
-     * Registration of a new Admin.
-     * @param adminRequest - admin information to begin authorization process
-     * @return - true if successfully registered, false otherwise
-     */
-    public boolean registerAdmin(AdminRequest adminRequest) {
-        if (!usersRepository.existsByEmail(adminRequest.getEmail())) {
-            Users user = new Users(adminRequest.getEmail(),
-                    adminRequest.getEmail(),
-                    encoder.encode(adminRequest.getPassword()),
-                    adminRequest.getFirstname(),
-                    adminRequest.getLastname(),
-                    adminRequest.getPhone(),
-                    ERole.ROLE_ADMIN.name());
-            user.setVerEnabled(true);
-
-            usersRepository.save(user);
-            return true;
-        }
-        return false;
-    }
-
-
-    /**
      * Used by the verification route in the initial sign up email
      *
      * @param token the email users token
      * @return returns a status code that will indicates success or failure
      */
+    // todo make this not awful
     public HttpStatus verification(String token) {
         Optional<Users> usersOptional = usersRepository.findByVerifyToken(token);
         if (usersOptional.isPresent()) {
-
             Users user = usersOptional.get();
             LocalDate userVerifyDate = LocalDate.parse(user.getVerifyDate());
             Period periodBetween = Period.between(userVerifyDate, LocalDate.now());

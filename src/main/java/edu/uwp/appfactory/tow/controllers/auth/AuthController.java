@@ -62,19 +62,6 @@ public class AuthController {
         return authService.authenticateUser(loginRequest);
     }
 
-    //todo handle auth
-    /**
-     * Handles registering an administrator.
-     * @param adminRequest Register request information of administrator
-     * @return Response entity http status. NO_CONTENT is success, BAD_REQUEST is failure
-     */
-    @PostMapping("/admin")
-    public ResponseEntity<HttpStatus> registerAdmin(@RequestBody AdminRequest adminRequest) {
-        return authService.registerAdmin(adminRequest)
-                ? ResponseEntity.status(NO_CONTENT).build()
-                : ResponseEntity.status(BAD_REQUEST).build();
-    }
-
     /**
      * Handles verification of a user given a regular token.
      * Verification is the route that is hooked to a button the user receives by email in order to activate their account the first time.

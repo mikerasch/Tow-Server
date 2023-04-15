@@ -8,6 +8,7 @@ import edu.uwp.appfactory.tow.controllers.email.AsyncEmailService;
 import edu.uwp.appfactory.tow.utilities.AccountInformationValidator;
 import edu.uwp.appfactory.tow.webSecurityConfig.models.ERole;
 import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,6 +23,7 @@ import java.util.UUID;
 
 
 @Service
+@Slf4j
 public class SuperAdminService {
     private final SuperAdminRepository superAdminRepository;
     private final PasswordEncoder passwordEncoder;
@@ -49,10 +51,12 @@ public class SuperAdminService {
 
     public ResponseEntity<TestVerifyResponse> register(SuperAdminRequest spAdminRequest) {
         if(superAdminRepository.existsByEmail(spAdminRequest.getEmail())){
+            log.info("Registering super admin failed due to duplicate email found");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Email already exists!");
         }
         List<String> passwordViolations = AccountInformationValidator.validatePassword(spAdminRequest.getPassword());
         if(!passwordViolations.isEmpty()){
+            log.debug("Registering super admin failed due to password violations found: {}", passwordViolations);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,passwordViolations.toString());
         }
         SPAdmin superAdmin = new SPAdmin(
@@ -68,6 +72,7 @@ public class SuperAdminService {
         superAdmin.setVerifyDate(String.valueOf(LocalDate.now()));
         superAdmin.setVerEnabled(false);
         superAdminRepository.save(superAdmin);
+        log.debug("Saved new super admin to database");
         sendEmail.submitSignupEmailExecution(superAdmin);
         TestVerifyResponse test = new TestVerifyResponse(superAdmin.getVerifyToken());
         return ResponseEntity.ok(test);
@@ -115,15 +120,18 @@ public class SuperAdminService {
 
     private void propagateAndDelete(UsersDTO usersDTO, ERole oldRole) {
         if(ERole.valueOf(usersDTO.getRole()).equals(oldRole)){
+            log.warn("While propagating user to new role table, user already belongs to this role {}", oldRole.name());
             return;
         }
         boolean userExistsInOldRole = doesExistInRole(usersDTO,oldRole);
         if(!userExistsInOldRole){
+            log.warn("While propagating user to new role, user does not exist in old table User ID: {}", usersDTO.getId());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Users is not a " + oldRole);
         }
         String oldTableName = getTableName(oldRole);
         String newTableName = getTableName(ERole.valueOf(usersDTO.getRole()));
-        if(oldTableName == null || newTableName == null){
+        if(oldTableName == null || newTableName == null) {
+            log.warn("While propagating user to a new role, role could not be verified. Possible typo in {} or {}", oldRole.name(), usersDTO.getRole());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Invalid Role Sent");
         }
         Optional<Users> user = usersRepository.findById(usersDTO.getId());

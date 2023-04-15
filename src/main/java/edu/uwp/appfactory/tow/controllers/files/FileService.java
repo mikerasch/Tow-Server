@@ -6,6 +6,7 @@ import edu.uwp.appfactory.tow.entities.Users;
 import edu.uwp.appfactory.tow.repositories.FileRepository;
 import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,6 +25,7 @@ import static edu.uwp.appfactory.tow.controllers.files.HandleFileOperationsUtil.
  * File Service class for business logic in all file operations to DB.
  */
 @Service
+@Slf4j
 public class FileService {
     private FileRepository fileRepository;
     private UsersRepository usersRepository;
@@ -41,11 +43,13 @@ public class FileService {
     public ResponseEntity<HttpStatus> storeFile(MultipartFile multipartFile, UserDetailsImpl userDetails, String location) {
         boolean isValidExtension = isValidFileExtension(multipartFile.getContentType());
         if(!isValidExtension){
+            log.warn("Error while storing multipart file. Expected a valid file extension but received {}", multipartFile.getContentType());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Invalid extension");
         }
         Optional<Users> user = Optional.of(usersRepository.findByEmail(userDetails.getEmail()).orElseThrow());
         String uuid = String.valueOf(user.get().getId());
         if(!isValidUser(uuid)){
+            log.error("While storing multipart file, authentication could not be provided");
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User does not exist");
         }
         try {
@@ -57,8 +61,10 @@ public class FileService {
             file.setDate(new Timestamp(new Date().getTime()));
             file.setLocation(location);
             fileRepository.save(file);
+            log.debug("Saving new file {} to database", multipartFile.getOriginalFilename());
             return ResponseEntity.ok().build();
         } catch(IOException e){
+            log.error("While reading file name {} extension {} it was unable to be read correctly", multipartFile.getOriginalFilename(), multipartFile.getContentType());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Could not read file");
         }
     }
@@ -73,8 +79,10 @@ public class FileService {
         Optional<Users> user = Optional.of(usersRepository.findByEmail(userDetails.getEmail()).orElseThrow());
         Optional<File> file = fileRepository.findByFilenameAndUserUUID(filename, user.get().getId());
         if(file.isEmpty()){
+            log.warn("While retrieving filename {}, it could not be located", filename);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"No file by that name exists.");
         }
+        log.debug("Retrieving file {}", filename);
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.valueOf(file.get().getType()))
                 .body(new ByteArrayResource(decompressBytes(file.get().getData())));

@@ -4,6 +4,7 @@ import edu.uwp.appfactory.tow.entities.FailedEmail;
 import edu.uwp.appfactory.tow.entities.Users;
 import edu.uwp.appfactory.tow.repositories.FailedEmailRepository;
 import edu.uwp.appfactory.tow.requestobjects.email.SupportEmail;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,12 +21,12 @@ import java.util.concurrent.Executors;
  * Responsible for sending the initial verification email and the password reset email.
  */
 @Service
+@Slf4j
 public class AsyncEmailService {
 
     private final JavaMailSender javaMailSender;
     private final ContentBuilderService contentBuilderService;
     private final FailedEmailRepository failedEmailRepository;
-    private final Logger logger = LoggerFactory.getLogger(AsyncEmailService.class);
     private static final String DONOTREPLY = "DoNotReply";
     private static final ExecutorService executor = Executors.newSingleThreadExecutor();
     @Value("${SPRING_DNS}")
@@ -48,6 +49,7 @@ public class AsyncEmailService {
           messageHelper.setText(supportEmail.getMessage());
           messageHelper.setCc(customerSupportEmail);
         };
+        log.debug("Sending customer support email to email: {}", supportEmail.getSenderEmail());
         javaMailSender.send(messagePreparator);
     }
 
@@ -61,7 +63,6 @@ public class AsyncEmailService {
             String userName = "Hi, " + user.getFirstname() + " " + user.getLastname();
             String verifyLink = dns + "api/auth/verification?token=" + user.getVerifyToken();
             String message = contentBuilderService.buildVerifyEmail(userName, verifyLink);
-
             MimeMessagePreparator messagePreparation = mimeMessage -> {
                 MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
                 messageHelper.setFrom(DONOTREPLY, DONOTREPLY);
@@ -73,7 +74,7 @@ public class AsyncEmailService {
             javaMailSender.send(messagePreparation);
 
         } catch (MailException e) {
-            logger.error(e.getMessage());
+            log.error("Critical error while sending email to user id {}. {}", user.getId(), e.getMessage());
             FailedEmail failedEmail = FailedEmail.builder()
                     .email(user.getEmail())
                     .user_uuid(user.getId())
@@ -108,7 +109,7 @@ public class AsyncEmailService {
             javaMailSender.send(messagePreparation);
 
         } catch (MailException e) {
-            logger.error(e.getMessage());
+            log.error("Error while sending reset email to user id {}. {}", user.getId(), e.getMessage());
         }
     }
     public void submitSignupEmailExecution(Users user){

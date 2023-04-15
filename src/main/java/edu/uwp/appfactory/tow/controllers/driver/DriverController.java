@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/drivers")
 public class DriverController {
     private final DriverService driverService;
-
     public DriverController(DriverService driverService) {
         this.driverService = driverService;
     }

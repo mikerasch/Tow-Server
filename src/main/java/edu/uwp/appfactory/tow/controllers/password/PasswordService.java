@@ -4,6 +4,7 @@ import edu.uwp.appfactory.tow.entities.Users;
 import edu.uwp.appfactory.tow.requestobjects.password.ForgotPassRequest;
 import edu.uwp.appfactory.tow.controllers.email.AsyncEmailService;
 import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import java.util.Random;
 
 
 @Service
+@Slf4j
 public class PasswordService {
 
     private final UsersRepository usersRepository;
@@ -36,6 +38,7 @@ public class PasswordService {
     public boolean forgot(ForgotPassRequest forgotPassRequest) {
         Optional<Users> usersOptional = usersRepository.findByUsername(forgotPassRequest.getEmail());
         if(usersOptional.isEmpty()){
+            log.warn("Upon a user requesting a new password reset, could not find User");
             return false;
         }
         Users user = usersOptional.get();
@@ -64,6 +67,7 @@ public class PasswordService {
     public boolean verify(String email, int token) {
         Optional<Users> usersOptional = usersRepository.findByUsername(email);
         if(usersOptional.isEmpty()){
+            log.warn("Upon verifying email link is still valid, could not find user in database");
             return false;
         }
         Users user = usersOptional.get();
@@ -83,6 +87,7 @@ public class PasswordService {
     public boolean reset(String email, int token, String password) {
         Optional<Users> usersOptional = usersRepository.findByUsername(email);
         if(usersOptional.isEmpty()){
+            log.warn("Up resetting user's password, could not find user in database");
             return false;
         }
         Users user = usersOptional.get();

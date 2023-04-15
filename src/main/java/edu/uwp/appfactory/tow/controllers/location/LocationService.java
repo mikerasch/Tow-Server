@@ -5,6 +5,7 @@ import edu.uwp.appfactory.tow.repositories.TCUserRepository;
 import java.util.Collections;
 
 import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,6 +19,7 @@ import java.util.Optional;
  * This class is used by both TC and PD user in order to store and the find by geodata.
  */
 @Controller
+@Slf4j
 public class LocationService {
     private final TCUserRepository tcUserRepository;
 
@@ -38,6 +40,7 @@ public class LocationService {
     public boolean setLocation(float latitude, float longitude, UserDetailsImpl userDetails) {
         Optional<TCUser> tcUserOptional = tcUserRepository.findById(userDetails.getId());
         if(tcUserOptional.isEmpty()){
+            log.warn("Could not find TCUser id {}.", userDetails.getId());
             return false;
         }
         TCUser tcUser = tcUserOptional.get();
@@ -59,24 +62,26 @@ public class LocationService {
         if (!drivers.isEmpty()) {
             return drivers;
         }
+        log.debug("Could not find any Tow Company drivers in the location requested");
         return Collections.emptyList();
     }
 
     public ResponseEntity<HttpStatus> updateActiveStatus(boolean parseBoolean, UserDetailsImpl userDetails) {
         Optional<TCUser> tcUser = tcUserRepository.findById(userDetails.getId());
         if(tcUser.isEmpty()) {
+            log.warn("Could not find tow truck user upon trying to update active status. User ID: {}", userDetails.getId());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"User not found!");
         }
         TCUser user = tcUser.get();
         user.setActive(parseBoolean);
+        log.debug("Setting User: {} active status to {}", userDetails.getId(), parseBoolean);
         tcUserRepository.save(user);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-    public ResponseEntity<HttpStatus> updateActiveStatus(boolean parseBoolean, UserDetails userDetails) {
+    public void updateActiveStatus(boolean parseBoolean, UserDetails userDetails) {
         Optional<TCUser> tcUser = Optional.of(tcUserRepository.findByEmail(userDetails.getUsername()).orElseThrow());
         TCUser user = tcUser.get();
         user.setActive(parseBoolean);
         tcUserRepository.save(user);
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
