@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Optional;
-import java.util.UUID;
 import static edu.uwp.appfactory.tow.controllers.files.HandleFileOperationsUtil.*;
 
 /**
@@ -37,6 +36,7 @@ public class FileService {
     /**
      * Stores the requested file in the database if the file extension is valid and if the user is authorized.
      * Compresses the file for storage benefit.
+     *
      * @param multipartFile - multipartFile from the client to be stored in the db
      * @return 200 OK if stored, else 400 or 401
      */
@@ -54,13 +54,14 @@ public class FileService {
         }
         try {
             File file = new File();
-            file.setUser_uuid(UUID.fromString(uuid));
+            file.setUserId(Long.parseLong(uuid));
             file.setType(multipartFile.getContentType());
             file.setData(compressBytes(multipartFile.getBytes()));
             file.setFilename(multipartFile.getOriginalFilename());
             file.setDate(new Timestamp(new Date().getTime()));
             file.setLocation(location);
-            fileRepository.save(file);
+            user.get().addFiles(file);
+            usersRepository.save(user.get());
             log.debug("Saving new file {} to database", multipartFile.getOriginalFilename());
             return ResponseEntity.ok().build();
         } catch(IOException e){
@@ -72,12 +73,13 @@ public class FileService {
     /**
      * Retrieves the file from the database. Will ensure file belongs to user by
      * checking the UUID. Decompresses the file before returning.
+     *
      * @param filename - filename to search for
      * @return - ByteArrayResource of file
      */
     public ResponseEntity<ByteArrayResource> retrieveFile(String filename, UserDetailsImpl userDetails) {
         Optional<Users> user = Optional.of(usersRepository.findByEmail(userDetails.getEmail()).orElseThrow());
-        Optional<File> file = fileRepository.findByFilenameAndUserUUID(filename, user.get().getId());
+        Optional<File> file = fileRepository.findByFilenameAndUserId(filename, user.get().getId());
         if(file.isEmpty()){
             log.warn("While retrieving filename {}, it could not be located", filename);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"No file by that name exists.");
@@ -90,10 +92,11 @@ public class FileService {
 
     /**
      * Checks to see if uuid exists in the database.
+     *
      * @param uuid - String uuid
      * @return true if exists, false otherwise
      */
     public boolean isValidUser(String uuid){
-        return usersRepository.existsById(UUID.fromString(uuid));
+        return usersRepository.existsById(Long.parseLong(uuid));
     }
 }

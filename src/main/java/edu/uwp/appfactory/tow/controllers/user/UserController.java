@@ -3,15 +3,13 @@ package edu.uwp.appfactory.tow.controllers.user;
 import edu.uwp.appfactory.tow.entities.Users;
 import edu.uwp.appfactory.tow.requestobjects.password.PasswordChange;
 import edu.uwp.appfactory.tow.requestobjects.rolerequest.UpdateRequest;
-import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
+import edu.uwp.appfactory.tow.requestobjects.users.UsersDTO;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
@@ -63,8 +61,8 @@ public class UserController {
      */
     @PatchMapping("/update/user")
     @PreAuthorize("hasRole('PDADMIN') or hasRole('PDUSER') or hasRole('TCADMIN') or hasRole('TCUSER') or hasRole('DRIVER')")
-    public ResponseEntity<Users> update(@RequestBody UpdateRequest updateRequest, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        Users data = userService.updateByUUID(updateRequest,userDetails);
+    public ResponseEntity<UsersDTO> update(@RequestBody UpdateRequest updateRequest, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        UsersDTO data = userService.updateByUUID(updateRequest,userDetails);
         if (data != null) {
             return ResponseEntity.ok(data);
         }

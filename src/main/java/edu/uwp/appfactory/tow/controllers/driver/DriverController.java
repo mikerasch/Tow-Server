@@ -18,16 +18,37 @@ public class DriverController {
         this.driverService = driverService;
     }
 
+    /**
+     * Registers a new driver using the provided driver request data.
+     *
+     * @param driverRequest The driver request object containing the necessary driver information.
+     * @return A ResponseEntity with a TestVerifyResponse object containing a message indicating the success of the registration.
+     */
     @PostMapping
     public ResponseEntity<TestVerifyResponse> register(@RequestBody DriverRequest driverRequest){
         return driverService.register(driverRequest);
     }
+
+    /**
+     * Updates the location of the authenticated driver.
+     *
+     * @param coordinates The new location of the driver.
+     * @param user The authenticated user details.
+     * @return A ResponseEntity with an HTTP status indicating the success of the update.
+     */
     @PostMapping("/update/location")
     @PreAuthorize("hasRole('DRIVER')")
     public ResponseEntity<HttpStatus> updateLocation(@RequestBody Coordinates coordinates, @AuthenticationPrincipal UserDetailsImpl user) {
         return driverService.updateLocation(coordinates,user);
     }
 
+    /**
+     * Finds available tow truck drivers within the specified radius of the authenticated driver's location.
+     *
+     * @param radius The radius within which to search for available tow truck drivers.
+     * @param user The authenticated user details.
+     * @return A ResponseEntity with an HTTP status indicating the success of the search.
+     */
     @PostMapping("/find/towtrucks")
     @PreAuthorize("hasRole('DRIVER')")
     public ResponseEntity<HttpStatus> findTowTruckDrivers(@RequestHeader("radius") int radius, @AuthenticationPrincipal UserDetailsImpl user) {

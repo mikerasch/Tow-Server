@@ -1,7 +1,6 @@
 package edu.uwp.appfactory.tow.controllers.files;
 
 import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,19 +18,23 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/files")
 public class FileController {
-    private FileService fileService;
+    private final FileService fileService;
 
     public FileController(FileService fileService) {
         this.fileService = fileService;
     }
+
     /**
-     * Uploads the file to the database.
-     * The file extensions must either be jpg, png, or jpeg.
-     * @param multipartFile - multipartFile which the client provides
-     * @return 200 OK if successful, 400 if invalid extension/invalid file, else 401
+     * Uploads a file to the server with the given information and returns a ResponseEntity with the HTTP status.
+     *
+     * @param multipartFile the file to upload
+     * @param location the location to store the file
+     * @param userDetails the authenticated user making the request
+     * @return a ResponseEntity with the HTTP status
      */
     @PostMapping
-    @PreAuthorize("hasRole('PDADMIN') or hasRole('PDUSER') or hasRole('TCADMIN') or hasRole('TCUSER')")
+    @PreAuthorize("hasRole('PDADMIN') or hasRole('PDUSER') or hasRole('TCADMIN') or hasRole('TCUSER') or hasRole('DRIVER')")
+    @RequestMapping("/upload")
     public ResponseEntity<HttpStatus> uploadFile(@RequestParam(name = "file") MultipartFile multipartFile,
                                                  @RequestHeader(value = "location") String location,
                                                  @AuthenticationPrincipal UserDetailsImpl userDetails){
@@ -39,12 +42,14 @@ public class FileController {
     }
 
     /**
-     * Retrieves the requested file from the user.
-     * @param filename - file to be looked up in the db
-     * @return ByteArrayResource media file if successful, else bad request
+     * Retrieves a file with the given filename and returns it as a ByteArrayResource in a ResponseEntity.
+     *
+     * @param filename the filename of the file to retrieve
+     * @param userDetails the authenticated user making the request
+     * @return a ResponseEntity containing a ByteArrayResource with the file contents
      */
     @GetMapping("download/{filename:.+}")
-    @PreAuthorize("hasRole('PDADMIN') or hasRole('PDUSER') or hasRole('TCADMIN') or hasRole('TCUSER')")
+    @PreAuthorize("hasRole('PDADMIN') or hasRole('PDUSER') or hasRole('TCADMIN') or hasRole('TCUSER') or hasRole('DRIVER')")
     @ResponseBody
     public ResponseEntity<ByteArrayResource> retrieveFile(@PathVariable String filename,
                                                           @AuthenticationPrincipal UserDetailsImpl userDetails){

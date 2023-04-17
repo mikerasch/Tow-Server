@@ -39,16 +39,18 @@ public class PDUserService {
 
     /**
      * Retrieves the User using a UUID.
+     *
      * @return user if UUID is present in database, otherwise null
      */
     public PDUser get(UserDetailsImpl userDetails) {
-        Optional<PDUser> user = Optional.of(pdUserRepository.findById(userDetails.getId()).orElseThrow());
+        Optional<PDUser> user = Optional.of(pdUserRepository.findByUserEmail(userDetails.getEmail()).orElseThrow());
         return user.get();
     }
 
     //todo fix this bad code
     /**
      * Registers a new PD user.
+     *
      * @param pdUserRequest - PD user information to be added.
      * @return information of new PD user if successful, else null
      */
@@ -61,7 +63,7 @@ public class PDUserService {
             throw new ResponseStatusException(BAD_REQUEST,"Not secure password");
         }
         if (!usersRepository.existsByEmail(pdUserRequest.getEmail())) {
-            UUID adminUUID = users.get().getId();
+            long adminUUID = users.get().getId();
 
             String frontID = "";
             String password = generatePDUserUUID();
@@ -81,28 +83,21 @@ public class PDUserService {
                     "",
                     ERole.ROLE_PDUSER.name(),
                     frontID,
-                    adminUUID);
-
-            pdUser.setVerifyToken("");
-            pdUser.setVerifyDate(String.valueOf(LocalDate.now()));
-            pdUser.setVerEnabled(true);
-            usersRepository.save(pdUser);
+                    adminUUID
+            );
+            Users user = pdUser.getUser();
+            user.setVerifyToken("");
+            user.setVerifyDate(String.valueOf(LocalDate.now()));
+            user.setVerEnabled(true);
+            pdUserRepository.save(pdUser);
             return ResponseEntity.ok(new PDUAuthResponse(frontID,password));
         }
         throw new ResponseStatusException(BAD_REQUEST,"Email already exists");
     }
 
     /**
-     * PATCH
-     */
-
-
-    /**
-     * DELETE
-     */
-
-    /**
      * Generates a random 6 character length UUID.
+     *
      * @return UUID converted to a String
      */
     private String generatePDUserUUID() {

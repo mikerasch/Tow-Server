@@ -25,6 +25,7 @@ public class HandleFileOperationsUtil {
     /**
      * Ensures content type is a valid extension.
      * Valid extension types are: jpg, png, jpeg.
+     *
      * @param contentType - content type of file
      * @return true if valid, false otherwise
      */
@@ -35,6 +36,7 @@ public class HandleFileOperationsUtil {
 
     /**
      * Retrieves the extension of the content type.
+     *
      * @param contentType - content type to split
      * @return - extension
      */
@@ -44,6 +46,7 @@ public class HandleFileOperationsUtil {
 
     /**
      * Compresses the byte array by using Deflater.
+     *
      * @param bytes - byte array to be compressed
      * @return - new compressed byte array
      */
@@ -63,6 +66,7 @@ public class HandleFileOperationsUtil {
 
     /**
      * Decompresses the byte array using Inflater.
+     *
      * @param bytes - byte array to be compressed
      * @return - new decompressed byte array
      */

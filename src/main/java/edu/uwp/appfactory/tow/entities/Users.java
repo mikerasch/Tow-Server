@@ -1,56 +1,64 @@
 package edu.uwp.appfactory.tow.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Persistent;
-
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import java.util.UUID;
+import lombok.*;
+import org.hibernate.Hibernate;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
+import java.util.List;
+import java.util.Objects;
+
+@Entity
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
+@Table(name = "users")
 public class Users {
 
     @Id
-    @Persistent
-    private UUID id;
-
-    @NotBlank
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id", nullable = false)
+    private Long id;
     @Size(max = 100)
+    @Column(name = "username", nullable = false)
     private String username;
 
-    @NotBlank
     @Size(max = 100)
     @Email
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @NotBlank
     @Size(max = 120)
+    @Column(name = "password", nullable = false)
     private String password;
 
-    @NotBlank
     @Size(max = 20)
+    @Column(name = "first_name", nullable = false)
     private String firstname;
 
-    @NotBlank
     @Size(max = 20)
+    @Column(name = "last_name", nullable = false)
     private String lastname;
-
-    @NotBlank
+    @Column(name = "role", nullable = false)
     private String role;
-
+    @Column(name = "phone", nullable = false, unique = true)
     private String phone;
+    @Column(name = "reset_token")
     private Integer resetToken;
+    @Column(name = "reset_date")
     private String resetDate;
+    @Column(name = "verify_date")
     private String verifyDate;
+    @Column(name = "ver_enabled")
     private Boolean verEnabled;
+    @Column(name = "verify_token")
     private String verifyToken;
+    @Column(name = "fb_token")
     private String fbToken;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<File> files;
 
     public Users(String email, String username, String password, String firstname, String lastname, String phone, String role) {
         this.username = username;
@@ -60,5 +68,23 @@ public class Users {
         this.lastname = lastname;
         this.phone = phone;
         this.role = role;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Users users = (Users) o;
+        return id != null && Objects.equals(id, users.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
+    public void addFiles(File file) {
+        file.setUser(this);
+        this.files.add(file);
     }
 }

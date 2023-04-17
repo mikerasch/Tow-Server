@@ -1,6 +1,5 @@
 
 package edu.uwp.appfactory.tow.controllers.auth;
-import edu.uwp.appfactory.tow.requestobjects.rolerequest.AdminRequest;
 import edu.uwp.appfactory.tow.requestobjects.rolerequest.LoginRequest;
 import edu.uwp.appfactory.tow.requestobjects.rolerequest.UserRequest;
 import edu.uwp.appfactory.tow.webSecurityConfig.payload.response.JwtResponse;
@@ -38,24 +37,25 @@ public class AuthController {
     }
 
     /**
-     * Refreshes the JWT Token. Requires prior authentication on post request.
-     * @param jwtToken - jwt Token to be refreshed.
-     * @return ResponseEntity, 200 if success, 400 otherwise
+     * Refreshes the given JWT token.
+     *
+     * @param jwtToken The JWT token to be refreshed.
+     * @return ResponseEntity with a new JWT token if the refresh was successful, or a bad request response otherwise.
      */
     @PostMapping("/refresh")
     public ResponseEntity<String> refreshToken(@RequestHeader("Authorization") final String jwtToken) {
         String token = authService.refreshToken(jwtToken);
         if (token != null) {
             return ResponseEntity.ok(token);
-        } else {
-            return ResponseEntity.status(BAD_REQUEST).build();
         }
+        return ResponseEntity.status(BAD_REQUEST).build();
     }
 
     /**
-     * Handles requesting authentication from user.
-     * @param loginRequest Login request information of user
-     * @return Response entity which can be a JWTResponse or an HttpStatus
+     * Authenticates a user with the provided login credentials.
+     *
+     * @param loginRequest The login request object containing the user's email and password.
+     * @return A ResponseEntity with a JwtResponse object containing the JWT token and token type if the authentication was successful, or a bad request response otherwise.
      */
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> authenticateUser(@RequestBody LoginRequest loginRequest) {
@@ -63,11 +63,11 @@ public class AuthController {
     }
 
     /**
-     * Handles verification of a user given a regular token.
-     * Verification is the route that is hooked to a button the user receives by email in order to activate their account the first time.
-     * Verification can fail due to user already verified, link expiring, or token not found.
-     * @param token - Token to verify
-     * @return Response entity: 204 if success, String response otherwise
+     * Verifies the user account using the provided verification token.
+     *
+     * @param token The verification token.
+     * @return A ResponseEntity with a status of NO_CONTENT if the verification was successful, or a ResponseEntity with an appropriate error response if the verification was unsuccessful.
+     * @throws ResponseStatusException if there is an unexpected error or if the verification failed due to an expired link or already verified user.
      */
     @GetMapping("/verification")
     public ResponseEntity<HttpStatus> verification(@RequestParam("token") final String token) {
@@ -80,6 +80,12 @@ public class AuthController {
         };
     }
 
+    /**
+     * Retrieves the user information for the authenticated user.
+     *
+     * @param userDetails The authenticated user details.
+     * @return A ResponseEntity with a UserRequest object containing the user's information if the request is successful.
+     */
     @GetMapping("/get/user")
     @PreAuthorize("hasAnyRole('PDADMIN','PDUSER','TCADMIN','TCUSER','SPADMIN','DRIVER')")
     public ResponseEntity<UserRequest> getUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {

@@ -3,6 +3,7 @@ package edu.uwp.appfactory.tow.controllers.user;
 import edu.uwp.appfactory.tow.entities.Users;
 import edu.uwp.appfactory.tow.requestobjects.password.PasswordChange;
 import edu.uwp.appfactory.tow.requestobjects.rolerequest.UpdateRequest;
+import edu.uwp.appfactory.tow.requestobjects.users.UsersDTO;
 import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsImpl;
 import org.springframework.http.HttpStatus;
@@ -13,7 +14,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import static edu.uwp.appfactory.tow.utilities.AccountInformationValidator.validatePassword;
 
@@ -37,7 +37,7 @@ public class UserService {
     }
 
     //todo make sure email and phone number don't already exist in repo and add checksz
-    public Users updateByUUID(UpdateRequest updateRequest, UserDetailsImpl userDetails) {
+    public UsersDTO updateByUUID(UpdateRequest updateRequest, UserDetailsImpl userDetails) {
         Optional<Users> usersOptional = Optional.of(usersRepository.findByEmail(userDetails.getEmail()).orElseThrow());
         Users user = usersOptional.get();
         user.setFirstname(updateRequest.getFirstname());
@@ -45,7 +45,15 @@ public class UserService {
         user.setEmail(updateRequest.getEmail());
         user.setPhone(updateRequest.getPhone());
         usersRepository.save(user);
-        return user;
+        return new UsersDTO(
+                user.getId(),
+                user.getEmail(),
+                user.getEmail(),
+                user.getLastname(),
+                user.getRole(),
+                user.getUsername(),
+                user.getVerEnabled()
+        );
     }
 
     /**

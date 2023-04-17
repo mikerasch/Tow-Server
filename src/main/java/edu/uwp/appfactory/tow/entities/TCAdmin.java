@@ -1,20 +1,45 @@
 package edu.uwp.appfactory.tow.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.Hibernate;
 
-@Data
-@NoArgsConstructor
+import java.util.Objects;
+
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-public class TCAdmin extends Users {
+@Entity
+@Table(name = "tow_company_admins")
+public class TCAdmin {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id", nullable = false)
+    private Long id;
 
+    @Column(name = "company", nullable = false)
     private String company;
 
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    private Users user;
+
     public TCAdmin(String email, String username, String password, String firstname, String lastname, String phone, String role, String company) {
-        super(email, username, password, firstname, lastname, phone, role);
+        user = new Users(email,username,password,firstname,lastname,phone,role);
         this.company = company;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        TCAdmin tcAdmin = (TCAdmin) o;
+        return id != null && Objects.equals(id, tcAdmin.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }

@@ -46,9 +46,9 @@ class DriverControllerTest {
         DriverRequest driverRequest = new DriverRequest(
                 "yafasdf",
                 "testest",
-                "testest@gmail.com",
+                "testest2@gmail.com",
                 "dingledart123A!",
-                "222-222-2222"
+                "222-2222-2222"
         );
 
 

@@ -5,8 +5,6 @@ import edu.uwp.appfactory.tow.entities.Users;
 import edu.uwp.appfactory.tow.repositories.FailedEmailRepository;
 import edu.uwp.appfactory.tow.requestobjects.email.SupportEmail;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -41,6 +39,12 @@ public class AsyncEmailService {
         this.failedEmailRepository = failedEmailRepository;
     }
 
+    /**
+     * Sends an email to customer support with the given information.
+     *
+     * @param supportEmail the SupportEmail object containing information about the email to be sent
+     * @throws MailException if there is an issue sending the email
+     */
     public void sendCustomerSupportEmail(SupportEmail supportEmail) {
         MimeMessagePreparator messagePreparator = mimeMessage -> {
           MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
@@ -54,8 +58,9 @@ public class AsyncEmailService {
     }
 
     /**
-     * The sendEmailAsync method generates an email using the user info and the current dns config info
+     * The sendEmailAsync method generates an email using the user info and the current dns config info.
      * that will be used to generate the bottom the user receive in the email to verify.
+     *
      * @param user the user that is attempting to sign up for the tow service
      */
     public void sendSignupEmail(Users user) {
@@ -75,13 +80,7 @@ public class AsyncEmailService {
 
         } catch (MailException e) {
             log.error("Critical error while sending email to user id {}. {}", user.getId(), e.getMessage());
-            FailedEmail failedEmail = FailedEmail.builder()
-                    .email(user.getEmail())
-                    .user_uuid(user.getId())
-                    .firstname(user.getFirstname())
-                    .lastname(user.getLastname())
-                    .verify_token(user.getVerifyToken())
-                    .build();
+            FailedEmail failedEmail = new FailedEmail(user.getEmail(), user.getId(), user.getFirstname(), user.getLastname(), user.getVerifyToken());
             failedEmailRepository.save(failedEmail);
         }
     }
@@ -89,6 +88,7 @@ public class AsyncEmailService {
     /**
      * Nearly identical to the sendemailasync method above but needs the users jwt token to
      * know which account to begin the reset process with.
+     *
      * @param user user that is requesting a reset
      * @param token token of the user for authentication purposes
      */
@@ -112,14 +112,33 @@ public class AsyncEmailService {
             log.error("Error while sending reset email to user id {}. {}", user.getId(), e.getMessage());
         }
     }
+
+    /**
+     * Submits a task to the executor to send a signup email to the given user.
+     *
+     * @param user the user to send the signup email to
+     */
     public void submitSignupEmailExecution(Users user){
         Runnable runnable = () -> sendSignupEmail(user);
         executor.execute(runnable);
     }
+
+    /**
+     * Submits a task to the executor to send a customer support email with the given information.
+     *
+     * @param supportEmail the SupportEmail object containing information about the email to be sent
+     */
     public void submitCustomerServiceEmail(SupportEmail supportEmail) {
         Runnable runnable = () -> sendCustomerSupportEmail(supportEmail);
         executor.execute(runnable);
     }
+
+    /**
+     * Submits a task to the executor to send a password reset email to the given user with the given token.
+     *
+     * @param user the user to send the password reset email to
+     * @param token the password reset token to include in the email
+     */
     public void submitEmailResetExecution(Users user, int token){
         Runnable runnable = () -> sendResetEmailAsync(user,token);
         executor.execute(runnable);

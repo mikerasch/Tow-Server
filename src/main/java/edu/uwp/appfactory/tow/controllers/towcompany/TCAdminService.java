@@ -1,6 +1,7 @@
 package edu.uwp.appfactory.tow.controllers.towcompany;
 
 import edu.uwp.appfactory.tow.entities.TCAdmin;
+import edu.uwp.appfactory.tow.entities.Users;
 import edu.uwp.appfactory.tow.mappers.TCMapper;
 import edu.uwp.appfactory.tow.repositories.TCAdminRepository;
 import edu.uwp.appfactory.tow.requestobjects.rolerequest.TCAdminRequest;
@@ -71,14 +72,15 @@ public class TCAdminService {
                     tcAdminRequest.getLastname(),
                     tcAdminRequest.getPhone(),
                     ERole.ROLE_TCADMIN.name(),
-                    tcAdminRequest.getCompany());
-
-            tcAdmin.setVerifyToken(generateEmailUUID());
-            tcAdmin.setVerifyDate(String.valueOf(LocalDate.now()));
-            tcAdmin.setVerEnabled(false);
-            usersRepository.save(tcAdmin);
-            sendEmail.submitSignupEmailExecution(tcAdmin);
-            return ResponseEntity.ok(new TestVerifyResponse(tcAdmin.getVerifyToken()));
+                    tcAdminRequest.getCompany()
+            );
+            Users user = tcAdmin.getUser();
+            user.setVerifyToken(generateEmailUUID());
+            user.setVerifyDate(String.valueOf(LocalDate.now()));
+            user.setVerEnabled(false);
+            tcAdminRepository.save(tcAdmin);
+            sendEmail.submitSignupEmailExecution(user);
+            return ResponseEntity.ok(new TestVerifyResponse(user.getVerifyToken()));
         }
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Email is already in use.");
     }

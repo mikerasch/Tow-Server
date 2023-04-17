@@ -37,7 +37,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     /**
      * load a user by their username, exception if not found
      */
-    public UserDetails loadUserByUUID(UUID id) {
+    public UserDetails loadUserByUUID(Long id) {
         Optional<Users> user = userRepository.findById(id);
         return user.map(UserDetailsImpl::buildUser).orElse(null);
     }

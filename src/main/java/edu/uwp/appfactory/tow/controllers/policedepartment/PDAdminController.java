@@ -20,16 +20,13 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 public class PDAdminController {
     private final PDAdminService pdAdminService;
 
-    /**
-     * Parameterized constructor for creating a new PDAdminController instance.
-     * @param pdAdminService - service to access/provide useful police department logic
-     */
     public PDAdminController(PDAdminService pdAdminService) {
         this.pdAdminService = pdAdminService;
     }
 
     /**
-     * This route retrieves information about a requested police department admin
+     * This route retrieves information about a requested police department admin.
+     *
      * @return returns an object that contains only the necessary information about the admin.
      */
     @GetMapping("")
@@ -46,6 +43,7 @@ public class PDAdminController {
     //todo Safeguard in the future.
     /**
      * Registers a new admin in the system.
+     *
      * @param pdAdminRequest - police department admin account information
      * @return verification token if successful, else 400
      */

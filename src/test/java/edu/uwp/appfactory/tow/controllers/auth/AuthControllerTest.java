@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.uwp.appfactory.tow.controllers.superadmin.SuperAdminService;
 import edu.uwp.appfactory.tow.entities.Users;
 import edu.uwp.appfactory.tow.firebase.FirebaseMessagingService;
+import edu.uwp.appfactory.tow.repositories.SuperAdminRepository;
 import edu.uwp.appfactory.tow.requestobjects.rolerequest.LoginRequest;
 import edu.uwp.appfactory.tow.requestobjects.rolerequest.SuperAdminRequest;
 import edu.uwp.appfactory.tow.webSecurityConfig.payload.response.JwtResponse;
@@ -39,10 +40,12 @@ class AuthControllerTest {
     private SuperAdminService superAdminService;
     @Autowired
     private FirebaseMessagingService firebaseMessagingService;
+    @Autowired
+    private SuperAdminRepository superAdminRepository;
 
     @BeforeEach
     void tearDown(){
-        usersRepository.deleteAll();
+        superAdminRepository.deleteAll();
     }
 
     @BeforeEach

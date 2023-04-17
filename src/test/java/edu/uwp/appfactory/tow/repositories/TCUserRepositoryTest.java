@@ -1,31 +1,36 @@
 package edu.uwp.appfactory.tow.repositories;
 
+import edu.uwp.appfactory.tow.controllers.location.CalculateDistanceService;
+import edu.uwp.appfactory.tow.controllers.location.LocationService;
 import edu.uwp.appfactory.tow.entities.TCUser;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-
+import org.springframework.boot.test.context.SpringBootTest;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
-@DataJdbcTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+
+@SpringBootTest
 class TCUserRepositoryTest {
     @Autowired
     private TCUserRepository tcUserRepository;
+    @Autowired
+    private TCAdminRepository tcAdminRepository;
+    @Autowired
+    private LocationService locationService;
 
     @AfterEach
     void tearDown(){
         tcUserRepository.deleteAll();
+        tcAdminRepository.deleteAll();
     }
 
     @Test
     void findListOfTCUsersGivenCoordsAndRadius() {
         //given
+
         List<TCUser> tcUsers = new ArrayList<>();
         List<String> validEmails = List.of("test1@gmail.com","test2@gmail.com","test3@gmail.com");
         tcUsers.add(new TCUser(
@@ -34,12 +39,11 @@ class TCUserRepositoryTest {
                 "1234567",
                 "test1",
                 "tester1",
-                "222-222-2222",
+                "222-222-2219",
                 "ROLE_TCUSER",
-                50F,
-                100F,
-                true,
-                UUID.randomUUID()
+                42.718891F,
+                -87.789401F,
+                true
         ));
         tcUsers.add(new TCUser(
                 "test2@gmail.com",
@@ -47,12 +51,11 @@ class TCUserRepositoryTest {
                 "1234567",
                 "test1",
                 "tester1",
-                "222-222-2222",
+                "222-222-2220",
                 "ROLE_TCUSER",
-                40F,
-                100F,
-                true,
-                UUID.randomUUID()
+                42.590926F,
+                -87.843468F,
+                true
         ));
         tcUsers.add(new TCUser(
                 "test3@gmail.com",
@@ -60,12 +63,11 @@ class TCUserRepositoryTest {
                 "1234567",
                 "test1",
                 "tester1",
-                "222-222-2222",
+                "222-222-2221",
                 "ROLE_TCUSER",
-                60F,
-                100F,
-                true,
-                UUID.randomUUID()
+                42.513029F,
+                -88.110065F,
+                true
         ));
         tcUsers.add(new TCUser(
                 "test4@gmail.com",
@@ -73,19 +75,17 @@ class TCUserRepositoryTest {
                 "1234567",
                 "test1",
                 "tester1",
-                "222-222-2222",
+                "222-222-1283",
                 "ROLE_TCUSER",
-                5000F,
-                1000F,
-                true,
-                UUID.randomUUID()
+                41.860197F,
+                -87.689484F,
+                true
         ));
         tcUserRepository.saveAll(tcUsers);
-
         //when
-        List<TCUser> tcUserList = tcUserRepository.findByDistance(50F,100F,30);
+        List<TCUser> tcUserList = locationService.findByDistance(42.718476F, -87.845744F, 50);
         List<String> emails = new ArrayList<>();
-        tcUserList.forEach(x -> emails.add(x.getEmail()));
+        tcUserList.forEach(x -> emails.add(x.getUser().getEmail()));
         //then
         assertEquals(3,tcUserList.size());
         assertTrue(emails.containsAll(validEmails));

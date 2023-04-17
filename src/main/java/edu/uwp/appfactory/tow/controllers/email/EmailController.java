@@ -16,6 +16,12 @@ public class EmailController {
         this.asyncEmailService = asyncEmailService;
     }
 
+    /**
+     * Sends a customer support email asynchronously with the given information.
+     *
+     * @param supportEmail the SupportEmail object containing information about the email to be sent
+     * @return a ResponseEntity with a success message if the email was sent successfully
+     */
     @PostMapping("/support/send")
     @PreAuthorize("hasAnyRole('PDADMIN','PDUSER','TCADMIN','TCUSER','SPADMIN','DRIVER')")
     public ResponseEntity<String> sendCustomerSupportEmail(@RequestBody SupportEmail supportEmail) {

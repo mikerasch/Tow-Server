@@ -21,6 +21,16 @@ public class HeartbeatWebSocketHandler extends TextWebSocketHandler {
         this.verifyAuthorizationToken = verifyAuthorizationToken;
     }
 
+    /**
+     * Callback method that is invoked after a WebSocket connection is established.
+     * Verifies the authorization token of the user associated with the WebSocket session
+     * by calling a helper method, and adds the user details to a HashMap that maps WebSocket
+     * sessions to user details. If the token is invalid or missing, the WebSocket session is closed
+     * with a policy violation close status code.
+     *
+     * @param socketSession the WebSocket session that was established
+     * @throws IOException if an I/O error occurs while handling the WebSocket session
+     */
     @Override
     public void afterConnectionEstablished(WebSocketSession socketSession) throws IOException {
         UserDetails userdetails = verifyAuthorizationToken.verifyAuthorizationToken(socketSession);
@@ -31,6 +41,15 @@ public class HeartbeatWebSocketHandler extends TextWebSocketHandler {
         sessions.put(socketSession,userdetails);
     }
 
+    /**
+     * Callback method that is invoked after a WebSocket connection is closed.
+     * Updates the active status of the user associated with the WebSocket session to false
+     * by calling a helper method, and removes the session from a HashMap that maps WebSocket
+     * sessions to user details.
+     *
+     * @param socketSession the WebSocket session that was closed
+     * @param status the close status of the WebSocket session
+     */
     @Override
     public void afterConnectionClosed(WebSocketSession socketSession, CloseStatus status) {
         locationService.updateActiveStatus(false, sessions.get(socketSession));

@@ -22,10 +22,6 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 public class PDUserController {
     private final PDUserService pdUserService;
 
-    /**
-     * Parameterized constructor for creating a new PdUserController.
-     * @param pdUserService - service to access/provide useful police department USER logic
-     */
     public PDUserController(PDUserService pdUserService) {
         this.pdUserService = pdUserService;
     }
@@ -33,6 +29,7 @@ public class PDUserController {
     /**
      * Returns user based off the UUID from the JWT token. Only usable currently by TC users.
      * For all other authentication options view the link below.
+     *
      * @return UUID information if successful, 400 otherwise
      * @see UserController
      * @see AuthController#refreshToken(String)
@@ -50,6 +47,7 @@ public class PDUserController {
 
     /**
      * Registers a new PD user using the PD admins jwt for further authentication.
+     *
      * @param pdUserRequest - contains the information of a user
      * @return information relating to the newly created PD user, 400 otherwise
      * @see AuthController#refreshToken(String)
@@ -60,5 +58,4 @@ public class PDUserController {
                                       @RequestBody PDUserRequest pdUserRequest) {
         return pdUserService.register(pdUserRequest, userDetails);
     }
-    //to do add Patch and Delete
 }

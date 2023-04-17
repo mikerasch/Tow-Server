@@ -21,16 +21,13 @@ public class PasswordController {
 
     private final PasswordService passwordService;
 
-    /**
-     * Parameterized constructor for creating a new PasswordController instance
-     * @param passwordService - service to handle verify/reset/forget requests
-     */
     public PasswordController(PasswordService passwordService) {
         this.passwordService = passwordService;
     }
 
     /**
      * Sends an email used to start the password reset process.
+     *
      * @param forgotPassRequest user information for password reset
      * @return ResponseEntity HttpStatus, 204 if successful, else 400
      */
@@ -42,7 +39,8 @@ public class PasswordController {
     }
 
     /**
-     * Route that is hit by the button in the email users receive upon requesting a reset
+     * Route that is hit by the button in the email users receive upon requesting a reset.
+     *
      * @param verifyRequest contains the email and token of the requester
      * @return returns the response code to let the user know if it worked or not
      */
@@ -57,6 +55,7 @@ public class PasswordController {
 
     /**
      * Route used to update the password.
+     *
      * @param resetRequest the email token and new password to be set.
      * @return success or failure code
      */

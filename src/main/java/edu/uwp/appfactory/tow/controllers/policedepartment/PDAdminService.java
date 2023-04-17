@@ -1,6 +1,7 @@
 package edu.uwp.appfactory.tow.controllers.policedepartment;
 
 import edu.uwp.appfactory.tow.entities.PDAdmin;
+import edu.uwp.appfactory.tow.entities.Users;
 import edu.uwp.appfactory.tow.repositories.PDAdminRepository;
 import edu.uwp.appfactory.tow.requestobjects.rolerequest.PDAdminRequest;
 import edu.uwp.appfactory.tow.responseObjects.TestVerifyResponse;
@@ -39,17 +40,22 @@ public class PDAdminService {
 
     /**
      * Retrieves a PDAdmin given the users UUID.
+     *
      * @return - PdAdmin if UUID exists in database, null otherwise
      */
     public PDAdmin get(UserDetailsImpl userDetails) {
-        Optional<PDAdmin> user = Optional.of(pdAdminRepository.findById(userDetails.getId()).orElseThrow());
+        Optional<PDAdmin> user = Optional.of(pdAdminRepository.findByUserEmail(userDetails.getEmail()).orElseThrow());
         return user.get();
     }
 
     /**
-     * Registers a new PD Admin. Only allows one unique email address per PD admin.
-     * @param pdAdminRequest - PD admin account information
-     * @return verification token if successful, otherwise, error 400
+     * Registers a new PDAdmin with the given information.
+     *
+     * @param pdAdminRequest The PDAdminRequest containing the information for the new PDAdmin.
+     *
+     * @return A ResponseEntity containing the TestVerifyResponse with the generated verification token.
+     *
+     * @throws ResponseStatusException if the email is already in use, if there's a typo in the email or if the password is invalid.
      */
     public ResponseEntity<TestVerifyResponse> register(PDAdminRequest pdAdminRequest) {
         if(usersRepository.existsByEmail(pdAdminRequest.getEmail())){
@@ -75,12 +81,13 @@ public class PDAdminService {
                 pdAdminRequest.getDepartment(),
                 pdAdminRequest.getDepartmentShort()
         );
-        pdAdmin.setVerifyToken(generateEmailUUID());
-        pdAdmin.setVerifyDate(String.valueOf(LocalDate.now()));
-        pdAdmin.setVerEnabled(false);
-        usersRepository.save(pdAdmin);
-        sendEmail.submitSignupEmailExecution(pdAdmin);
-        TestVerifyResponse test = new TestVerifyResponse(pdAdmin.getVerifyToken());
+        Users user = pdAdmin.getUser();
+        user.setVerifyToken(generateEmailUUID());
+        user.setVerifyDate(String.valueOf(LocalDate.now()));
+        user.setVerEnabled(false);
+        pdAdminRepository.save(pdAdmin);
+        sendEmail.submitSignupEmailExecution(user);
+        TestVerifyResponse test = new TestVerifyResponse(user.getVerifyToken());
         return ResponseEntity.ok(test);
     }
 
@@ -91,6 +98,4 @@ public class PDAdminService {
     private String generateEmailUUID() {
         return UUID.randomUUID().toString().replace("-", "");
     }
-
-    //todo add Patch and Delete
 }

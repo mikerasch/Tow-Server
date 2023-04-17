@@ -40,13 +40,21 @@ public class ScheduledTasksService {
         this.javaMailSender = javaMailSender;
     }
 
+    /**
+     * Resends failed email verification messages to users. This method is scheduled
+     * to run daily at midnight using the Spring framework's `@Scheduled` annotation.
+     * Retrieves all failed email records from a repository and attempts to send each email
+     * using a content builder service and a JavaMailSender instance.
+     *
+     * @throws MailException if an error occurs while sending an email
+     */
     @Scheduled(cron = "0 0 0 * * *")
     public void checkFailedEmail() {
         Iterable<FailedEmail> failedEmails = failedEmailRepository.findAll();
         failedEmails.forEach(entity -> {
             try {
                 String userName = "Hi, " + entity.getFirstname() + " " + entity.getLastname();
-                String verifyLink = dns + "api/users/verification?token=" + entity.getVerify_token();
+                String verifyLink = dns + "api/users/verification?token=" + entity.getVerifyToken();
 
                 String message = contentBuilderService.buildVerifyEmail(userName, verifyLink);
 
@@ -60,12 +68,13 @@ public class ScheduledTasksService {
 
                 javaMailSender.send(messagePreparation);
 
-                failedEmailRepository.deleteById(entity.getUuid());
+                failedEmailRepository.deleteById(entity.getId());
             } catch (MailException e) {
                 logger.error(e.getMessage());
             }
         });
     }
+
 
     @Scheduled(cron = "0 0 1 * * *")
     private void checkVerifyStatus() {

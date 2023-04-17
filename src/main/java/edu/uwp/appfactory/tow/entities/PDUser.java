@@ -1,24 +1,30 @@
 package edu.uwp.appfactory.tow.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 
-import java.util.UUID;
-
-@Data
-@NoArgsConstructor
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-public class PDUser extends Users {
-
+@Entity
+@Table(name = "police_department_users")
+public class PDUser {
+    @Id
+    @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+    @Column(name = "front_id")
     private String frontID;
-    private UUID adminUUID;
+    @Column(name = "admin_id")
+    private Long adminId;
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    private Users user;
 
-    public PDUser(String email, String username, String password, String firstname, String lastname, String phone, String role, String frontID, UUID adminUUID) {
-        super(email, username, password, firstname, lastname, phone, role);
+    public PDUser(String email, String username, String password, String firstname, String lastname, String phone, String role, String frontID, long adminId) {
+        user = new Users(email, username, password, firstname, lastname, phone, role);
         this.frontID = frontID;
-        this.adminUUID = adminUUID;
+        this.adminId = adminId;
     }
 }

@@ -4,6 +4,7 @@ import edu.uwp.appfactory.tow.controllers.location.LocationService;
 import edu.uwp.appfactory.tow.entities.Drivers;
 import edu.uwp.appfactory.tow.entities.Requests;
 import edu.uwp.appfactory.tow.entities.TCUser;
+import edu.uwp.appfactory.tow.entities.Users;
 import edu.uwp.appfactory.tow.firebase.FirebaseMessagingService;
 import edu.uwp.appfactory.tow.repositories.DriverRepository;
 import edu.uwp.appfactory.tow.repositories.RequestRepository;
@@ -46,6 +47,16 @@ public class DriverService {
         this.firebaseMessagingService = firebaseMessagingService;
         this.requestRepository = requestRepository;
     }
+
+    /**
+     * Registers a new driver account with the provided information.
+     * Validates the email and password, and creates a new driver record in the database.
+     * Sends a verification email to the new user.
+     *
+     * @param driverRequest the request object containing the driver's information.
+     * @return a ResponseEntity containing a TestVerifyResponse object with the verification token.
+     * @throws ResponseStatusException if the email is invalid or already exists, or the password is weak.
+     */
     public ResponseEntity<TestVerifyResponse> register(DriverRequest driverRequest) {
         if(!AccountInformationValidator.validateEmail(driverRequest.getEmail())){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Typo in email");
@@ -56,7 +67,7 @@ public class DriverService {
         }
 
         // todo remove latitude and longitude from this request
-        if (!driverRepository.existsByEmail(driverRequest.getEmail())){
+        if (!driverRepository.existsByUserEmail(driverRequest.getEmail())){
             Drivers drivers = new Drivers(
                     driverRequest.getEmail(),
                     driverRequest.getEmail(),
@@ -68,13 +79,14 @@ public class DriverService {
                     0F,
                     0F
             );
-            drivers.setVerifyToken(generateEmailUUID());
-            drivers.setVerifyDate(String.valueOf(LocalDate.now()));
-            drivers.setVerEnabled(false);
+            Users user = drivers.getUser();
+            user.setVerifyToken(generateEmailUUID());
+            user.setVerifyDate(String.valueOf(LocalDate.now()));
+            user.setVerEnabled(false);
             driverRepository.save(drivers);
-            asyncEmailService.submitSignupEmailExecution(drivers);
-            TestVerifyResponse testVerifyResponse = new TestVerifyResponse(drivers.getVerifyToken());
-            log.debug("Saving new user with role {} and email {}", drivers.getRole(), drivers.getEmail());
+            asyncEmailService.submitSignupEmailExecution(drivers.getUser());
+            TestVerifyResponse testVerifyResponse = new TestVerifyResponse(user.getVerifyToken());
+            log.debug("Saving new user with role {} and email {}", user.getRole(), user.getEmail());
             return ResponseEntity.ok(testVerifyResponse);
         }
         log.warn("While adding a new driver: email {} already existed", driverRequest.getEmail());
@@ -83,14 +95,23 @@ public class DriverService {
 
     /**
      * Generates a random 6 character length UUID.
+     *
      * @return UUID converted to a String
      */
     private String generateEmailUUID() {
         return UUID.randomUUID().toString().replace("-", "");
     }
 
+    /**
+     * Updates the location of the driver in the database with the provided coordinates.
+     *
+     * @param coordinates the new coordinates of the driver
+     * @param user the authenticated user making the request
+     * @return a ResponseEntity with an HTTP status code of OK if the update was successful
+     * @throws ResponseStatusException if the user making the request is not a driver or if the user could not be found in the database
+     */
     public ResponseEntity<HttpStatus> updateLocation(Coordinates coordinates, UserDetailsImpl user) {
-        Optional<Drivers> driversOptional = driverRepository.findById(user.getId());
+        Optional<Drivers> driversOptional = driverRepository.findByUserEmail(user.getEmail());
         if(driversOptional.isEmpty()){
             log.error("Driver tried updating location, but user could not be found in database.");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"User not found!");
@@ -99,44 +120,68 @@ public class DriverService {
         driver.setLatitude(coordinates.getLatitude());
         driver.setLongitude(coordinates.getLongitude());
         driverRepository.save(driver);
-        log.debug("Changing coordinates of driver {} with initial coordinates of {} : {} to {} : {}", driver.getEmail(), driver.getLatitude(), driver.getLongitude(), coordinates.getLatitude(), coordinates.getLatitude());
+        log.debug("Changing coordinates of driver {} with initial coordinates of {} : {} to {} : {}", user.getEmail(), driver.getLatitude(), driver.getLongitude(), coordinates.getLatitude(), coordinates.getLatitude());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    /**
+     * Finds tow truck drivers available within a given radius of the current driver's location.
+     * Sends a notification to the nearest available driver to assist the current driver.
+     *
+     * @param radius the radius within which to search for available tow truck drivers
+     * @param user the current driver making the request
+     * @return a ResponseEntity with HttpStatus.OK if an available tow truck driver was found and notified,
+     *         or with HttpStatus.CONFLICT if no available tow truck driver was found within the specified radius
+     * @throws ResponseStatusException if the current driver could not be found in the database
+     */
     public ResponseEntity<HttpStatus> findTowTruckDrivers(int radius, UserDetailsImpl user) {
-        Optional<Drivers> driversOptional = driverRepository.findById(user.getId());
+        Optional<Drivers> driversOptional = driverRepository.findByUserEmail(user.getEmail());
         if(driversOptional.isEmpty()){
             log.error("Driver tried finding tow truck, but user could not be found in database.");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"User not found!");
         }
         Drivers drivers = driversOptional.get();
-        List<TCUser> tcUsersAvailable = locationService.findByDistance(
+        List<TCUser> tcUsersAvailable = locationService.findByDistance (
                 drivers.getLatitude(),
                 drivers.getLongitude(),
                 radius
         );
-        List<TCUser> ensureAllDriversAreNotRepeats = generateUniqueDriver(tcUsersAvailable,drivers.getId());
+        List<TCUser> ensureAllDriversAreNotRepeats = generateUniqueDriver(tcUsersAvailable,user.getId());
         if(ensureAllDriversAreNotRepeats.isEmpty()){
             log.info("Driver tried finding tow trucks, but no tow trucks are currently on duty");
             return new ResponseEntity<>(HttpStatus.CONFLICT); // todo should not be conflict
         }
-        storeRequest(ensureAllDriversAreNotRepeats.get(0),drivers.getId());
+        storeRequest(ensureAllDriversAreNotRepeats.get(0),user.getId());
         firebaseMessagingService.sendNotificationToTowTruck(drivers,ensureAllDriversAreNotRepeats);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    private void storeRequest(TCUser tcUser, UUID id) {
+    /**
+     * This method stores the request details for a tow truck driver and a driver requesting tow truck services in the database.
+     *
+     * @param tcUser The TCUser object representing the tow truck driver who received the request.
+     * @param id The driver's ID requesting tow truck services.
+     */
+    private void storeRequest(TCUser tcUser, Long id) {
         Requests requests = new Requests();
-        requests.setDriver_id(id);
-        requests.setTow_truck_id(tcUser.getId());
-        requests.setRequest_date(Timestamp.valueOf(LocalDateTime.now()));
+        requests.setDriverId(id);
+        requests.setTowTruckId(tcUser.getId());
+        requests.setRequestDateTime(Timestamp.valueOf(LocalDateTime.now()));
         requestRepository.save(requests);
     }
 
-    private List<TCUser> generateUniqueDriver(List<TCUser> tcUsersAvailable, UUID id) {
+    /**
+     * Generates a list of unique drivers from a given list of available TCUsers by removing
+     * any TCUser who is already assigned to a tow truck for the given driver ID.
+     *
+     * @param tcUsersAvailable the list of available TCUsers to generate unique drivers from
+     * @param id the ID of the driver to check for tow truck assignments
+     * @return a list of unique drivers from the available TCUsers
+     */
+    private List<TCUser> generateUniqueDriver(List<TCUser> tcUsersAvailable, Long id) {
         List<Requests> requestsList = requestRepository.findAllByDriverId(id);
         for(Requests requests: requestsList) {
-            UUID towTruckUUID = requests.getTow_truck_id();
+            Long towTruckUUID = requests.getTowTruckId();
             tcUsersAvailable.removeIf(tcUser -> tcUser.getId().equals(towTruckUUID));
         }
         return tcUsersAvailable;

@@ -21,10 +21,6 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 public class LocationController {
 
     private final LocationService locationService;
-    /**
-     * Parametrized constructor for creating a new LocationController instance.
-     * @param locationService - service layer for accessing location data
-     */
     public LocationController(LocationService locationService) {
         this.locationService = locationService;
     }
@@ -32,6 +28,7 @@ public class LocationController {
     /**
      * Handling setting location of a TCUSER.
      * PreAuthorization requires request be made by an active TCUSER and jwtToken.
+     *
      * @param setRequest - location data of TCUSER
      * @return 204 if successful, else 400
      * @see AuthController#refreshToken(String)
@@ -44,6 +41,13 @@ public class LocationController {
                 : ResponseEntity.status(BAD_REQUEST).build();
     }
 
+    /**
+     * Updates the active status of a location.
+     *
+     * @param status The new status of the location.
+     * @param user The currently authenticated user.
+     * @return A ResponseEntity with a HttpStatus representing the success of the operation.
+     */
     @PreAuthorize("hasRole('TCUSER')")
     @PostMapping("/update/active")
     public ResponseEntity<HttpStatus> updateActiveStatus(@RequestHeader("status") String status, @AuthenticationPrincipal UserDetailsImpl user) {

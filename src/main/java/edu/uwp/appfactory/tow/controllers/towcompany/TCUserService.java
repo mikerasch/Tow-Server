@@ -1,7 +1,9 @@
 package edu.uwp.appfactory.tow.controllers.towcompany;
 
+import edu.uwp.appfactory.tow.entities.TCAdmin;
 import edu.uwp.appfactory.tow.entities.TCUser;
 import edu.uwp.appfactory.tow.entities.Users;
+import edu.uwp.appfactory.tow.repositories.TCAdminRepository;
 import edu.uwp.appfactory.tow.repositories.TCUserRepository;
 import edu.uwp.appfactory.tow.requestobjects.rolerequest.TCUserRequest;
 import edu.uwp.appfactory.tow.responseObjects.TestVerifyResponse;
@@ -28,12 +30,14 @@ public class TCUserService {
 
     private final TCUserRepository tcUserRepository;
     private final UsersRepository usersRepository;
+    private final TCAdminRepository tcAdminRepository;
     private final AsyncEmailService sendEmail;
     private final PasswordEncoder encoder;
 
-    public TCUserService(TCUserRepository tcUserRepository, UsersRepository usersRepository, AsyncEmailService sendEmail, PasswordEncoder encoder) {
+    public TCUserService(TCUserRepository tcUserRepository, UsersRepository usersRepository, TCAdminRepository tcadminRepository, AsyncEmailService sendEmail, PasswordEncoder encoder) {
         this.tcUserRepository = tcUserRepository;
         this.usersRepository = usersRepository;
+        this.tcAdminRepository = tcadminRepository;
         this.sendEmail = sendEmail;
         this.encoder = encoder;
     }
@@ -43,13 +47,13 @@ public class TCUserService {
      * @return user if UUID is present in database, otherwise null
      */
     public TCUser get(UserDetailsImpl userDetails) {
-        Optional<TCUser> user = Optional.of(tcUserRepository.findById(userDetails.getId()).orElseThrow());
+        Optional<TCUser> user = Optional.of(tcUserRepository.findByUserEmail(userDetails.getEmail()).orElseThrow());
         return user.get();
     }
 
     //todo look into what this does and why it's called findAllAdmin in a USER service
     public List<TCUser> getAll(UserDetailsImpl userDetails) {
-        return tcUserRepository.findAllByAdminUUID(userDetails.getId());
+        return tcUserRepository.findAllByTcAdminId(userDetails.getId());
     }
 
     /**
@@ -58,7 +62,7 @@ public class TCUserService {
      * @return token of newly created account if successful, otherwise 400 error
      */
     public ResponseEntity<TestVerifyResponse> register(TCUserRequest tcUserRequest, UserDetailsImpl userDetails) {
-        Optional<Users> user = Optional.of(usersRepository.findByEmail(userDetails.getEmail()).orElseThrow());
+        Optional<TCAdmin> user = Optional.of(tcAdminRepository.findByUserEmail(userDetails.getEmail()).orElseThrow());
         if(!AccountInformationValidator.validateEmail(tcUserRequest.getEmail())){
             throw new ResponseStatusException(BAD_REQUEST,"Typo in email");
         }
@@ -77,14 +81,15 @@ public class TCUserService {
                     0.0f,
                     0.0f,
                     false,
-                    user.get().getId());
-
-            tcuser.setVerifyToken(generateEmailUUID());
-            tcuser.setVerifyDate(String.valueOf(LocalDate.now()));
-            tcuser.setVerEnabled(false);
-            usersRepository.save(tcuser);
-            sendEmail.submitSignupEmailExecution(tcuser);
-            TestVerifyResponse x = new TestVerifyResponse(tcuser.getVerifyToken());
+                    user.get()
+            );
+            Users actualUser = tcuser.getUser();
+            actualUser.setVerifyToken(generateEmailUUID());
+            actualUser.setVerifyDate(String.valueOf(LocalDate.now()));
+            actualUser.setVerEnabled(false);
+            tcUserRepository.save(tcuser);
+            sendEmail.submitSignupEmailExecution(actualUser);
+            TestVerifyResponse x = new TestVerifyResponse(actualUser.getVerifyToken());
             return ResponseEntity.ok(x);
         }
         return ResponseEntity.status(BAD_REQUEST).build();

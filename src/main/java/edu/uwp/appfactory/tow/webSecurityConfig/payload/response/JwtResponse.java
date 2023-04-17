@@ -17,7 +17,7 @@ public class JwtResponse {
 
     private String token;
     private String type = "Bearer";
-    private UUID id;
+    private Long id;
     private String username;
     private String email;
     private String firstname;
@@ -28,7 +28,7 @@ public class JwtResponse {
     /**
      * constructor for a JWT response, used mostly with login
      */
-    public JwtResponse(String accessToken, UUID id, String username, String email, String
+    public JwtResponse(String accessToken, Long id, String username, String email, String
             firstname, String lastname, String role, String phone) {
         this.token = accessToken;
         this.id = id;

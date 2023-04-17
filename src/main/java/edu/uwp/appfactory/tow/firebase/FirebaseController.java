@@ -19,20 +19,42 @@ public class FirebaseController {
     }
 
     // todo don't throw exception from controller
+    /**
+     * Sends a notification message to a tow truck driver using Firebase Cloud Messaging (FCM) service.
+     *
+     * @param firebaseDTO A FirebaseDTO object containing the message to be sent and the recipient's device token.
+     * @return A ResponseEntity object with a String response body indicating whether the message was sent successfully.
+     * @throws FirebaseMessagingException If there was an error sending the message via FCM.
+     */
     @PostMapping("/driver/message")
     public ResponseEntity<String> sendNotificationToTowTruck(@RequestBody FirebaseDTO firebaseDTO) throws FirebaseMessagingException {
         firebaseMessagingService.sendNotification(firebaseDTO);
-        return ResponseEntity.ok("Message sent");
+        return ResponseEntity.ok("Message sent to Tow Truck");
     }
 
+    /**
+     * Stores a Firebase Cloud Messaging (FCM) token for a user.
+     *
+     * @param firebaseToken A FirebaseTokenDTO object containing the FCM token to be stored.
+     * @param user The authenticated user for whom the FCM token is being stored.
+     * @return A ResponseEntity object with a String response body indicating whether the FCM token was stored successfully.
+     */
     @PostMapping("/store/token")
     public ResponseEntity<String> storeFirebaseToken(@RequestBody FirebaseTokenDTO firebaseToken, @AuthenticationPrincipal UserDetailsImpl user) {
         firebaseMessagingService.storeToken(firebaseToken,user);
         return ResponseEntity.ok("Firebase token added");
     }
+
+    /**
+     * Sends a notification message to a tow truck driver using Firebase Cloud Messaging (FCM) service.
+     *
+     * @param notifyDriverDTO A NotifyDriverDTO object containing the message to be sent and the recipient driver's FCM token.
+     * @param user The authenticated user initiating the notification.
+     * @return A ResponseEntity object with a String response body indicating whether the message was sent successfully.
+     */
     @PostMapping("/towtruck/message")
     public ResponseEntity<String> sendNotificationToDriver(@RequestBody NotifyDriverDTO notifyDriverDTO, @AuthenticationPrincipal UserDetailsImpl user){
         firebaseMessagingService.sendNotificationToDriver(notifyDriverDTO,user);
-        return ResponseEntity.ok("Message sent");
+        return ResponseEntity.ok("Message sent To Driver");
     }
 }

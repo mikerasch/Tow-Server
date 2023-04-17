@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -18,8 +19,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DataJdbcTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@DataJpaTest
 class FileRepositoryTest {
 
     @Autowired
@@ -29,20 +29,19 @@ class FileRepositoryTest {
     void tearDown(){
         fileRepository.deleteAll();
     }
-    private UUID uuid;
+    private Long uuid;
 
     @BeforeEach
     void initialize() throws IOException {
-        UUID second = UUID.randomUUID();
         File file = new File(
-                second,
+                1L,
                 "JPG",
                 "cool",
                 Files.readAllBytes(Path.of("src/test/resources/newparkside.png")),
                 new Timestamp(new Date().getTime()),
                 "test"
         );
-        this.uuid = file.getUser_uuid();
+        this.uuid = file.getUserId();
         fileRepository.save(file);
     }
 
@@ -63,7 +62,7 @@ class FileRepositoryTest {
         // given initialize()
 
         // when
-        Optional<File> wasFoundByNameAndUUID = fileRepository.findByFilenameAndUserUUID("cool",uuid);
+        Optional<File> wasFoundByNameAndUUID = fileRepository.findByFilenameAndUserId("cool",uuid);
         boolean wasFound = wasFoundByNameAndUUID.isPresent();
 
         // then

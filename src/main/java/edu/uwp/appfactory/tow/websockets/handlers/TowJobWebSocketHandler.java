@@ -22,6 +22,16 @@ public class TowJobWebSocketHandler extends TextWebSocketHandler {
         this.locationService = locationService;
     }
 
+    /**
+     * Callback method that is invoked after a WebSocket connection is established.
+     * Verifies the authorization token of the user associated with the WebSocket session
+     * by calling a helper method, and adds the user details to the current session by
+     * calling a separate helper method. If the token is invalid or missing, the WebSocket
+     * session is closed with a policy violation close status code.
+     *
+     * @param socketSession the WebSocket session that was established
+     * @throws IOException if an I/O error occurs while handling the WebSocket session
+     */
     @Override
     public void afterConnectionEstablished(WebSocketSession socketSession) throws IOException {
         UserDetails userDetails = verifyAuthorizationToken.verifyAuthorizationToken(socketSession);
@@ -32,6 +42,15 @@ public class TowJobWebSocketHandler extends TextWebSocketHandler {
         addToCurrentSession(socketSession, userDetails);
     }
 
+    /**
+     * Adds the specified user details to the current session associated with the given WebSocket session.
+     * If a session with the same URL ID already exists in the internal map, the user details and WebSocket session
+     * are added to that session. Otherwise, a new session is created and added to the map with the given user details
+     * and WebSocket session.
+     *
+     * @param socketSession the WebSocket session associated with the current session
+     * @param userDetails the user details to add to the current session
+     */
     private void addToCurrentSession(WebSocketSession socketSession, UserDetails userDetails) {
         String sessionUrlId = getSocketSessionId(socketSession);
         if(!webSocketSessionListMap.containsKey(sessionUrlId)) {
@@ -52,6 +71,15 @@ public class TowJobWebSocketHandler extends TextWebSocketHandler {
         }
     }
 
+    /**
+     * Called after a WebSocket connection is closed. Closes all active WebSocket sessions for the given
+     * `socketSession` and updates the Tow Truck Driver job status associated with the user details stored in the
+     * `SessionInformation` object.
+     *
+     * @param socketSession The WebSocketSession that was closed.
+     * @param status        The CloseStatus of the WebSocket connection.
+     * @throws IOException if an I/O error occurs while closing the WebSocket sessions.
+     */
     @Override
     public void afterConnectionClosed(WebSocketSession socketSession, CloseStatus status) throws IOException {
         SessionInformation sessionInformation = webSocketSessionListMap.get(getSocketSessionId(socketSession));
@@ -62,16 +90,29 @@ public class TowJobWebSocketHandler extends TextWebSocketHandler {
         webSocketSessionListMap.remove(getSocketSessionId(socketSession));
     }
 
+    /**
+     * Updates the Tow Truck Driver job status associated with the given list of `userDetails`.
+     * If a Tow Truck Driver is found in the list of `userDetails`, their active status will be updated to false.
+     *
+     * @param userDetails A list of UserDetails objects representing the users to check for Tow Truck Driver status.
+     */
     private void updateTowTruckDriverJobStatus(List<UserDetails> userDetails) {
         for(UserDetails users: userDetails) {
             if (users.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_TCUSER"))) {
-                System.out.println(users.getUsername());
                 locationService.updateActiveStatus(false, users);
                 return;
             }
         }
     }
 
+    /**
+     * Called when a WebSocket receives a text message. Sends the received message to all active WebSocket sessions
+     * associated with the same `socketSessionId` as the given `session`.
+     *
+     * @param session The WebSocketSession that received the message.
+     * @param message The TextMessage received by the WebSocket.
+     * @throws Exception if an error occurs while sending the message to the WebSocket sessions.
+     */
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         List<WebSocketSession> webSocketSessions = webSocketSessionListMap.get(getSocketSessionId(session)).webSocketSessions();
@@ -80,6 +121,13 @@ public class TowJobWebSocketHandler extends TextWebSocketHandler {
         }
     }
 
+    /**
+     * Returns the unique ID associated with the given `session`. This ID is extracted from the URI of the WebSocket
+     * session, which is assumed to contain the ID as the last component of the path.
+     *
+     * @param session The WebSocketSession for which to retrieve the ID.
+     * @return The ID associated with the WebSocketSession.
+     */
     public String getSocketSessionId(WebSocketSession session) {
         String url = session.getUri().toString();
         String[] split = url.split("/");

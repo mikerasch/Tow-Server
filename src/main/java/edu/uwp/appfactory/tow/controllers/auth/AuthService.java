@@ -1,10 +1,8 @@
 package edu.uwp.appfactory.tow.controllers.auth;
 
 import edu.uwp.appfactory.tow.entities.Users;
-import edu.uwp.appfactory.tow.requestobjects.rolerequest.AdminRequest;
 import edu.uwp.appfactory.tow.requestobjects.rolerequest.LoginRequest;
 import edu.uwp.appfactory.tow.requestobjects.rolerequest.UserRequest;
-import edu.uwp.appfactory.tow.webSecurityConfig.models.ERole;
 import edu.uwp.appfactory.tow.webSecurityConfig.payload.response.JwtResponse;
 import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
@@ -51,12 +49,11 @@ public class AuthService {
     }
 
     /**
-     * Used for authentication a user.
-     * There are four possibilities: user does not exist in DB, user is not permitted, user not verified, or
-     * successfully authenticated.
+     * Authenticates the user using the provided login request and generates a JWT token for the user.
      *
-     * @param loginRequest - login user information to authenticate.
-     * @return Response Entity of user information if success, else BAD_REQUEST or UNAUTHORIZED
+     * @param loginRequest The login request containing the user's email and password.
+     * @return A ResponseEntity with a JwtResponse object containing the JWT token and user information if the authentication was successful.
+     * @throws ResponseStatusException if there is an error during authentication or if the user is not verified.
      */
     public ResponseEntity<JwtResponse> authenticateUser(LoginRequest loginRequest) {
         Authentication authentication = authenticationRequest(loginRequest);
@@ -124,6 +121,12 @@ public class AuthService {
         }
     }
 
+    /**
+     * Retrieves the user information for the authenticated user.
+     *
+     * @param userDetails The authenticated user details.
+     * @return A ResponseEntity with a UserRequest object containing the user's information if the request is successful.
+     */
     public ResponseEntity<UserRequest> getUserInformation(UserDetailsImpl userDetails) {
         Optional<Users> usersOptional = Optional.of(usersRepository.findById(userDetails.getId()).orElseThrow());
         Users users = usersOptional.get();

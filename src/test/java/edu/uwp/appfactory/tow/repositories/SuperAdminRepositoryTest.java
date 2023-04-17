@@ -7,13 +7,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DataJdbcTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@DataJpaTest
 class SuperAdminRepositoryTest {
     @Autowired
     private SuperAdminRepository superAdminRepository;
@@ -42,7 +42,7 @@ class SuperAdminRepositoryTest {
         //given initialize()
 
         // when
-        boolean doesExist = superAdminRepository.existsByEmail("testhello@gmail.com");
+        boolean doesExist = superAdminRepository.existsByUserEmail("testhello@gmail.com");
 
         //then
         assertTrue(doesExist);
@@ -53,10 +53,10 @@ class SuperAdminRepositoryTest {
         // given initialize()
 
         // when
-        Optional<SPAdmin> spAdminFound = superAdminRepository.findByEmail("testhello@gmail.com");
+        Optional<SPAdmin> spAdminFound = superAdminRepository.findByUserEmail("testhello@gmail.com");
 
         // then
         assertTrue(spAdminFound.isPresent());
-        assertEquals("testhello@gmail.com",spAdminFound.get().getEmail());
+        assertEquals("testhello@gmail.com",spAdminFound.get().getUser().getEmail());
     }
 }

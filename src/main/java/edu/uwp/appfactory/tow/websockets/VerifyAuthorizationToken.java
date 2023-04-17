@@ -7,7 +7,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
-import java.util.UUID;
 
 @Configuration
 public class VerifyAuthorizationToken {
@@ -25,6 +24,6 @@ public class VerifyAuthorizationToken {
             socketSession.close();
             return null;
         }
-        return userDetailsService.loadUserByUUID(UUID.fromString(userUUID));
+        return userDetailsService.loadUserByUUID(Long.valueOf(userUUID));
     }
 }

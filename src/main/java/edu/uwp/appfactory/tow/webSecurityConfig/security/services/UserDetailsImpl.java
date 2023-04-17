@@ -17,7 +17,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Serial
     private static final long serialVersionUID = 1L;
-    final UUID id;
+    final Long id;
     private final String username;
     private final String email;
     @JsonIgnore
@@ -30,7 +30,7 @@ public class UserDetailsImpl implements UserDetails {
     /**
      * constructor of a user details implementation
      */
-    public UserDetailsImpl(UUID id, String username, String email, String password, String firstname, String lastname,
+    public UserDetailsImpl(Long id, String username, String email, String password, String firstname, String lastname,
                            String role, String phone) {
         this.id = id;
         this.username = username;
@@ -60,7 +60,7 @@ public class UserDetailsImpl implements UserDetails {
         return role;
     }
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
 

@@ -32,6 +32,7 @@ public class PasswordService {
 
     /**
      * Handles the event where a user forgets their password.
+     *
      * @param forgotPassRequest - user information to send email to
      * @return - true if user exists, false otherwise
      */
@@ -52,6 +53,7 @@ public class PasswordService {
 
     /**
      * Generates a random 6 digit token.
+     *
      * @return 6 digit token
      */
     private int generateRandomToken() {
@@ -60,6 +62,7 @@ public class PasswordService {
 
     /**
      * Verifies if a link is still valid to be registered on.
+     *
      * @param email - email to search the database
      * @param token - token to verify it is valid
      * @return true if link and user token is still valid, false otherwise
@@ -79,6 +82,7 @@ public class PasswordService {
     /**
      * Handles resetting a user's password.
      * The user must provide a valid email, token, and password.
+     *
      * @param email - email to find account
      * @param token - token to verify session is valid
      * @param password - password verification to ensure user owns account

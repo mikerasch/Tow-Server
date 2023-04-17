@@ -6,11 +6,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DataJdbcTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@DataJpaTest
 class DriverRepositoryTest {
     @Autowired
     private DriverRepository driverRepository;
@@ -37,7 +38,7 @@ class DriverRepositoryTest {
         driverRepository.save(drivers);
 
         // when
-        boolean wasFound = driverRepository.existsByEmail("testemail@gmail.com");
+        boolean wasFound = driverRepository.existsByUserEmail("testemail@gmail.com");
 
         // then
         assertThat(wasFound).isTrue();
@@ -49,7 +50,7 @@ class DriverRepositoryTest {
         String doesNotExist = "idonotexist91234123@gmail.com";
 
         // when
-        boolean wasFound = driverRepository.existsByEmail(doesNotExist);
+        boolean wasFound = driverRepository.existsByUserEmail(doesNotExist);
 
         //then
         assertThat(wasFound).isFalse();

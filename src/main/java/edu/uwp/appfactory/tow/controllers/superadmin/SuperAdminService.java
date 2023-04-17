@@ -3,11 +3,14 @@ package edu.uwp.appfactory.tow.controllers.superadmin;
 import edu.uwp.appfactory.tow.entities.*;
 import edu.uwp.appfactory.tow.repositories.*;
 import edu.uwp.appfactory.tow.requestobjects.rolerequest.SuperAdminRequest;
+import edu.uwp.appfactory.tow.requestobjects.statistics.CountDTO;
+import edu.uwp.appfactory.tow.requestobjects.users.UsersDTO;
 import edu.uwp.appfactory.tow.responseObjects.TestVerifyResponse;
 import edu.uwp.appfactory.tow.controllers.email.AsyncEmailService;
 import edu.uwp.appfactory.tow.utilities.AccountInformationValidator;
 import edu.uwp.appfactory.tow.webSecurityConfig.models.ERole;
 import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,7 +53,7 @@ public class SuperAdminService {
     }
 
     public ResponseEntity<TestVerifyResponse> register(SuperAdminRequest spAdminRequest) {
-        if(superAdminRepository.existsByEmail(spAdminRequest.getEmail())){
+        if(superAdminRepository.existsByUserEmail(spAdminRequest.getEmail())){
             log.info("Registering super admin failed due to duplicate email found");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Email already exists!");
         }
@@ -68,13 +71,14 @@ public class SuperAdminService {
                 ERole.ROLE_SPADMIN.name(),
                 spAdminRequest.getUsername()
         );
-        superAdmin.setVerifyToken(generateEmailUUID());
-        superAdmin.setVerifyDate(String.valueOf(LocalDate.now()));
-        superAdmin.setVerEnabled(false);
+        Users user = superAdmin.user;
+        user.setVerifyToken(generateEmailUUID());
+        user.setVerifyDate(String.valueOf(LocalDate.now()));
+        user.setVerEnabled(false);
         superAdminRepository.save(superAdmin);
         log.debug("Saved new super admin to database");
-        sendEmail.submitSignupEmailExecution(superAdmin);
-        TestVerifyResponse test = new TestVerifyResponse(superAdmin.getVerifyToken());
+        sendEmail.submitSignupEmailExecution(user);
+        TestVerifyResponse test = new TestVerifyResponse(user.getVerifyToken());
         return ResponseEntity.ok(test);
     }
 
@@ -120,7 +124,7 @@ public class SuperAdminService {
 
     private void propagateAndDelete(UsersDTO usersDTO, ERole oldRole) {
         if(ERole.valueOf(usersDTO.getRole()).equals(oldRole)){
-            log.warn("While propagating user to new role table, user already belongs to this role {}", oldRole.name());
+            log.info("While propagating user to new role table, user already belongs to this role {}", oldRole.name());
             return;
         }
         boolean userExistsInOldRole = doesExistInRole(usersDTO,oldRole);
@@ -138,18 +142,18 @@ public class SuperAdminService {
         if(user.isEmpty()){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"User does not exist");
         }
-        deleteFromTable(oldRole, usersDTO.getId());
+        deleteFromTable(oldRole, usersDTO.getEmail());
         addToNewTable(usersDTO,user.get());
     }
-
+    @Transactional
     private boolean doesExistInRole(UsersDTO usersDTO, ERole oldRole) {
         return switch (oldRole) {
-            case ROLE_TCADMIN -> tcAdminRepository.existsById(usersDTO.getId());
-            case ROLE_TCUSER -> tcUserRepository.existsById(usersDTO.getId());
-            case ROLE_PDADMIN -> pdAdminRepository.existsById(usersDTO.getId());
-            case ROLE_PDUSER -> pdUserRepository.existsById(usersDTO.getId());
-            case ROLE_DRIVER -> driverRepository.existsById(usersDTO.getId());
-            case ROLE_SPADMIN -> superAdminRepository.existsById(usersDTO.getId());
+            case ROLE_TCADMIN -> tcAdminRepository.existsByUserEmail(usersDTO.getEmail());
+            case ROLE_TCUSER -> tcUserRepository.existsByUserEmail(usersDTO.getEmail());
+            case ROLE_PDADMIN -> pdAdminRepository.existsByUserEmail(usersDTO.getEmail());
+            case ROLE_PDUSER -> pdUserRepository.existsByUserEmail(usersDTO.getEmail());
+            case ROLE_DRIVER -> driverRepository.existsByUserEmail(usersDTO.getEmail());
+            case ROLE_SPADMIN -> superAdminRepository.existsByUserEmail(usersDTO.getEmail());
             default -> false;
         };
     }
@@ -203,7 +207,7 @@ public class SuperAdminService {
                     user.getPhone(),
                     usersDTO.getRole(),
                     null,
-                    null
+                    0
             ));
             case "ROLE_SPADMIN" -> superAdminRepository.save(new SPAdmin(
                     usersDTO.getFirstname(),
@@ -214,19 +218,30 @@ public class SuperAdminService {
                     usersDTO.getRole(),
                     usersDTO.getUsername()
             ));
+            case "ROLE_DRIVER" -> driverRepository.save(new Drivers(
+                    usersDTO.getEmail(),
+                    usersDTO.getUsername(),
+                    user.getPassword(),
+                    usersDTO.getUsername(),
+                    usersDTO.getLastname(),
+                    user.getPhone(),
+                    usersDTO.getRole(),
+                    0F,
+                    0F
+            ));
             default -> throw new IllegalArgumentException();
         }
-        UUID newUUID = usersRepository.findIDByEmail(usersDTO.getEmail());
-        usersRepository.updateUserEmailVerifiedByUUID(newUUID,true);
+        Long id = usersRepository.findIDByEmail(usersDTO.getEmail());
+        usersRepository.updateUserEmailVerifiedByUUID(id,true);
     }
 
-    private void deleteFromTable(ERole oldRole, UUID id) {
+    private void deleteFromTable(ERole oldRole, String email) {
         switch(oldRole){
-            case ROLE_TCADMIN -> tcAdminRepository.deleteById(id);
-            case ROLE_TCUSER -> tcUserRepository.deleteById(id);
-            case ROLE_PDADMIN -> pdAdminRepository.deleteById(id);
-            case ROLE_DRIVER -> driverRepository.deleteById(id);
-            case ROLE_SPADMIN -> superAdminRepository.deleteById(id);
+            case ROLE_TCADMIN -> tcAdminRepository.deleteByUserEmail(email);
+            case ROLE_TCUSER -> tcUserRepository.deleteByUserEmail(email);
+            case ROLE_PDADMIN -> pdAdminRepository.deleteByUserEmail(email);
+            case ROLE_DRIVER -> driverRepository.deleteByUserEmail(email);
+            case ROLE_SPADMIN -> superAdminRepository.deleteByUserEmail(email);
             default -> throw new IllegalArgumentException();
         }
     }

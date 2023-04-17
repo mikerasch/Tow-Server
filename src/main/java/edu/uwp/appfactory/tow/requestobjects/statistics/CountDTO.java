@@ -1,4 +1,4 @@
-package edu.uwp.appfactory.tow.entities;
+package edu.uwp.appfactory.tow.requestobjects.statistics;
 
 import lombok.Data;
 
