@@ -24,18 +24,14 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
-// https://mvnrepository.com/artifact/org.springframework.data/spring-data-jpa
     implementation 'org.springframework.data:spring-data-jpa:3.0.4'
     implementation 'org.springframework.security:spring-security-messaging'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.projectlombok:lombok:1.18.22'
-    // https://mvnrepository.com/artifact/com.auth0/java-jwt
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
     implementation group: 'com.auth0', name: 'java-jwt', version: '4.2.1'
-    // https://mvnrepository.com/artifact/org.passay/passay
     implementation group: 'org.passay', name: 'passay', version: '1.6.2'
-    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-websocket
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', version: '3.0.4'
-    // https://mvnrepository.com/artifact/com.google.firebase/firebase-admin
     implementation group: 'com.google.firebase', name: 'firebase-admin', version: '9.1.1'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'com.h2database:h2'

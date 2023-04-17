@@ -29,7 +29,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             "/api/password/forgot",
             "/api/password/forgot/verify",
             "/api/password/forgot/reset",
-            "/api/auth/login"
+            "/api/auth/login",
+            "/swagger-ui/**"
     );
 
     public AuthTokenFilter(JwtUtils jwtUtils, UserDetailsServiceImpl userDetailsService){
