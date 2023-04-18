@@ -38,14 +38,10 @@ class AuthControllerTest {
 
     @Autowired
     private SuperAdminService superAdminService;
-    @Autowired
-    private FirebaseMessagingService firebaseMessagingService;
-    @Autowired
-    private SuperAdminRepository superAdminRepository;
 
     @BeforeEach
     void tearDown(){
-        superAdminRepository.deleteAll();
+        usersRepository.deleteAll();
     }
 
     @BeforeEach

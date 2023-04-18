@@ -21,7 +21,7 @@ public class FirebaseConfiguration {
                 .builder()
                 .setCredentials(googleCredentials)
                 .build();
-        FirebaseApp firebaseApp = FirebaseApp.initializeApp(firebaseOptions,"towserver-37c0e");
+        FirebaseApp firebaseApp = FirebaseApp.initializeApp(firebaseOptions,"towserver-37c0e-" + System.currentTimeMillis());
         return FirebaseMessaging.getInstance(firebaseApp);
     }
 }

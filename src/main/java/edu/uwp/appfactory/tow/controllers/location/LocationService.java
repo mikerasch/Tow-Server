@@ -17,7 +17,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 /**
@@ -46,7 +45,7 @@ public class LocationService {
      * @return true if userUUID could be found, false otherwise
      */
     public boolean setLocation(float latitude, float longitude, UserDetailsImpl userDetails) {
-        Optional<TCUser> tcUserOptional = tcUserRepository.findByUserEmail(userDetails.getEmail());
+        Optional<TCUser> tcUserOptional = tcUserRepository.findByEmail(userDetails.getEmail());
         if(tcUserOptional.isEmpty()){
             log.warn("Could not find TCUser email {}.", userDetails.getEmail());
             return false;
@@ -107,7 +106,7 @@ public class LocationService {
      * @throws ResponseStatusException if the TCUser cannot be found in the database.
      */
     public ResponseEntity<HttpStatus> updateActiveStatus(boolean parseBoolean, UserDetailsImpl userDetails) {
-        Optional<TCUser> tcUser = tcUserRepository.findByUserEmail(userDetails.getEmail());
+        Optional<TCUser> tcUser = tcUserRepository.findByEmail(userDetails.getEmail());
         if(tcUser.isEmpty()) {
             log.warn("Could not find tow truck user upon trying to update active status. User ID: {}", userDetails.getId());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"User not found!");
@@ -126,9 +125,9 @@ public class LocationService {
      * @param userDetails The UserDetails of the currently authenticated user.
      */
     public void updateActiveStatus(boolean parseBoolean, UserDetails userDetails) {
-        Optional<TCUser> tcUser = Optional.of(tcUserRepository.findByUserEmail(userDetails.getUsername()).orElseThrow());
-        TCUser user = tcUser.get();
-        user.setActive(parseBoolean);
-        tcUserRepository.save(user);
+        TCUser tcUser = tcUserRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find user!"));
+        tcUser.setActive(parseBoolean);
+        tcUserRepository.save(tcUser);
     }
 }

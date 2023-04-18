@@ -53,7 +53,7 @@ public class SuperAdminService {
     }
 
     public ResponseEntity<TestVerifyResponse> register(SuperAdminRequest spAdminRequest) {
-        if(superAdminRepository.existsByUserEmail(spAdminRequest.getEmail())){
+        if(superAdminRepository.existsByEmail(spAdminRequest.getEmail())){
             log.info("Registering super admin failed due to duplicate email found");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Email already exists!");
         }
@@ -71,14 +71,13 @@ public class SuperAdminService {
                 ERole.ROLE_SPADMIN.name(),
                 spAdminRequest.getUsername()
         );
-        Users user = superAdmin.user;
-        user.setVerifyToken(generateEmailUUID());
-        user.setVerifyDate(String.valueOf(LocalDate.now()));
-        user.setVerEnabled(false);
+        superAdmin.setVerifyToken(generateEmailUUID());
+        superAdmin.setVerifyDate(String.valueOf(LocalDate.now()));
+        superAdmin.setVerEnabled(false);
         superAdminRepository.save(superAdmin);
         log.debug("Saved new super admin to database");
-        sendEmail.submitSignupEmailExecution(user);
-        TestVerifyResponse test = new TestVerifyResponse(user.getVerifyToken());
+        sendEmail.submitSignupEmailExecution(superAdmin);
+        TestVerifyResponse test = new TestVerifyResponse(superAdmin.getVerifyToken());
         return ResponseEntity.ok(test);
     }
 
@@ -148,12 +147,12 @@ public class SuperAdminService {
     @Transactional
     private boolean doesExistInRole(UsersDTO usersDTO, ERole oldRole) {
         return switch (oldRole) {
-            case ROLE_TCADMIN -> tcAdminRepository.existsByUserEmail(usersDTO.getEmail());
-            case ROLE_TCUSER -> tcUserRepository.existsByUserEmail(usersDTO.getEmail());
-            case ROLE_PDADMIN -> pdAdminRepository.existsByUserEmail(usersDTO.getEmail());
-            case ROLE_PDUSER -> pdUserRepository.existsByUserEmail(usersDTO.getEmail());
-            case ROLE_DRIVER -> driverRepository.existsByUserEmail(usersDTO.getEmail());
-            case ROLE_SPADMIN -> superAdminRepository.existsByUserEmail(usersDTO.getEmail());
+            case ROLE_TCADMIN -> tcAdminRepository.existsByEmail(usersDTO.getEmail());
+            case ROLE_TCUSER -> tcUserRepository.existsByEmail(usersDTO.getEmail());
+            case ROLE_PDADMIN -> pdAdminRepository.existsByEmail(usersDTO.getEmail());
+            case ROLE_PDUSER -> pdUserRepository.existsByEmail(usersDTO.getEmail());
+            case ROLE_DRIVER -> driverRepository.existsByEmail(usersDTO.getEmail());
+            case ROLE_SPADMIN -> superAdminRepository.existsByEmail(usersDTO.getEmail());
             default -> false;
         };
     }
@@ -225,9 +224,7 @@ public class SuperAdminService {
                     usersDTO.getUsername(),
                     usersDTO.getLastname(),
                     user.getPhone(),
-                    usersDTO.getRole(),
-                    0F,
-                    0F
+                    usersDTO.getRole()
             ));
             default -> throw new IllegalArgumentException();
         }
@@ -237,11 +234,11 @@ public class SuperAdminService {
 
     private void deleteFromTable(ERole oldRole, String email) {
         switch(oldRole){
-            case ROLE_TCADMIN -> tcAdminRepository.deleteByUserEmail(email);
-            case ROLE_TCUSER -> tcUserRepository.deleteByUserEmail(email);
-            case ROLE_PDADMIN -> pdAdminRepository.deleteByUserEmail(email);
-            case ROLE_DRIVER -> driverRepository.deleteByUserEmail(email);
-            case ROLE_SPADMIN -> superAdminRepository.deleteByUserEmail(email);
+            case ROLE_TCADMIN -> tcAdminRepository.deleteByEmail(email);
+            case ROLE_TCUSER -> tcUserRepository.deleteByEmail(email);
+            case ROLE_PDADMIN -> pdAdminRepository.deleteByEmail(email);
+            case ROLE_DRIVER -> driverRepository.deleteByEmail(email);
+            case ROLE_SPADMIN -> superAdminRepository.deleteByEmail(email);
             default -> throw new IllegalArgumentException();
         }
     }
@@ -268,4 +265,13 @@ public class SuperAdminService {
                 totalUsers
         );
     }
+
+    public ResponseEntity<HttpStatus> deleteUser(String email) {
+        usersRepository.findByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "TC email not found!"));
+        usersRepository.deleteByEmail(email);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+
 }

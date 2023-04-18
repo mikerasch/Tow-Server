@@ -11,8 +11,8 @@ import java.util.Objects;
 @ToString
 @RequiredArgsConstructor
 @Entity
-@Table(name = "driver_users")
-public class Drivers {
+@Table(name = "drivers")
+public class Drivers extends Users {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
@@ -21,14 +21,10 @@ public class Drivers {
     private Float latitude;
     @Column(name = "longitude")
     private Float longitude;
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    private Users user;
 
     public Drivers(String email, String username, String password,
-                   String firstname, String lastname, String phone, String role,Float latitude, Float longitude){
-        user = new Users(email, username, password, firstname, lastname, phone, role);
-        this.latitude = latitude;
-        this.longitude = longitude;
+                   String firstname, String lastname, String phone, String role){
+        super(email, username, password, firstname, lastname, phone, role);
     }
 
     @Override

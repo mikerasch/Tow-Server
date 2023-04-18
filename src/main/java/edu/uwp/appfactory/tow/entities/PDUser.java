@@ -10,7 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 @Entity
 @Table(name = "police_department_users")
-public class PDUser {
+public class PDUser extends Users {
     @Id
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -19,11 +19,9 @@ public class PDUser {
     private String frontID;
     @Column(name = "admin_id")
     private Long adminId;
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    private Users user;
 
     public PDUser(String email, String username, String password, String firstname, String lastname, String phone, String role, String frontID, long adminId) {
-        user = new Users(email, username, password, firstname, lastname, phone, role);
+        super(email, username, password, firstname, lastname, phone, role);
         this.frontID = frontID;
         this.adminId = adminId;
     }

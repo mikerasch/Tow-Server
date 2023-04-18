@@ -37,7 +37,6 @@ public class TCAdminController {
         return ResponseEntity.ok(tcAdminService.get(userDetails));
     }
 
-    //todo safeguard in the future
     /**
      * Registers a new tc admin.
      * @param tcAdminRequest - tow company admin account information
@@ -50,5 +49,4 @@ public class TCAdminController {
         return tcAdminService.register(tcAdminRequest);
 
     }
-    //todo add Patch and Delete
 }

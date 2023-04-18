@@ -46,8 +46,9 @@ public class FileService {
             log.warn("Error while storing multipart file. Expected a valid file extension but received {}", multipartFile.getContentType());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Invalid extension");
         }
-        Optional<Users> user = Optional.of(usersRepository.findByEmail(userDetails.getEmail()).orElseThrow());
-        String uuid = String.valueOf(user.get().getId());
+        Users user = usersRepository.findByEmail(userDetails.getEmail())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find user!"));
+        String uuid = String.valueOf(user.getId());
         if(!isValidUser(uuid)){
             log.error("While storing multipart file, authentication could not be provided");
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User does not exist");
@@ -60,8 +61,8 @@ public class FileService {
             file.setFilename(multipartFile.getOriginalFilename());
             file.setDate(new Timestamp(new Date().getTime()));
             file.setLocation(location);
-            user.get().addFiles(file);
-            usersRepository.save(user.get());
+            user.addFiles(file);
+            usersRepository.save(user);
             log.debug("Saving new file {} to database", multipartFile.getOriginalFilename());
             return ResponseEntity.ok().build();
         } catch(IOException e){
@@ -78,8 +79,9 @@ public class FileService {
      * @return - ByteArrayResource of file
      */
     public ResponseEntity<ByteArrayResource> retrieveFile(String filename, UserDetailsImpl userDetails) {
-        Optional<Users> user = Optional.of(usersRepository.findByEmail(userDetails.getEmail()).orElseThrow());
-        Optional<File> file = fileRepository.findByFilenameAndUserId(filename, user.get().getId());
+        Users user = usersRepository.findByEmail(userDetails.getEmail())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find user!"));
+        Optional<File> file = fileRepository.findByFilenameAndUserId(filename, user.getId());
         if(file.isEmpty()){
             log.warn("While retrieving filename {}, it could not be located", filename);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"No file by that name exists.");

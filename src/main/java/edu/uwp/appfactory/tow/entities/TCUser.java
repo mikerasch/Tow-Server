@@ -12,8 +12,8 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Entity
 @AllArgsConstructor
-@Table(name = "tow_company_users")
-public class TCUser {
+@Table(name = "tow_company_user")
+public class TCUser extends Users{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
@@ -26,14 +26,12 @@ public class TCUser {
     private Boolean active;
     @OneToOne(cascade = CascadeType.ALL)
     private TCAdmin tcAdmin;
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    private Users user;
 
     public TCUser(String email, String username, String password,
                   String firstname, String lastname, String phone,
                   String role, Float latitude,
                   Float longitude, Boolean active, TCAdmin tcAdmin) {
-        this.user = new Users(email,username,password,firstname,lastname,phone,role);
+        super(email,username,password,firstname,lastname,phone,role);
         this.latitude = latitude;
         this.longitude = longitude;
         this.active = active;
@@ -43,7 +41,7 @@ public class TCUser {
                   String firstname, String lastname, String phone,
                   String role, Float latitude,
                   Float longitude, Boolean active) {
-        this.user = new Users(email,username,password,firstname,lastname,phone,role);
+        super(email,username,password,firstname,lastname,phone,role);
         this.latitude = latitude;
         this.longitude = longitude;
         this.active = active;

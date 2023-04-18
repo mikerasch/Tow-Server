@@ -74,13 +74,12 @@ public class TCAdminService {
                     ERole.ROLE_TCADMIN.name(),
                     tcAdminRequest.getCompany()
             );
-            Users user = tcAdmin.getUser();
-            user.setVerifyToken(generateEmailUUID());
-            user.setVerifyDate(String.valueOf(LocalDate.now()));
-            user.setVerEnabled(false);
+            tcAdmin.setVerifyToken(generateEmailUUID());
+            tcAdmin.setVerifyDate(String.valueOf(LocalDate.now()));
+            tcAdmin.setVerEnabled(false);
             tcAdminRepository.save(tcAdmin);
-            sendEmail.submitSignupEmailExecution(user);
-            return ResponseEntity.ok(new TestVerifyResponse(user.getVerifyToken()));
+            sendEmail.submitSignupEmailExecution(tcAdmin);
+            return ResponseEntity.ok(new TestVerifyResponse(tcAdmin.getVerifyToken()));
         }
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Email is already in use.");
     }

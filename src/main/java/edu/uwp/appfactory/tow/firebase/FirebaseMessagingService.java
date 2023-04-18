@@ -1,5 +1,6 @@
 package edu.uwp.appfactory.tow.firebase;
 
+import com.google.firebase.FirebaseException;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
@@ -12,7 +13,9 @@ import edu.uwp.appfactory.tow.requestobjects.firebase.NotifyDriverDTO;
 import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
 import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.protocol.HTTP;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -38,7 +41,7 @@ public class FirebaseMessagingService {
      * @param firebaseDTO A FirebaseDTO object containing the title, body, and FCM token for the message to be sent.
      * @throws FirebaseMessagingException If an error occurs while attempting to send the message.
      */
-    public void sendNotification(FirebaseDTO firebaseDTO) throws FirebaseMessagingException {
+    public void sendNotification(FirebaseDTO firebaseDTO) {
         String title = firebaseDTO.getTitle();
         String body = firebaseDTO.getBody();
         String token = firebaseDTO.getToken();
@@ -52,8 +55,12 @@ public class FirebaseMessagingService {
                 .setToken(token)
                 .putAllData(data)
                 .build();
-
-        firebaseMessaging.send(message);
+        try {
+            firebaseMessaging.send(message);
+        } catch (FirebaseMessagingException e) {
+            log.error("Error while trying to send a firebase message. This might be due to either an invalid token or the servers are down");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error while sending firebase message");
+        }
     }
 
     /**
@@ -87,21 +94,21 @@ public class FirebaseMessagingService {
         firebaseMessaging.send(message);
     }
 
-    // todo actually return something here
     /**
      * Stores a Firebase Cloud Messaging (FCM) token for a user in the database.
      *
      * @param firebaseToken the FCM token to store.
      * @param users the current user details.
      */
-    public void storeToken(FirebaseTokenDTO firebaseToken, UserDetailsImpl users) {
+    public ResponseEntity<String> storeToken(FirebaseTokenDTO firebaseToken, UserDetailsImpl users) {
         Optional<Users> optionalUser = usersRepository.findByEmail(users.getEmail());
         if(optionalUser.isEmpty()) {
-            return;
+            return ResponseEntity.badRequest().body("User not found, fire base token was not added");
         }
         Users user = optionalUser.get();
         user.setFbToken(firebaseToken.getFireToken());
         usersRepository.save(user);
+        return ResponseEntity.ok("Firebase token added");
     }
 
     /**
@@ -115,12 +122,11 @@ public class FirebaseMessagingService {
             return;
         }
         TCUser tcUser = tcUsersAvailable.get(0);
-        Users users = tcUser.getUser();
         try {
-            sendNotification("Request Incoming", users.getFbToken(), driver.getLongitude(), driver.getLatitude(),users.getPhone(), users.getFirstname(), users.getLastname(),users.getFbToken(),"null");
-            log.debug("Sending notification to firebase id: {}", users.getFbToken());
-            // todo add some error handling
+            sendNotification("Request Incoming", tcUser.getFbToken(), driver.getLongitude(), driver.getLatitude(),tcUser.getPhone(), tcUser.getFirstname(), tcUser.getLastname(),tcUser.getFbToken(),"null");
+            log.debug("Sending notification to firebase id: {}", tcUser.getFbToken());
         } catch (FirebaseMessagingException e) {
+            log.warn("While sending push notification to tow truck, FirebaseMessagingException thrown: {}", e.getMessage());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
     }
@@ -134,9 +140,9 @@ public class FirebaseMessagingService {
     public void sendNotificationToDriver(NotifyDriverDTO notifyDriverDTO, UserDetailsImpl user) {
         try {
             sendNotification(notifyDriverDTO.getTitle(),notifyDriverDTO.getToken(),Double.parseDouble(notifyDriverDTO.getLongitude()),Double.parseDouble(notifyDriverDTO.getLatitude()),user.getPhone(),user.getFirstname(),user.getLastname(),notifyDriverDTO.getToken(),notifyDriverDTO.getChannel());
-            // todo add some error handling
         } catch (FirebaseMessagingException e){
-
+            log.warn("While sending push notification to driver, FirebaseMessagingException thrown: {}", e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
     }
 }

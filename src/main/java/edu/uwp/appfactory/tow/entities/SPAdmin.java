@@ -11,17 +11,15 @@ import java.util.Objects;
 @ToString
 @RequiredArgsConstructor
 @Entity
-@Table(name = "super_admin_admin")
-public class SPAdmin {
+@Table(name = "super_admins")
+public class SPAdmin extends Users {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    public Users user;
     public SPAdmin(String firstname, String lastname, String email, String password, String phone, String role, String username){
-        user = new Users(email, username, password, firstname, lastname, phone, role);
+        super(email, username, password, firstname, lastname, phone, role);
     }
 
     @Override

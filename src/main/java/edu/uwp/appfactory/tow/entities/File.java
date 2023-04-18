@@ -27,7 +27,7 @@ public class File {
     private String filename;
     @Lob
     @JdbcTypeCode(Types.BINARY)
-    @Column(name = "file_data", nullable = false)
+    @Column(name = "file_data", nullable = false, length = 200000)
     private byte[] data;
     @Column(name = "date", nullable = false)
     private Timestamp date;

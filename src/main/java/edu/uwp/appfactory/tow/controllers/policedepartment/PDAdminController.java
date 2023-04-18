@@ -40,7 +40,6 @@ public class PDAdminController {
         }
     }
 
-    //todo Safeguard in the future.
     /**
      * Registers a new admin in the system.
      *
@@ -48,6 +47,7 @@ public class PDAdminController {
      * @return verification token if successful, else 400
      */
     @PostMapping("")
+    @PreAuthorize("hasRole('SPADMIN')")
     public ResponseEntity<TestVerifyResponse> register(@RequestBody PDAdminRequest pdAdminRequest) {
         return pdAdminService.register(pdAdminRequest);
     }

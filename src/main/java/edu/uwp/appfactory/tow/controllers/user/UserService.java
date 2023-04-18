@@ -32,14 +32,22 @@ public class UserService {
      * @return User if UUID exists, null otherwise
      */
     public Users findById(UserDetailsImpl userDetails) {
-        Optional<Users> user = Optional.of(usersRepository.findById(userDetails.getId()).orElseThrow());
-        return user.get();
+        return usersRepository.findById(userDetails.getId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found!"));
     }
 
-    //todo make sure email and phone number don't already exist in repo and add checksz
     public UsersDTO updateByUUID(UpdateRequest updateRequest, UserDetailsImpl userDetails) {
-        Optional<Users> usersOptional = Optional.of(usersRepository.findByEmail(userDetails.getEmail()).orElseThrow());
-        Users user = usersOptional.get();
+        if(!updateRequest.getPhone().equals(userDetails.getPhone())) {
+            checkForDuplicates(userDetails.getPhone(), usersRepository.findByPhone(updateRequest.getPhone()), "Phone is already in use.");
+        }
+
+        if(!updateRequest.getEmail().equals(userDetails.getEmail())) {
+            checkForDuplicates(userDetails.getEmail(), usersRepository.findByEmail(updateRequest.getEmail()), "Email is already in use.");
+        }
+
+        Users user = usersRepository.findByEmail(userDetails.getEmail())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find user!"));
+
         user.setFirstname(updateRequest.getFirstname());
         user.setLastname(updateRequest.getLastname());
         user.setEmail(updateRequest.getEmail());
@@ -54,6 +62,12 @@ public class UserService {
                 user.getUsername(),
                 user.getVerEnabled()
         );
+    }
+
+    private void checkForDuplicates(String phone, Optional<Users> optionalUser, String errorMessage) {
+        if(optionalUser.isPresent()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, errorMessage);
+        }
     }
 
     /**
@@ -80,8 +94,8 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, passwordValidationMatches.toString());
         }
 
-        Optional<Users> usersOptional = Optional.of(usersRepository.findByEmail(userDetails.getEmail()).orElseThrow());
-        Users user = usersOptional.get();
+        Users user = usersRepository.findByEmail(userDetails.getEmail())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find user!"));
         user.setPassword(passwordEncoder.encode(passwordChange.getNewPassword()));
         usersRepository.save(user);
         return new ResponseEntity<>(HttpStatus.OK);

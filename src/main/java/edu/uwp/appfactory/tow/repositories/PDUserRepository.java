@@ -2,7 +2,6 @@ package edu.uwp.appfactory.tow.repositories;
 
 import edu.uwp.appfactory.tow.entities.PDUser;
 import jakarta.transaction.Transactional;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,10 +12,10 @@ import java.util.Optional;
  */
 @Repository
 public interface PDUserRepository extends CrudRepository<PDUser, Long> {
-    Optional<PDUser> findByUserEmail(String email);
-    boolean existsByUserEmail(String email);
+    Optional<PDUser> findByEmail(String email);
+    boolean existsByEmail(String email);
     @Transactional
-    void deleteByUserEmail(String email);
+    void deleteByEmail(String email);
 
 }
 

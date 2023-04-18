@@ -1,8 +1,8 @@
 package edu.uwp.appfactory.tow.repositories;
 
-import edu.uwp.appfactory.tow.controllers.location.CalculateDistanceService;
 import edu.uwp.appfactory.tow.controllers.location.LocationService;
 import edu.uwp.appfactory.tow.entities.TCUser;
+import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,14 +17,13 @@ class TCUserRepositoryTest {
     @Autowired
     private TCUserRepository tcUserRepository;
     @Autowired
-    private TCAdminRepository tcAdminRepository;
-    @Autowired
     private LocationService locationService;
+    @Autowired
+    private UsersRepository usersRepository;
 
     @AfterEach
     void tearDown(){
-        tcUserRepository.deleteAll();
-        tcAdminRepository.deleteAll();
+        usersRepository.deleteAll();
     }
 
     @Test
@@ -82,10 +81,11 @@ class TCUserRepositoryTest {
                 true
         ));
         tcUserRepository.saveAll(tcUsers);
+
         //when
         List<TCUser> tcUserList = locationService.findByDistance(42.718476F, -87.845744F, 50);
         List<String> emails = new ArrayList<>();
-        tcUserList.forEach(x -> emails.add(x.getUser().getEmail()));
+        tcUserList.forEach(x -> emails.add(x.getEmail()));
         //then
         assertEquals(3,tcUserList.size());
         assertTrue(emails.containsAll(validEmails));

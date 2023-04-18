@@ -12,8 +12,8 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "police_deparment_admin")
-public class PDAdmin {
+@Table(name = "police_deparment_admins")
+public class PDAdmin extends Users {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
@@ -26,12 +26,10 @@ public class PDAdmin {
     private String department;
     @Column(name = "department_short", nullable = false)
     private String departmentShort;
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    private Users user;
     public PDAdmin(String email, String username, String password,
                    String firstname, String lastname, String phone,
                    String role, String city, int addressNumber, String department, String departmentShort) {
-        user = new Users(email, username, password, firstname, lastname, phone, role);
+        super(email, username, password, firstname, lastname, phone, role);
         this.city = city;
         this.addressNumber = addressNumber;
         this.department = department;

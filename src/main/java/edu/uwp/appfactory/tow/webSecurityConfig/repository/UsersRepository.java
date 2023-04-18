@@ -21,6 +21,7 @@ public interface UsersRepository extends CrudRepository<Users, Long> {
 
     Optional<Users> findByEmail(String emailString);
 
+    Optional<Users> findByPhone(String phone);
     @Query("SELECT id from Users where email = :email")
     Long findIDByEmail(String email);
 

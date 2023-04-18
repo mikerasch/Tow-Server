@@ -65,8 +65,8 @@ public class AuthService {
             throw new ResponseStatusException(BAD_REQUEST,"Could not authenticate");
         }
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        Optional<Users> usersOptional = Optional.of(usersRepository.findByEmail(loginRequest.getEmail()).orElseThrow());
-        Users user = usersOptional.get();
+        Users user = usersRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Could not find user!"));
         boolean verEnabled = user.getVerEnabled();
         if(verEnabled){
             return ResponseEntity.ok(new JwtResponse(
@@ -97,28 +97,23 @@ public class AuthService {
      * @param token the email users token
      * @return returns a status code that will indicates success or failure
      */
-    // todo make this not awful
     public HttpStatus verification(String token) {
-        Optional<Users> usersOptional = usersRepository.findByVerifyToken(token);
-        if (usersOptional.isPresent()) {
-            Users user = usersOptional.get();
-            LocalDate userVerifyDate = LocalDate.parse(user.getVerifyDate());
-            Period periodBetween = Period.between(userVerifyDate, LocalDate.now());
+        Users user = usersRepository.findByVerifyToken(token)
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Could not finder user!"));
+        LocalDate userVerifyDate = LocalDate.parse(user.getVerifyDate());
+        Period periodBetween = Period.between(userVerifyDate, LocalDate.now());
 
-            if (periodBetween.getDays() < 8) {
-                if (user.getVerifyToken().equals(token) && !user.getVerEnabled()) {
-                    usersRepository.updateUserEmailVerifiedByUUID(user.getId(), true);
-                    return OK; // success
-                } else {
-                    return GONE; // user already verified
-                }
-            } else {
-                usersRepository.deleteByEmail(user.getEmail());
-                return FORBIDDEN; // expired, account deleted
-            }
-        } else {
-            return NOT_FOUND; // token doesnt exist
+        if (periodBetween.getDays() > 8) {
+            usersRepository.deleteByEmail(user.getEmail());
+            return FORBIDDEN; // expired, account deleted
         }
+
+        if (user.getVerifyToken().equals(token) && !user.getVerEnabled()) {
+            usersRepository.updateUserEmailVerifiedByUUID(user.getId(), true);
+            return OK; // success
+        }
+
+        return GONE; // user already verified
     }
 
     /**
@@ -128,8 +123,8 @@ public class AuthService {
      * @return A ResponseEntity with a UserRequest object containing the user's information if the request is successful.
      */
     public ResponseEntity<UserRequest> getUserInformation(UserDetailsImpl userDetails) {
-        Optional<Users> usersOptional = Optional.of(usersRepository.findById(userDetails.getId()).orElseThrow());
-        Users users = usersOptional.get();
+        Users users = usersRepository.findById(userDetails.getId())
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Could not find user!"));
         UserRequest userRequest = new UserRequest(
                 users.getEmail(),
                 users.getPhone(),

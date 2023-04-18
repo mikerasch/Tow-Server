@@ -4,7 +4,6 @@ import edu.uwp.appfactory.tow.controllers.location.LocationService;
 import edu.uwp.appfactory.tow.entities.Drivers;
 import edu.uwp.appfactory.tow.entities.Requests;
 import edu.uwp.appfactory.tow.entities.TCUser;
-import edu.uwp.appfactory.tow.entities.Users;
 import edu.uwp.appfactory.tow.firebase.FirebaseMessagingService;
 import edu.uwp.appfactory.tow.repositories.DriverRepository;
 import edu.uwp.appfactory.tow.repositories.RequestRepository;
@@ -66,27 +65,23 @@ public class DriverService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, errorPassword.toString());
         }
 
-        // todo remove latitude and longitude from this request
-        if (!driverRepository.existsByUserEmail(driverRequest.getEmail())){
-            Drivers drivers = new Drivers(
+        if (!driverRepository.existsByEmail(driverRequest.getEmail())){
+            Drivers drivers = new Drivers (
                     driverRequest.getEmail(),
                     driverRequest.getEmail(),
                     encoder.encode(driverRequest.getPassword()),
                     driverRequest.getFirstname(),
                     driverRequest.getLastname(),
                     driverRequest.getPhone(),
-                    ERole.ROLE_DRIVER.name(),
-                    0F,
-                    0F
+                    ERole.ROLE_DRIVER.name()
             );
-            Users user = drivers.getUser();
-            user.setVerifyToken(generateEmailUUID());
-            user.setVerifyDate(String.valueOf(LocalDate.now()));
-            user.setVerEnabled(false);
+            drivers.setVerifyToken(generateEmailUUID());
+            drivers.setVerifyDate(String.valueOf(LocalDate.now()));
+            drivers.setVerEnabled(false);
             driverRepository.save(drivers);
-            asyncEmailService.submitSignupEmailExecution(drivers.getUser());
-            TestVerifyResponse testVerifyResponse = new TestVerifyResponse(user.getVerifyToken());
-            log.debug("Saving new user with role {} and email {}", user.getRole(), user.getEmail());
+            asyncEmailService.submitSignupEmailExecution(drivers);
+            TestVerifyResponse testVerifyResponse = new TestVerifyResponse(drivers.getVerifyToken());
+            log.debug("Saving new user with role {} and email {}", drivers.getRole(), drivers.getEmail());
             return ResponseEntity.ok(testVerifyResponse);
         }
         log.warn("While adding a new driver: email {} already existed", driverRequest.getEmail());
@@ -111,7 +106,7 @@ public class DriverService {
      * @throws ResponseStatusException if the user making the request is not a driver or if the user could not be found in the database
      */
     public ResponseEntity<HttpStatus> updateLocation(Coordinates coordinates, UserDetailsImpl user) {
-        Optional<Drivers> driversOptional = driverRepository.findByUserEmail(user.getEmail());
+        Optional<Drivers> driversOptional = driverRepository.findByEmail(user.getEmail());
         if(driversOptional.isEmpty()){
             log.error("Driver tried updating location, but user could not be found in database.");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"User not found!");
@@ -135,7 +130,7 @@ public class DriverService {
      * @throws ResponseStatusException if the current driver could not be found in the database
      */
     public ResponseEntity<HttpStatus> findTowTruckDrivers(int radius, UserDetailsImpl user) {
-        Optional<Drivers> driversOptional = driverRepository.findByUserEmail(user.getEmail());
+        Optional<Drivers> driversOptional = driverRepository.findByEmail(user.getEmail());
         if(driversOptional.isEmpty()){
             log.error("Driver tried finding tow truck, but user could not be found in database.");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"User not found!");
@@ -149,7 +144,7 @@ public class DriverService {
         List<TCUser> ensureAllDriversAreNotRepeats = generateUniqueDriver(tcUsersAvailable,user.getId());
         if(ensureAllDriversAreNotRepeats.isEmpty()){
             log.info("Driver tried finding tow trucks, but no tow trucks are currently on duty");
-            return new ResponseEntity<>(HttpStatus.CONFLICT); // todo should not be conflict
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         storeRequest(ensureAllDriversAreNotRepeats.get(0),user.getId());
         firebaseMessagingService.sendNotificationToTowTruck(drivers,ensureAllDriversAreNotRepeats);

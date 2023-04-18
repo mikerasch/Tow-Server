@@ -1,12 +1,12 @@
 package edu.uwp.appfactory.tow.repositories;
 
 import edu.uwp.appfactory.tow.entities.SPAdmin;
+import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
+import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.Optional;
@@ -20,7 +20,7 @@ class SuperAdminRepositoryTest {
 
     @AfterEach
     void teardown(){
-        superAdminRepository.deleteAll();
+
     }
 
     @BeforeEach
@@ -42,7 +42,7 @@ class SuperAdminRepositoryTest {
         //given initialize()
 
         // when
-        boolean doesExist = superAdminRepository.existsByUserEmail("testhello@gmail.com");
+        boolean doesExist = superAdminRepository.existsByEmail("testhello@gmail.com");
 
         //then
         assertTrue(doesExist);
@@ -53,10 +53,10 @@ class SuperAdminRepositoryTest {
         // given initialize()
 
         // when
-        Optional<SPAdmin> spAdminFound = superAdminRepository.findByUserEmail("testhello@gmail.com");
+        Optional<SPAdmin> spAdminFound = superAdminRepository.findByEmail("testhello@gmail.com");
 
         // then
         assertTrue(spAdminFound.isPresent());
-        assertEquals("testhello@gmail.com",spAdminFound.get().getUser().getEmail());
+        assertEquals("testhello@gmail.com",spAdminFound.get().getEmail());
     }
 }

@@ -40,8 +40,6 @@ class FileControllerTest {
     @Autowired
     private UsersRepository usersRepository;
     @Autowired
-    private PDAdminRepository pdAdminRepository;
-    @Autowired
     private AuthService authService;
     @Autowired
     private FileRepository fileRepository;
@@ -68,7 +66,7 @@ class FileControllerTest {
 
     @AfterEach
     void tearDown() {
-        pdAdminRepository.deleteAll();
+        usersRepository.deleteAll();
         fileRepository.deleteAll();
     }
     @Test
@@ -83,7 +81,7 @@ class FileControllerTest {
         String urlName = "/files/download/cool.jpg";
 
         // when
-        MockHttpServletResponse response = mockMvc.perform(multipart("/files/upload").file(file).header("Authorization",token).header("location","0"))
+        MockHttpServletResponse response = mockMvc.perform(multipart("/files/upload").file(file).header("Authorization", token).header("location","0"))
                 .andReturn().getResponse();
 
         MockHttpServletResponse responseGetting = mockMvc.perform(get(urlName).header("Authorization",token)).andReturn().getResponse();

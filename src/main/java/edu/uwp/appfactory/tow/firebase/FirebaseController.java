@@ -18,16 +18,14 @@ public class FirebaseController {
 
     }
 
-    // todo don't throw exception from controller
     /**
      * Sends a notification message to a tow truck driver using Firebase Cloud Messaging (FCM) service.
      *
      * @param firebaseDTO A FirebaseDTO object containing the message to be sent and the recipient's device token.
      * @return A ResponseEntity object with a String response body indicating whether the message was sent successfully.
-     * @throws FirebaseMessagingException If there was an error sending the message via FCM.
      */
     @PostMapping("/driver/message")
-    public ResponseEntity<String> sendNotificationToTowTruck(@RequestBody FirebaseDTO firebaseDTO) throws FirebaseMessagingException {
+    public ResponseEntity<String> sendNotificationToTowTruck(@RequestBody FirebaseDTO firebaseDTO) {
         firebaseMessagingService.sendNotification(firebaseDTO);
         return ResponseEntity.ok("Message sent to Tow Truck");
     }
@@ -41,8 +39,7 @@ public class FirebaseController {
      */
     @PostMapping("/store/token")
     public ResponseEntity<String> storeFirebaseToken(@RequestBody FirebaseTokenDTO firebaseToken, @AuthenticationPrincipal UserDetailsImpl user) {
-        firebaseMessagingService.storeToken(firebaseToken,user);
-        return ResponseEntity.ok("Firebase token added");
+        return firebaseMessagingService.storeToken(firebaseToken,user);
     }
 
     /**

@@ -21,9 +21,9 @@ public class SuperAdminController {
         this.superAdminService = superAdminService;
     }
 
-    //todo add super admin pre auth, don't have it for testing since it is annoying
     @PostMapping
     @ResponseBody
+    @PreAuthorize("hasRole('SPADMIN')")
     public ResponseEntity<TestVerifyResponse> registerSuperAdmin(@RequestBody SuperAdminRequest spAdminRequest){
         return superAdminService.register(spAdminRequest);
     }
@@ -44,4 +44,11 @@ public class SuperAdminController {
     public ResponseEntity<List<UsersDTO>> getAllUsers() {
         return ResponseEntity.ok(superAdminService.getAllUsers());
     }
+
+    @DeleteMapping("/delete/user")
+    @PreAuthorize("hasRole('SPADMIN')")
+    public ResponseEntity<HttpStatus> deleteUser(@RequestHeader String email) {
+        return superAdminService.deleteUser(email);
+    }
+
 }

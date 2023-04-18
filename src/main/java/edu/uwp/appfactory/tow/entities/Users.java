@@ -14,6 +14,7 @@ import java.util.Objects;
 @Setter
 @ToString
 @RequiredArgsConstructor
+@Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "users")
 public class Users {
 
