@@ -3,7 +3,7 @@ package edu.uwp.appfactory.tow.controllers.superadmin;
 import edu.uwp.appfactory.tow.requestobjects.statistics.CountDTO;
 import edu.uwp.appfactory.tow.requestobjects.users.UsersDTO;
 import edu.uwp.appfactory.tow.requestobjects.rolerequest.SuperAdminRequest;
-import edu.uwp.appfactory.tow.responseObjects.TestVerifyResponse;
+import edu.uwp.appfactory.tow.responseobjects.TestVerifyResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

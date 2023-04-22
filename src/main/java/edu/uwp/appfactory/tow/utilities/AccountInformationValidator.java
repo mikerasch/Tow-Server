@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
  * Utility class for providing validation of email and password.
  */
 public class AccountInformationValidator {
-    private static final String EMAIL_PATTERN = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@" + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
+    private static final String EMAIL_PATTERN = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
     private static final PasswordValidator VALIDATOR = new PasswordValidator(Arrays.asList(
             new LengthRule(8,30), // password must be 8 <-> 30
             new CharacterRule(EnglishCharacterData.UpperCase,1), // password must contain an uppercase

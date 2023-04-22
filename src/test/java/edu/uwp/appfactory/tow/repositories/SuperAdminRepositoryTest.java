@@ -1,8 +1,6 @@
 package edu.uwp.appfactory.tow.repositories;
 
 import edu.uwp.appfactory.tow.entities.SPAdmin;
-import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
-import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

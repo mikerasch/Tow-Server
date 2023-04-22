@@ -1,10 +1,8 @@
-package edu.uwp.appfactory.tow.webSecurityConfig.payload.response;
+package edu.uwp.appfactory.tow.securityconfig.payload.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.UUID;
 
 /**
  * JWT response class

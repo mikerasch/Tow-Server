@@ -3,10 +3,10 @@ package edu.uwp.appfactory.tow.controllers.auth;
 import edu.uwp.appfactory.tow.entities.Users;
 import edu.uwp.appfactory.tow.requestobjects.rolerequest.LoginRequest;
 import edu.uwp.appfactory.tow.requestobjects.rolerequest.UserRequest;
-import edu.uwp.appfactory.tow.webSecurityConfig.payload.response.JwtResponse;
-import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
-import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
-import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsImpl;
+import edu.uwp.appfactory.tow.securityconfig.payload.response.JwtResponse;
+import edu.uwp.appfactory.tow.securityconfig.repository.UsersRepository;
+import edu.uwp.appfactory.tow.securityconfig.security.jwt.JwtUtils;
+import edu.uwp.appfactory.tow.securityconfig.security.services.UserDetailsImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +20,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.Optional;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -29,12 +28,10 @@ import static org.springframework.http.HttpStatus.*;
 public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final UsersRepository usersRepository;
-    private final PasswordEncoder encoder;
     private final JwtUtils jwtUtils;
-    public AuthService(AuthenticationManager authenticationManager, UsersRepository usersRepository, PasswordEncoder encoder, JwtUtils jwtUtils) {
+    public AuthService(AuthenticationManager authenticationManager, UsersRepository usersRepository, JwtUtils jwtUtils) {
         this.authenticationManager = authenticationManager;
         this.usersRepository = usersRepository;
-        this.encoder = encoder;
         this.jwtUtils = jwtUtils;
     }
 

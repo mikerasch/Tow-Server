@@ -10,6 +10,7 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.*;
 
 @Configuration
@@ -129,8 +130,13 @@ public class TowJobWebSocketHandler extends TextWebSocketHandler {
      * @return The ID associated with the WebSocketSession.
      */
     public String getSocketSessionId(WebSocketSession session) {
-        String url = session.getUri().toString();
-        String[] split = url.split("/");
-        return split[split.length - 1];
+        URI uri = session.getUri();
+        String url;
+        if(uri != null) {
+            url = uri.toString();
+            String[] split = url.split("/");
+            return split[split.length - 1];
+        }
+        return "";
     }
 }

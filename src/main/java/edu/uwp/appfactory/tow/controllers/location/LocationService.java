@@ -6,7 +6,7 @@ import edu.uwp.appfactory.tow.repositories.TCUserRepository;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsImpl;
+import edu.uwp.appfactory.tow.securityconfig.security.services.UserDetailsImpl;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

@@ -1,6 +1,5 @@
 package edu.uwp.appfactory.tow.firebase;
 
-import com.google.firebase.FirebaseException;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
@@ -10,10 +9,9 @@ import edu.uwp.appfactory.tow.entities.Users;
 import edu.uwp.appfactory.tow.requestobjects.firebase.FirebaseDTO;
 import edu.uwp.appfactory.tow.requestobjects.firebase.FirebaseTokenDTO;
 import edu.uwp.appfactory.tow.requestobjects.firebase.NotifyDriverDTO;
-import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
-import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsImpl;
+import edu.uwp.appfactory.tow.securityconfig.repository.UsersRepository;
+import edu.uwp.appfactory.tow.securityconfig.security.services.UserDetailsImpl;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.protocol.HTTP;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;

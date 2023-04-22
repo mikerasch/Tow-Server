@@ -1,4 +1,4 @@
-package edu.uwp.appfactory.tow.webSecurityConfig.repository;
+package edu.uwp.appfactory.tow.securityconfig.repository;
 
 import edu.uwp.appfactory.tow.entities.Users;
 import org.springframework.data.jpa.repository.Modifying;
@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 /**
  * users repository to communicate with database
