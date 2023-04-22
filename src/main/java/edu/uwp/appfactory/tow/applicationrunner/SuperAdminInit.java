@@ -24,7 +24,7 @@ public class SuperAdminInit implements ApplicationRunner {
     }
 
     @Override
-    public void run(ApplicationArguments args) throws Exception {
+    public void run(ApplicationArguments args) {
         if (!superAdminRepository.existsByEmail(email)) {
             SPAdmin spAdmin = new SPAdmin(
                     "super admin",
