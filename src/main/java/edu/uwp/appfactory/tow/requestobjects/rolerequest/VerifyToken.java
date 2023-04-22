@@ -1,14 +1,6 @@
 package edu.uwp.appfactory.tow.requestobjects.rolerequest;
 
-import lombok.Value;
-
 import java.util.UUID;
 
-@Value
-public class VerifyToken {
-    UUID id;
-    String email;
-    String verify_token;
-    String verify_date;
-    boolean ver_enabled;
+public record VerifyToken(UUID id, String email, String verifyToken, String verifyDate, boolean verEnabled) {
 }

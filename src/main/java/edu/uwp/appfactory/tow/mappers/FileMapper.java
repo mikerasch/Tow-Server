@@ -1,7 +1,7 @@
 package edu.uwp.appfactory.tow.mappers;
 
 import edu.uwp.appfactory.tow.entities.File;
-import edu.uwp.appfactory.tow.responseObjects.FileResponse;
+import edu.uwp.appfactory.tow.responseobjects.FileResponse;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")

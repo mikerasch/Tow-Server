@@ -1,8 +1,7 @@
-package edu.uwp.appfactory.tow.webSecurityConfig.security;
+package edu.uwp.appfactory.tow.securityconfig.security;
 
-import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.AuthEntryPointJwt;
-import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.AuthTokenFilter;
-import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsServiceImpl;
+import edu.uwp.appfactory.tow.securityconfig.security.jwt.AuthEntryPointJwt;
+import edu.uwp.appfactory.tow.securityconfig.security.jwt.AuthTokenFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

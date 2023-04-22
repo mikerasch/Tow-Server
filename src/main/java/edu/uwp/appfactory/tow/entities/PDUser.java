@@ -25,4 +25,14 @@ public class PDUser extends Users {
         this.frontID = frontID;
         this.adminId = adminId;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }

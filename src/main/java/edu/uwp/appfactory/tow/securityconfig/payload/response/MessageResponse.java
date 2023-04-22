@@ -1,4 +1,4 @@
-package edu.uwp.appfactory.tow.webSecurityConfig.payload.response;
+package edu.uwp.appfactory.tow.securityconfig.payload.response;
 
 /**
  * message response class to be used when returning a message to a request

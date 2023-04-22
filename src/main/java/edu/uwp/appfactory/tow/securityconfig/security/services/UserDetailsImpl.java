@@ -1,8 +1,8 @@
-package edu.uwp.appfactory.tow.webSecurityConfig.security.services;
+package edu.uwp.appfactory.tow.securityconfig.security.services;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import edu.uwp.appfactory.tow.entities.Users;
-import edu.uwp.appfactory.tow.webSecurityConfig.models.ERole;
+import edu.uwp.appfactory.tow.securityconfig.models.ERole;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

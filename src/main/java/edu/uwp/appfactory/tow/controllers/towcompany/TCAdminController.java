@@ -1,9 +1,9 @@
 package edu.uwp.appfactory.tow.controllers.towcompany;
 
-import edu.uwp.appfactory.tow.responseObjects.TestVerifyResponse;
+import edu.uwp.appfactory.tow.responseobjects.TestVerifyResponse;
 import edu.uwp.appfactory.tow.requestobjects.rolerequest.TCAdminRequest;
-import edu.uwp.appfactory.tow.responseObjects.TCAdminResponse;
-import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsImpl;
+import edu.uwp.appfactory.tow.responseobjects.TCAdminResponse;
+import edu.uwp.appfactory.tow.securityconfig.security.services.UserDetailsImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

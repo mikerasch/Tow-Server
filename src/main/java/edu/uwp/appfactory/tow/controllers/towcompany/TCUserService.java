@@ -5,12 +5,12 @@ import edu.uwp.appfactory.tow.entities.TCUser;
 import edu.uwp.appfactory.tow.repositories.TCAdminRepository;
 import edu.uwp.appfactory.tow.repositories.TCUserRepository;
 import edu.uwp.appfactory.tow.requestobjects.rolerequest.TCUserRequest;
-import edu.uwp.appfactory.tow.responseObjects.TestVerifyResponse;
+import edu.uwp.appfactory.tow.responseobjects.TestVerifyResponse;
 import edu.uwp.appfactory.tow.controllers.email.AsyncEmailService;
 import edu.uwp.appfactory.tow.utilities.AccountInformationValidator;
-import edu.uwp.appfactory.tow.webSecurityConfig.models.ERole;
-import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
-import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsImpl;
+import edu.uwp.appfactory.tow.securityconfig.models.ERole;
+import edu.uwp.appfactory.tow.securityconfig.repository.UsersRepository;
+import edu.uwp.appfactory.tow.securityconfig.security.services.UserDetailsImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,7 +19,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -100,6 +99,4 @@ public class TCUserService {
     private String generateEmailUUID() {
         return UUID.randomUUID().toString().replace("-", "");
     }
-
-    //todo add Patch and Delete
 }

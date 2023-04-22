@@ -1,4 +1,4 @@
-package edu.uwp.appfactory.tow.responseObjects;
+package edu.uwp.appfactory.tow.responseobjects;
 
 import lombok.Value;
 
