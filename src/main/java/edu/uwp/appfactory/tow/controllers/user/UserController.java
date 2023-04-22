@@ -16,7 +16,6 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 /**
  * Routes which can be used by any role.
  */
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/users")
 public class UserController {

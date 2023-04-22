@@ -6,6 +6,13 @@
 Highway Emergency Location Platform
 </div>
 
+[![CodeFactor](https://www.codefactor.io/repository/github/mikerasch/towserver/badge)](https://www.codefactor.io/repository/github/mikerasch/towserver)
+![Java](https://img.shields.io/badge/Java-19-red)
+
+
+# History
+Special thanks to Quincy K for starting this project roughly 2 years ago and contributing a healthy amount.
+
 # Goals
 ### The Problem
 In most cities, people rely on their "go-to" towing service provided through insurance companies or search engines like Google. This limits competition in the market and leaves consumers with few options. New or struggling towing companies struggle to establish themselves in the market due to a lack of visibility and resources.

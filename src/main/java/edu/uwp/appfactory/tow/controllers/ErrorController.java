@@ -13,7 +13,6 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
  *  The handleError class can be expanded on to include custom error response messages.
  *  Add missing section to application.properties in order to enable this functionality
  */
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/error")
 public class ErrorController {
