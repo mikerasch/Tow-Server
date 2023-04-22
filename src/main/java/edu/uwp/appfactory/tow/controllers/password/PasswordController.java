@@ -14,7 +14,6 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 /**
  * Password reset end points.
  */
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/password")
 public class PasswordController {

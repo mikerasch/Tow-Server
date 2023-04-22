@@ -15,7 +15,6 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 /**
  * End point for handling all requests related to location of driver and tow-truck.
  */
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/locations")
 public class LocationController {
