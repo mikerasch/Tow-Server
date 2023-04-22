@@ -18,16 +18,13 @@ Our app will not only benefit consumers by providing them with a convenient and 
 ### Problems
 Of course, through the development of this project, there have been numerous problems which are currently still being tackled.
 This project was handed over to me (Michael Rasch) and I would like to address some shortcomings which should be ironed out.
-- The current database structure falls flat in terms of supporting and future proofing. The current implementation uses Spring JDBC, while powerful, has been previously implemented in a not ideal way. The route can go either one of two ways.
-  - The first way being the more ideal structure, which is transitioning over to Spring JPA to utilize an ORM framework. The current SQL files only support PostgresSQL databases, which would be eliminated if the switch to JPA was made via hibernate. The switch would also eliminate the need for Flyway (mitigation library).
-  - The second way would be to restructure the current tables/columns to take away the need of certain Postgres dependant extensions, in favor of supporting the would-be extensions to Java code.
-- The plethora of to do comments in the code should be handled before production.
 - The police department implementation has been stopped due to lack of scope/requirements which failed to specify the direct functionality they provide.
   - Originally, the police officer was the person who was in charge of calling the tow truck service for the end user (the driver in need of the tow). However, this implementation needs a detailed plan as the client previously wanted the dispatch center to issue the request through the police officer. As just a developer, this portion seems inadequate to implement.
+- For the last sprint, I migrated to Spring JPA. This could have caused some unknown issues. In testing, I did not find any, but still be aware.
 ## Pre Requisites
 - Experience with RESTApis
 - Experience with relational databases.
-- Experience with Spring Boot/Security/JDBC
+- Experience with Spring Boot/Security/JPA
 - Postman or your desired API testing solution.
 
 ## Set Up
@@ -59,11 +56,10 @@ This project was handed over to me (Michael Rasch) and I would like to address s
 For any questions, or help with understanding what is happening feel free to email me: raschmichael10@gmail.com or just make a pull request.
 
 ## Technologies Used
-  - Spring Boot/JDBC/Security/Websockets/Mail
+  - Spring Boot/JPA/Security/Websockets/Mail
   - Java JWT
   - Lombok
   - Postgres
-  - Flyway
 ## Resources
 [Postman Tutorial](https://www.youtube.com/watch?v=cGn_LTFCif0&list=PLhW3qG5bs-L9P22XSnRe4suiWL4acXG-g)
 
