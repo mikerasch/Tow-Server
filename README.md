@@ -21,10 +21,11 @@ This project was handed over to me (Michael Rasch) and I would like to address s
 - The police department implementation has been stopped due to lack of scope/requirements which failed to specify the direct functionality they provide.
   - Originally, the police officer was the person who was in charge of calling the tow truck service for the end user (the driver in need of the tow). However, this implementation needs a detailed plan as the client previously wanted the dispatch center to issue the request through the police officer. As just a developer, this portion seems inadequate to implement.
 - For the last sprint, I migrated to Spring JPA. This could have caused some unknown issues. In testing, I did not find any, but still be aware.
+
 ## Pre Requisites
 - Experience with RESTApis
 - Experience with relational databases.
-- Experience with Spring Boot/Security/JPA
+- Experience with Spring Boot/Security/JPA/Websockets
 - Postman or your desired API testing solution.
 
 ## Set Up
@@ -39,7 +40,7 @@ This project was handed over to me (Michael Rasch) and I would like to address s
   MAIL_PORT=587;MAIL_EMAIL={FILL IN};MAIL_APP_PASSWORD={FILL IN};MAIL_SMTP_AUTH=true;
   MAIL_START_TTLS=true;PRETTY_PRINT=true;JWT_SECRET={FILL IN};JWT_EXPIRATION=604800000;
   MAX_UPLOAD_SIZE_KB=700KB;MAX_REQUEST_SIZE_KB=700KB;CUSTOMER_SUPPORT_EMAIL="{FILL IN}";
-  SPRING_DNS=0.0.0.0.0;INCLUDE_STACKTRACE=never;MAX_FILE_THRESHOLD=128KB
+  SPRING_DNS=0.0.0.0.0;INCLUDE_STACKTRACE=never;MAX_FILE_THRESHOLD=128KB;SPRINGDOC_ENABLED=true
   ```
 - Click the big green button to run the application.
 - Hopefully it worked
@@ -58,6 +59,10 @@ For any questions, or help with understanding what is happening feel free to ema
   - Java JWT
   - Lombok
   - Postgres
+ 
+## Swagger UI
+  - Default URL set up: /api/swagger-ui/index.html#/
+
 ## Resources
 [Postman Tutorial](https://www.youtube.com/watch?v=cGn_LTFCif0&list=PLhW3qG5bs-L9P22XSnRe4suiWL4acXG-g)
 
