@@ -8,8 +8,11 @@ Highway Emergency Location Platform
 
 [![CodeFactor](https://www.codefactor.io/repository/github/mikerasch/towserver/badge)](https://www.codefactor.io/repository/github/mikerasch/towserver)
 ![Java](https://img.shields.io/badge/Java-19-red)
+![License](https://img.shields.io/badge/license-MIT-orange)
 
-
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=mikerasch_TowServer&metric=reliability_rating)](https://sonarcloud.io/project/overview?id=mikerasch_TowServer)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=mikerasch_TowServer&metric=sqale_rating)](https://sonarcloud.io/project/overview?id=mikerasch_TowServer)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=mikerasch_TowServer&metric=security_rating)](https://sonarcloud.io/project/overview?id=mikerasch_TowServer)
 # History
 Special thanks to Quincy K for starting this project roughly 2 years ago and contributing a healthy amount.
 
