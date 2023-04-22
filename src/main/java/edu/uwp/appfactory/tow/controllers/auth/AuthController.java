@@ -21,7 +21,6 @@ import static org.springframework.http.HttpStatus.*;
  * post - /admin
  * get - /verification
  */
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
