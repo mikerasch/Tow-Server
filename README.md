@@ -46,6 +46,7 @@ This project was handed over to me (Michael Rasch) and I would like to address s
   ```
   Important to note, SP_EMAIL, SP_PASSWORD, and SP_PHONE is going to be the base Super Admin Role.
   ```
+- Now that you have your environmental variables setup, you are going to need a firebase project setup for firebase messaging. Once you have this, copy the JSON over to the resources folder and replace firebase.json. Important to note: these should realistically be in your environmental variables also.
 - Click the big green button to run the application.
 - Hopefully it worked
 
