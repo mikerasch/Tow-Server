@@ -40,7 +40,11 @@ This project was handed over to me (Michael Rasch) and I would like to address s
   MAIL_PORT=587;MAIL_EMAIL={FILL IN};MAIL_APP_PASSWORD={FILL IN};MAIL_SMTP_AUTH=true;
   MAIL_START_TTLS=true;PRETTY_PRINT=true;JWT_SECRET={FILL IN};JWT_EXPIRATION=604800000;
   MAX_UPLOAD_SIZE_KB=700KB;MAX_REQUEST_SIZE_KB=700KB;CUSTOMER_SUPPORT_EMAIL="{FILL IN}";
-  SPRING_DNS=0.0.0.0.0;INCLUDE_STACKTRACE=never;MAX_FILE_THRESHOLD=128KB;SPRINGDOC_ENABLED=true
+  SPRING_DNS=0.0.0.0.0;INCLUDE_STACKTRACE=never;MAX_FILE_THRESHOLD=128KB;SPRINGDOC_ENABLED=true;
+  SP_EMAIL={FILL IN}; SP_PASSWORD={FILL IN}; SP_PHONE={FILL IN}
+  ```
+  ```
+  Important to note, SP_EMAIL, SP_PASSWORD, and SP_PHONE is going to be the base Super Admin Role.
   ```
 - Click the big green button to run the application.
 - Hopefully it worked
