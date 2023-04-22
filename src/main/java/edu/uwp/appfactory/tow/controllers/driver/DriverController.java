@@ -2,8 +2,8 @@ package edu.uwp.appfactory.tow.controllers.driver;
 
 import edu.uwp.appfactory.tow.requestobjects.location.Coordinates;
 import edu.uwp.appfactory.tow.requestobjects.rolerequest.DriverRequest;
-import edu.uwp.appfactory.tow.responseObjects.TestVerifyResponse;
-import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsImpl;
+import edu.uwp.appfactory.tow.responseobjects.TestVerifyResponse;
+import edu.uwp.appfactory.tow.securityconfig.security.services.UserDetailsImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

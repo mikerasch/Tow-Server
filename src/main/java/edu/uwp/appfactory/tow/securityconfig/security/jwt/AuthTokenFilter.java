@@ -1,6 +1,6 @@
-package edu.uwp.appfactory.tow.webSecurityConfig.security.jwt;
+package edu.uwp.appfactory.tow.securityconfig.security.jwt;
 
-import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsServiceImpl;
+import edu.uwp.appfactory.tow.securityconfig.security.services.UserDetailsServiceImpl;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,7 +13,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * class that filters an auth token

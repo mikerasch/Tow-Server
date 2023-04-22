@@ -1,9 +1,9 @@
-package edu.uwp.appfactory.tow.responseObjects;
+package edu.uwp.appfactory.tow.responseobjects;
 
 import lombok.Value;
 
 @Value
-public class TCUserResponse {
+public class PDUserResponse {
     String username;
     String email;
     String firstname;

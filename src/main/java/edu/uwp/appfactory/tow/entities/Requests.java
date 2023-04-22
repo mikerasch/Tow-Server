@@ -21,5 +21,4 @@ public class Requests {
     private Long towTruckId;
     @Column(name = "request_date_time")
     private Timestamp requestDateTime;
-    // todo add some sort of relationship
 }

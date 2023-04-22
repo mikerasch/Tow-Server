@@ -1,10 +1,9 @@
 package edu.uwp.appfactory.tow.firebase;
 
-import com.google.firebase.messaging.FirebaseMessagingException;
 import edu.uwp.appfactory.tow.requestobjects.firebase.FirebaseDTO;
 import edu.uwp.appfactory.tow.requestobjects.firebase.FirebaseTokenDTO;
 import edu.uwp.appfactory.tow.requestobjects.firebase.NotifyDriverDTO;
-import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsImpl;
+import edu.uwp.appfactory.tow.securityconfig.security.services.UserDetailsImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;

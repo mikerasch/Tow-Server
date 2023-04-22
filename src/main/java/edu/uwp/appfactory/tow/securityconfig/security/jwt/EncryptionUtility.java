@@ -1,4 +1,4 @@
-package edu.uwp.appfactory.tow.webSecurityConfig.security.jwt;
+package edu.uwp.appfactory.tow.securityconfig.security.jwt;
 
 import org.springframework.stereotype.Component;
 
@@ -16,7 +16,7 @@ public class EncryptionUtility {
         KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
         keyGenerator.init(128);
         secret = keyGenerator.generateKey();
-        cipher = Cipher.getInstance("AES");
+        cipher = Cipher.getInstance("AES/GCM/NoPadding");
     }
     public String encrypt(final String plainMessage) {
         try{

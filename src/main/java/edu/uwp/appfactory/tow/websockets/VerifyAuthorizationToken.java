@@ -1,7 +1,7 @@
 package edu.uwp.appfactory.tow.websockets;
 
-import edu.uwp.appfactory.tow.webSecurityConfig.security.jwt.JwtUtils;
-import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsServiceImpl;
+import edu.uwp.appfactory.tow.securityconfig.security.jwt.JwtUtils;
+import edu.uwp.appfactory.tow.securityconfig.security.services.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.socket.WebSocketSession;

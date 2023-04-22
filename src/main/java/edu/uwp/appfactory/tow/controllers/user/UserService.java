@@ -4,8 +4,8 @@ import edu.uwp.appfactory.tow.entities.Users;
 import edu.uwp.appfactory.tow.requestobjects.password.PasswordChange;
 import edu.uwp.appfactory.tow.requestobjects.rolerequest.UpdateRequest;
 import edu.uwp.appfactory.tow.requestobjects.users.UsersDTO;
-import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
-import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsImpl;
+import edu.uwp.appfactory.tow.securityconfig.repository.UsersRepository;
+import edu.uwp.appfactory.tow.securityconfig.security.services.UserDetailsImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -38,11 +38,11 @@ public class UserService {
 
     public UsersDTO updateByUUID(UpdateRequest updateRequest, UserDetailsImpl userDetails) {
         if(!updateRequest.getPhone().equals(userDetails.getPhone())) {
-            checkForDuplicates(userDetails.getPhone(), usersRepository.findByPhone(updateRequest.getPhone()), "Phone is already in use.");
+            checkForDuplicates(usersRepository.findByPhone(updateRequest.getPhone()), "Phone is already in use.");
         }
 
         if(!updateRequest.getEmail().equals(userDetails.getEmail())) {
-            checkForDuplicates(userDetails.getEmail(), usersRepository.findByEmail(updateRequest.getEmail()), "Email is already in use.");
+            checkForDuplicates(usersRepository.findByEmail(updateRequest.getEmail()), "Email is already in use.");
         }
 
         Users user = usersRepository.findByEmail(userDetails.getEmail())
@@ -64,7 +64,7 @@ public class UserService {
         );
     }
 
-    private void checkForDuplicates(String phone, Optional<Users> optionalUser, String errorMessage) {
+    private void checkForDuplicates(Optional<Users> optionalUser, String errorMessage) {
         if(optionalUser.isPresent()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, errorMessage);
         }

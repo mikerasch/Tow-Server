@@ -2,8 +2,8 @@
 package edu.uwp.appfactory.tow.controllers.auth;
 import edu.uwp.appfactory.tow.requestobjects.rolerequest.LoginRequest;
 import edu.uwp.appfactory.tow.requestobjects.rolerequest.UserRequest;
-import edu.uwp.appfactory.tow.webSecurityConfig.payload.response.JwtResponse;
-import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsImpl;
+import edu.uwp.appfactory.tow.securityconfig.payload.response.JwtResponse;
+import edu.uwp.appfactory.tow.securityconfig.security.services.UserDetailsImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

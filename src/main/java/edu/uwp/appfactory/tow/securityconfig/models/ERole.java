@@ -1,4 +1,4 @@
-package edu.uwp.appfactory.tow.webSecurityConfig.models;
+package edu.uwp.appfactory.tow.securityconfig.models;
 
 
 public enum ERole {

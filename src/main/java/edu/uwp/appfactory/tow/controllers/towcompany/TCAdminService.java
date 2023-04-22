@@ -1,17 +1,16 @@
 package edu.uwp.appfactory.tow.controllers.towcompany;
 
 import edu.uwp.appfactory.tow.entities.TCAdmin;
-import edu.uwp.appfactory.tow.entities.Users;
 import edu.uwp.appfactory.tow.mappers.TCMapper;
 import edu.uwp.appfactory.tow.repositories.TCAdminRepository;
 import edu.uwp.appfactory.tow.requestobjects.rolerequest.TCAdminRequest;
-import edu.uwp.appfactory.tow.responseObjects.TCAdminResponse;
-import edu.uwp.appfactory.tow.responseObjects.TestVerifyResponse;
+import edu.uwp.appfactory.tow.responseobjects.TCAdminResponse;
+import edu.uwp.appfactory.tow.responseobjects.TestVerifyResponse;
 import edu.uwp.appfactory.tow.controllers.email.AsyncEmailService;
 import edu.uwp.appfactory.tow.utilities.AccountInformationValidator;
-import edu.uwp.appfactory.tow.webSecurityConfig.models.ERole;
-import edu.uwp.appfactory.tow.webSecurityConfig.repository.UsersRepository;
-import edu.uwp.appfactory.tow.webSecurityConfig.security.services.UserDetailsImpl;
+import edu.uwp.appfactory.tow.securityconfig.models.ERole;
+import edu.uwp.appfactory.tow.securityconfig.repository.UsersRepository;
+import edu.uwp.appfactory.tow.securityconfig.security.services.UserDetailsImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -92,5 +91,4 @@ public class TCAdminService {
         return UUID.randomUUID().toString().replace("-", "");
     }
 
-    //todo add Patch and Delete
 }
