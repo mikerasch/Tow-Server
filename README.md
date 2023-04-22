@@ -47,8 +47,6 @@ This project was handed over to me (Michael Rasch) and I would like to address s
 ## Common Set Up Problems
 - PSQLException
   - Typically, means your locally hosted database is not correctly setup/credentials filled. Important to note, the test cases rely on a separate database to be hosted.
-  - Flyway mismatch
-    - Database physically holds the flyway mitigation files, in which upon starting the application, it will compare the current mitigation files with the ones hosted in the database. If the compared results fail to match, it will throw this exception.
 - IllegalStateException
   - Double-check the environmental variables are properly set. In this case, the error is throwing because a file expects the @Value annotation to be correctly filled.
 
