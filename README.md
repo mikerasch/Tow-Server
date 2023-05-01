@@ -6,7 +6,7 @@
 Highway Emergency Location Platform
 </div>
 
-[![CodeFactor](https://www.codefactor.io/repository/github/mikerasch/towserver/badge)](https://www.codefactor.io/repository/github/mikerasch/towserver)
+[![CodeFactor](https://www.codefactor.io/repository/github/mikerasch/tow-server/badge)](https://www.codefactor.io/repository/github/mikerasch/tow-server)
 ![Java](https://img.shields.io/badge/Java-19-red)
 ![License](https://img.shields.io/badge/license-MIT-orange)
 
